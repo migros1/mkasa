@@ -180,10 +180,18 @@
 
         .voice-icon {
             right: 15px;
+            transition: color 0.3s ease;
         }
 
-        .search-box input:focus + .search-icon, .voice-icon:hover {
+        .voice-icon.active {
             color: var(--icon-hover);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .list, .favorites-list {
@@ -331,7 +339,7 @@
 </head>
 <body>
     <header>
-        <a href="https://istebutolga.github.io/mkasa/casa.html">
+        <a href="https://migros1.github.io/mkasa/casa.html">
             <img src="https://seeklogo.com/images/M/Migros-logo-8E7D2406C3-seeklogo.com.png" alt="Site Logosu">
         </a>
         <div class="dark-mode-toggle">
@@ -349,7 +357,7 @@
                    placeholder="Ürün arayın..."
                    onkeyup="filterList()" />
             <span class="search-icon">🔍</span>
-            <span class="voice-icon" onclick="startVoiceRecognition()">🎤</span>
+            <span class="voice-icon" id="voiceIcon">🎤</span>
         </div>
         <ul class="list" id="fruitList">
             <!-- Ürünler buraya yüklenecek -->
@@ -380,6 +388,7 @@
         const favoritesList = document.getElementById('favoritesList');
         const searchInput = document.getElementById('searchInput');
         const noResultMessage = document.getElementById('noResultMessage');
+        const voiceIcon = document.getElementById('voiceIcon');
         const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
         // Koyu mod durumunu localStorage'dan kontrol et
@@ -507,18 +516,21 @@
 
         // Sesli arama başlat
         function startVoiceRecognition() {
-            if (!('webkitSpeechRecognition' in window)) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
                 alert("Tarayıcınız sesli aramayı desteklemiyor.");
                 return;
             }
 
-            const recognition = new webkitSpeechRecognition();
+            const recognition = new SpeechRecognition();
             recognition.lang = "tr-TR";
             recognition.continuous = false;
             recognition.interimResults = false;
 
             recognition.onstart = function() {
                 console.log("Sesli arama başlatıldı");
+                voiceIcon.classList.add('active');
+                searchInput.placeholder = "Aramak istediğiniz ürünün adını veya kodunu şimdi söyleyin!";
             };
 
             recognition.onresult = function(event) {
@@ -533,9 +545,20 @@
 
             recognition.onend = function() {
                 console.log("Sesli arama sona erdi");
+                voiceIcon.classList.remove('active');
+                searchInput.placeholder = "Ürün arayın...";
             };
 
             recognition.start();
+
+            // Basılı tutma işlemi
+            voiceIcon.addEventListener('mousedown', () => {
+                recognition.start();
+            });
+
+            voiceIcon.addEventListener('mouseup', () => {
+                recognition.stop();
+            });
         }
 
         // Stok kontrol
@@ -558,6 +581,12 @@
             // Çerezler kabul edildiyse banner'ı gizle
             if (localStorage.getItem('cookiesAccepted') === 'true') {
                 document.getElementById('cookieBanner').style.display = 'none';
+            }
+
+            // Sesli arama için etkinleştir
+            const voiceRecognitionEnabled = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+            if (voiceRecognitionEnabled) {
+                voiceIcon.addEventListener('mousedown', startVoiceRecognition);
             }
         });
     </script>

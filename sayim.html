@@ -41,12 +41,25 @@
             margin: 0 auto 20px;
             max-width: 100px;
         }
+        .header input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            display: block;
+            margin: 10px auto;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="https://seeklogo.com/images/M/Migros-logo-8E7D2406C3-seeklogo.com.png" alt="Migros Logo" class="logo">
+        <img src="logo_linkiniz_buraya" alt="Migros Logo" class="logo">
         <h1>Kasa Sayımı</h1>
+        <div class="header">
+            <input type="text" placeholder="Kasiyer Sicil">
+            <input type="text" placeholder="Kasa No">
+            <input type="text" placeholder="Tarih">
+        </div>
         <table>
             <tr>
                 <th>Türk Lirası</th>
@@ -83,20 +96,50 @@
                 <td><input type="number" id="adet5" oninput="hesapla()"></td>
                 <td id="toplam5">0</td>
             </tr>
+            <tr>
+                <td>1 TL</td>
+                <td><input type="number" id="adet1" oninput="hesapla()"></td>
+                <td id="toplam1">0</td>
+            </tr>
+            <tr>
+                <td>50 Kuruş</td>
+                <td><input type="number" id="adet0_50" oninput="hesapla()"></td>
+                <td id="toplam0_50">0</td>
+            </tr>
+            <tr>
+                <td>25 Kuruş</td>
+                <td><input type="number" id="adet0_25" oninput="hesapla()"></td>
+                <td id="toplam0_25">0</td>
+            </tr>
+            <tr>
+                <td>10 Kuruş</td>
+                <td><input type="number" id="adet0_10" oninput="hesapla()"></td>
+                <td id="toplam0_10">0</td>
+            </tr>
+            <tr>
+                <td>5 Kuruş</td>
+                <td><input type="number" id="adet0_05" oninput="hesapla()"></td>
+                <td id="toplam0_05">0</td>
+            </tr>
+            <tr>
+                <td>1 Kuruş</td>
+                <td><input type="number" id="adet0_01" oninput="hesapla()"></td>
+                <td id="toplam0_01">0</td>
+            </tr>
         </table>
         <h2>Toplam Tutar: <span id="total">0</span> TL</h2>
     </div>
     <script>
         function hesapla() {
             var total = 0;
-            var values = [200, 100, 50, 20, 10, 5];
+            var values = [200, 100, 50, 20, 10, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01];
             values.forEach(function(value) {
-                var adet = document.getElementById("adet" + value).value;
+                var adet = document.getElementById("adet" + value.toString().replace('.', '_')).value;
                 var toplam = adet * value;
-                document.getElementById("toplam" + value).innerText = toplam;
+                document.getElementById("toplam" + value.toString().replace('.', '_')).innerText = toplam;
                 total += toplam;
             });
-            document.getElementById("total").innerText = total;
+            document.getElementById("total").innerText = total.toFixed(2);
         }
     </script>
 </body>

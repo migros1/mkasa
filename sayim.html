@@ -148,15 +148,27 @@
     <script>
         function hesapla() {
             var total = 0;
-            var values = [200, 100, 50, 20, 10, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01, "5_demir"];
-            values.forEach(function(value) {
-                var idSuffix = value.toString().replace('.', '_');
-                if (value === "5_demir") value = 5;
-                var adet = document.getElementById("adet" + idSuffix).value;
-                var toplam = adet * value;
-                document.getElementById("toplam" + idSuffix).innerText = toplam.toFixed(2);
+            var values = {
+                '200': 200,
+                '100': 100,
+                '50': 50,
+                '20': 20,
+                '10': 10,
+                '5': 5,
+                '1': 1,
+                '0_50': 0.50,
+                '0_25': 0.25,
+                '0_10': 0.10,
+                '0_05': 0.05,
+                '0_01': 0.01,
+                '5_demir': 5
+            };
+            for (var key in values) {
+                var adet = document.getElementById("adet" + key).value;
+                var toplam = adet * values[key];
+                document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
                 total += parseFloat(toplam);
-            });
+            }
             document.getElementById("total").innerText = total.toFixed(2);
         }
         function setDate() {

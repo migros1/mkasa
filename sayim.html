@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasa Sayım Formu</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root {
             --primary-color: #ff6600;
@@ -197,27 +199,27 @@
                 <div class="section-title">KAĞIT PARA BİRİMLERİ</div>
                 <div class="form-group">
                     <label>200 TL:</label>
-                    <input type="number" min="0" id="tl200" onchange="hesapla()">
+                    <input type="number" min="0" id="tl200" oninput="hesapla()">
                     <div class="total" id="total200">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>100 TL:</label>
-                    <input type="number" min="0" id="tl100" onchange="hesapla()">
+                    <input type="number" min="0" id="tl100" oninput="hesapla()">
                     <div class="total" id="total100">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>50 TL:</label>
-                    <input type="number" min="0" id="tl50" onchange="hesapla()">
+                    <input type="number" min="0" id="tl50" oninput="hesapla()">
                     <div class="total" id="total50">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>10 TL:</label>
-                    <input type="number" min="0" id="tl10" onchange="hesapla()">
+                    <input type="number" min="0" id="tl10" oninput="hesapla()">
                     <div class="total" id="total10">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>5 TL:</label>
-                    <input type="number" min="0" id="tl5" onchange="hesapla()">
+                    <input type="number" min="0" id="tl5" oninput="hesapla()">
                     <div class="total" id="total5">Toplam: 0 TL</div>
                 </div>
             </div>
@@ -226,32 +228,32 @@
                 <div class="section-title">BOZUK PARA BİRİMLERİ</div>
                 <div class="form-group">
                     <label>5 TL:</label>
-                    <input type="number" min="0" id="bozuk5" onchange="hesapla()">
+                    <input type="number" min="0" id="bozuk5" oninput="hesapla()">
                     <div class="total" id="totalBozuk5">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>1 TL:</label>
-                    <input type="number" min="0" id="bozuk1" onchange="hesapla()">
+                    <input type="number" min="0" id="bozuk1" oninput="hesapla()">
                     <div class="total" id="totalBozuk1">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>50 KR:</label>
-                    <input type="number" min="0" id="kr50" onchange="hesapla()">
+                    <input type="number" min="0" id="kr50" oninput="hesapla()">
                     <div class="total" id="total50kr">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>25 KR:</label>
-                    <input type="number" min="0" id="kr25" onchange="hesapla()">
+                    <input type="number" min="0" id="kr25" oninput="hesapla()">
                     <div class="total" id="total25kr">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>10 KR:</label>
-                    <input type="number" min="0" id="kr10" onchange="hesapla()">
+                    <input type="number" min="0" id="kr10" oninput="hesapla()">
                     <div class="total" id="total10kr">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>5 KR:</label>
-                    <input type="number" min="0" id="kr5" onchange="hesapla()">
+                    <input type="number" min="0" id="kr5" oninput="hesapla()">
                     <div class="total" id="total5kr">Toplam: 0 TL</div>
                 </div>
             </div>
@@ -260,27 +262,27 @@
                 <div class="section-title">DEĞERLİ ÇIKIŞLAR</div>
                 <div class="form-group">
                     <label>MONEY CLUB KART:</label>
-                    <input type="number" min="0" id="moneyClub" onchange="hesapla()">
+                    <input type="number" min="0" id="moneyClub" oninput="hesapla()">
                     <div class="total" id="totalMoneyClub">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>İSTANBUL KART:</label>
-                    <input type="number" min="0" id="istanbulKart" onchange="hesapla()">
+                    <input type="number" min="0" id="istanbulKart" oninput="hesapla()">
                     <div class="total" id="totalIstanbulKart">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>MİLLİ PİYANGO ÇEYREK:</label>
-                    <input type="number" min="0" id="mpCeyrek" onchange="hesapla()">
+                    <input type="number" min="0" id="mpCeyrek" oninput="hesapla()">
                     <div class="total" id="totalMPCeyrek">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>MİLLİ PİYANGO YARIM:</label>
-                    <input type="number" min="0" id="mpYarim" onchange="hesapla()">
+                    <input type="number" min="0" id="mpYarim" oninput="hesapla()">
                     <div class="total" id="totalMPYarim">Toplam: 0 TL</div>
                 </div>
                 <div class="form-group">
                     <label>MİLLİ PİYANGO TAM:</label>
-                    <input type="number" min="0" id="mpTam" onchange="hesapla()">
+                    <input type="number" min="0" id="mpTam" oninput="hesapla()">
                     <div class="total" id="totalMPTam">Toplam: 0 TL</div>
                 </div>
             </div>
@@ -296,25 +298,33 @@
         </form>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         let formKilitli = false;
 
         function hesapla() {
             if (formKilitli) return;
 
-            const paraBirimleri = {
-                tl200: 200, tl100: 100, tl50: 50, tl10: 10, tl5: 5,
-                bozuk5: 5, bozuk1: 1, kr50: 0.5, kr25: 0.25, kr10: 0.1, kr5: 0.05
+            const hesaplamalar = {
+                tl200: { deger: 200, input: 'tl200', total: 'total200' },
+                tl100: { deger: 100, input: 'tl100', total: 'total100' },
+                tl50: { deger: 50, input: 'tl50', total: 'total50' },
+                tl10: { deger: 10, input: 'tl10', total: 'total10' },
+                tl5: { deger: 5, input: 'tl5', total: 'total5' },
+                bozuk5: { deger: 5, input: 'bozuk5', total: 'totalBozuk5' },
+                bozuk1: { deger: 1, input: 'bozuk1', total: 'totalBozuk1' },
+                kr50: { deger: 0.5, input: 'kr50', total: 'total50kr' },
+                kr25: { deger: 0.25, input: 'kr25', total: 'total25kr' },
+                kr10: { deger: 0.1, input: 'kr10', total: 'total10kr' },
+                kr5: { deger: 0.05, input: 'kr5', total: 'total5kr' }
             };
 
             let genelToplam = 0;
 
             // Para birimleri hesaplama
-            for (let id in paraBirimleri) {
-                const adet = Number(document.getElementById(id).value) || 0;
-                const toplam = adet * paraBirimleri[id];
-                document.getElementById('total' + id.charAt(0).toUpperCase() + id.slice(1)).textContent = 
+            for (let key in hesaplamalar) {
+                const adet = Number(document.getElementById(hesaplamalar[key].input).value) || 0;
+                const toplam = adet * hesaplamalar[key].deger;
+                document.getElementById(hesaplamalar[key].total).textContent = 
                     `Toplam: ${toplam.toFixed(2)} TL`;
                 genelToplam += toplam;
             }
@@ -354,62 +364,106 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // PDF içeriği oluşturma
-            doc.setFontSize(16);
-            doc.text('Kasiyer Teslimat Formu', 20, 20);
-
+            // Logo ve Başlık
+            doc.setFontSize(20);
+            doc.text('KASİYER TESLİMAT FORMU', 105, 20, { align: 'center' });
+            
+            // Kasiyer Bilgileri
             doc.setFontSize(12);
             let y = 40;
+            doc.text(`ADI SOYADI: ${document.getElementById('adSoyad').value}`, 20, y);
+            doc.text(`KASA NO: ${document.getElementById('kasaNo').value}`, 20, y + 10);
+            doc.text(`SİCİL NO: ${document.getElementById('sicilNo').value}`, 20, y + 20);
+            doc.text(`TARİH: ${document.getElementById('tarih').value}`, 20, y + 30);
 
-            // Kasiyer bilgileri
-            doc.text(`Adı Soyadı: ${document.getElementById('adSoyad').value}`, 20, y);
-            doc.text(`Kasa No: ${document.getElementById('kasaNo').value}`, 20, y + 10);
-            doc.text(`Sicil No: ${document.getElementById('sicilNo').value}`, 20, y + 20);
-            doc.text(`Tarih: ${document.getElementById('tarih').value}`, 20, y + 30);
-
-            // Para birimleri ve toplamlar
-            y += 50;
+            // Kağıt Para Birimleri
+            y += 45;
+            doc.setFontSize(14);
             doc.text('KAĞIT PARA BİRİMLERİ', 20, y);
+            doc.setFontSize(12);
             y += 10;
-            const paraBirimleri = ['200', '100', '50', '10', '5'];
-            paraBirimleri.forEach(birim => {
-                doc.text(`${birim} TL: ${document.getElementById('tl' + birim).value || 0} adet - ${document.getElementById('total' + birim).textContent}`, 20, y);
-                y += 10;
+            
+            const kagitParalar = ['200', '100', '50', '10', '5'];
+            kagitParalar.forEach(birim => {
+                const adet = document.getElementById('tl' + birim).value || '0';
+                const toplam = document.getElementById('total' + birim).textContent;
+                doc.text(`${birim} TL: ${adet} adet - ${toplam}`, 20, y);
+                y += 8;
             });
 
-            // Bozuk paralar
+            // Bozuk Para Birimleri
             y += 10;
+            doc.setFontSize(14);
             doc.text('BOZUK PARA BİRİMLERİ', 20, y);
+            doc.setFontSize(12);
             y += 10;
-            const bozukParalar = ['5', '1', '50', '25', '10', '5'];
-            const bozukParaBirimleri = ['bozuk5', 'bozuk1', 'kr50', 'kr25', 'kr10', 'kr5'];
-            bozukParalar.forEach((birim, index) => {
-                const id = bozukParaBirimleri[index];
-                doc.text(`${birim} ${index < 2 ? 'TL' : 'KR'}: ${document.getElementById(id).value || 0} adet - ${document.getElementById('total' + id).textContent}`, 20, y);
-                y += 10;
+
+            const bozukParalar = [
+                { id: 'bozuk5', label: '5 TL' },
+                { id: 'bozuk1', label: '1 TL' },
+                { id: 'kr50', label: '50 KR' },
+                { id: 'kr25', label: '25 KR' },
+                { id: 'kr10', label: '10 KR' },
+                { id: 'kr5', label: '5 KR' }
+            ];
+
+            bozukParalar.forEach(para => {
+                const adet = document.getElementById(para.id).value || '0';
+                const toplam = document.getElementById('total' + para.id.charAt(0).toUpperCase() + para.id.slice(1)).textContent;
+                doc.text(`${para.label}: ${adet} adet - ${toplam}`, 20, y);
+                y += 8;
             });
 
-            // Değerli çıkışlar
+            // Değerli Çıkışlar
             y += 10;
+            doc.setFontSize(14);
             doc.text('DEĞERLİ ÇIKIŞLAR', 20, y);
+            doc.setFontSize(12);
             y += 10;
-            const degerliCikislar = ['moneyClub', 'istanbulKart', 'mpCeyrek', 'mpYarim', 'mpTam'];
-            const degerliCikislarText = ['Money Club Kart', 'İstanbul Kart', 'Milli Piyango Çeyrek', 'Milli Piyango Yarım', 'Milli Piyango Tam'];
-            degerliCikislar.forEach((id, index) => {
-                doc.text(`${degerliCikislarText[index]}: ${document.getElementById(id).value || 0} TL`, 20, y);
-                y += 10;
+
+            const degerliCikislar = [
+                { id: 'moneyClub', label: 'MONEY CLUB KART' },
+                { id: 'istanbulKart', label: 'İSTANBUL KART' },
+                { id: 'mpCeyrek', label: 'MİLLİ PİYANGO ÇEYREK' },
+                { id: 'mpYarim', label: 'MİLLİ PİYANGO YARIM' },
+                { id: 'mpTam', label: 'MİLLİ PİYANGO TAM' }
+            ];
+
+            degerliCikislar.forEach(cikis => {
+                const miktar = document.getElementById(cikis.id).value || '0';
+                const toplam = document.getElementById('total' + cikis.id.charAt(0).toUpperCase() + cikis.id.slice(1)).textContent;
+                doc.text(`${cikis.label}: ${miktar} TL`, 20, y);
+                y += 8;
             });
 
-            // Genel toplam
+            // Genel Toplam
             y += 10;
+            doc.setFontSize(16);
             doc.text(`GENEL TOPLAM: ${document.getElementById('genelToplam').textContent}`, 20, y);
+
+            // İmza Alanları
+            y += 20;
+            doc.setFontSize(12);
+            doc.text('Teslim Eden:', 20, y);
+            doc.text('Teslim Alan:', 120, y);
+            
+            y += 20;
+            doc.line(20, y, 80, y); // Teslim eden çizgisi
+            doc.line(120, y, 180, y); // Teslim alan çizgisi
 
             // PDF'i indir
             doc.save('kasa_sayim_formu.pdf');
         }
 
-        // Tarih alanına bugünün tarihini otomatik ekle
-        document.getElementById('tarih').valueAsDate = new Date();
+        // Sayfa yüklendiğinde tarih alanını otomatik doldur
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('tarih').valueAsDate = new Date();
+            
+            // Tüm input alanlarına hesapla fonksiyonunu bağla
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', hesapla);
+            });
+        });
     </script>
 </body>
 </html>

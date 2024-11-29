@@ -5,16 +5,29 @@
     <title>Kasa Sayımı</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f5f5f5;
         }
         .container {
-            width: 50%;
+            width: 70%;
             margin: 0 auto;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
         .header input {
             width: calc(100% - 20px);
@@ -24,6 +37,10 @@
             text-align: center;
             border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        .header input[type="number"] {
+            width: 50px;
+            margin: 0 auto;
         }
         table {
             width: 100%;
@@ -51,11 +68,14 @@
             margin: 0 auto 20px;
             max-width: 100px;
         }
+        h1, h2 {
+            color: #f37021;
+        }
     </style>
 </head>
 <body onload="setDate()">
     <div class="container">
-        <img src="logo_linkiniz_buraya" alt="Migros Logo" class="logo">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn38yw4X3c_0FE53CqcE3TTAFUcK4JpB5Ktg&usqp=CAU" alt="Migros Logo" class="logo">
         <h1>Kasa Sayımı</h1>
         <div class="header">
             <input type="text" placeholder="Kasiyer Sicil">

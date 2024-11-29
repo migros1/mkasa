@@ -2,192 +2,118 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasa Sayımı</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-        }
-        .container {
-            width: 70%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            display: block;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .header input[type="number"] {
-            width: 50px;
-            margin: 0 auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #f37021;
-            color: white;
-        }
-        input[type="number"] {
-            width: 100px;
-            padding: 5px;
-            text-align: center;
-        }
-        .logo {
-            display: block;
-            margin: 0 auto 20px;
-            width: 255px;
-            height: 55px;
-        }
-        h1, h2 {
-            color: #f37021;
-        }
-        .buttons {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .buttons button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            background-color: #f37021;
-            color: white;
-            cursor: pointer;
-        }
-        .buttons button:hover {
-            background-color: #d85e1e;
-        }
-    </style>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
-<body onload="loadData()">
+<body>
     <div class="container">
-        <img src="logo_linkiniz_buraya" alt="Migros Logo" class="logo">
-        <h1>Kasa Sayımı</h1>
-        <div class="header">
-            <input type="text" placeholder="Kasiyer Sicil" id="kasiyer_sicil">
-            <input type="number" placeholder="Kasa No (0-99)" id="kasa_no" min="0" max="99">
-            <input type="text" id="tarih" placeholder="Tarih">
-        </div>
-        <h2>Kağıt Paralar</h2>
+        <h1>MiGROS</h1>
+        <h2>Kasa Sayımı</h2>
+        <label for="kasiyer_sicil">Kasiyer Sicil:</label>
+        <input type="text" id="kasiyer_sicil" placeholder="Kasiyer Sicil">
+        <label for="kasa_no">Kasa No:</label>
+        <input type="text" id="kasa_no" placeholder="Kasa No">
+        <label for="tarih">Tarih:</label>
+        <input type="text" id="tarih" readonly>
+
+        <h3>Kağıt Paralar</h3>
         <table>
-            <tr>
-                <th>Türk Lirası</th>
-                <th>Adet</th>
-                <th>Toplam</th>
-            </tr>
-            <tr>
-                <td>200 TL</td>
-                <td><input type="number" id="adet200" oninput="hesapla()"></td>
-                <td id="toplam200">0</td>
-            </tr>
-            <tr>
-                <td>100 TL</td>
-                <td><input type="number" id="adet100" oninput="hesapla()"></td>
-                <td id="toplam100">0</td>
-            </tr>
-            <tr>
-                <td>50 TL</td>
-                <td><input type="number" id="adet50" oninput="hesapla()"></td>
-                <td id="toplam50">0</td>
-            </tr>
-            <tr>
-                <td>20 TL</td>
-                <td><input type="number" id="adet20" oninput="hesapla()"></td>
-                <td id="toplam20">0</td>
-            </tr>
-            <tr>
-                <td>10 TL</td>
-                <td><input type="number" id="adet10" oninput="hesapla()"></td>
-                <td id="toplam10">0</td>
-            </tr>
-            <tr>
-                <td>5 TL</td>
-                <td><input type="number" id="adet5" oninput="hesapla()"></td>
-                <td id="toplam5">0</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Türk Lirası</th>
+                    <th>Adet</th>
+                    <th>Toplam</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>200 TL</td>
+                    <td><input type="number" id="adet200" oninput="hesapla()"></td>
+                    <td id="toplam200">0</td>
+                </tr>
+                <tr>
+                    <td>100 TL</td>
+                    <td><input type="number" id="adet100" oninput="hesapla()"></td>
+                    <td id="toplam100">0</td>
+                </tr>
+                <tr>
+                    <td>50 TL</td>
+                    <td><input type="number" id="adet50" oninput="hesapla()"></td>
+                    <td id="toplam50">0</td>
+                </tr>
+                <tr>
+                    <td>20 TL</td>
+                    <td><input type="number" id="adet20" oninput="hesapla()"></td>
+                    <td id="toplam20">0</td>
+                </tr>
+                <tr>
+                    <td>10 TL</td>
+                    <td><input type="number" id="adet10" oninput="hesapla()"></td>
+                    <td id="toplam10">0</td>
+                </tr>
+                <tr>
+                    <td>5 TL</td>
+                    <td><input type="number" id="adet5" oninput="hesapla()"></td>
+                    <td id="toplam5">0</td>
+                </tr>
+            </tbody>
         </table>
-        <h2>Bozuk Paralar</h2>
+
+        <h3>Bozuk Paralar</h3>
         <table>
-            <tr>
-                <th>Türk Lirası</th>
-                <th>Adet</th>
-                <th>Toplam</th>
-            </tr>
-            <tr>
-                <td>5 TL</td>
-                <td><input type="number" id="adet5_demir" oninput="hesapla()"></td>
-                <td id="toplam5_demir">0</td>
-            </tr>
-            <tr>
-                <td>1 TL</td>
-                <td><input type="number" id="adet1" oninput="hesapla()"></td>
-                <td id="toplam1">0</td>
-            </tr>
-            <tr>
-                <td>50 Kuruş</td>
-                <td><input type="number" id="adet0_50" oninput="hesapla()"></td>
-                <td id="toplam0_50">0</td>
-            </tr>
-            <tr>
-                <td>25 Kuruş</td>
-                <td><input type="number" id="adet0_25" oninput="hesapla()"></td>
-                <td id="toplam0_25">0</td>
-            </tr>
-            <tr>
-                <td>10 Kuruş</td>
-                <td><input type="number" id="adet0_10" oninput="hesapla()"></td>
-                <td id="toplam0_10">0</td>
-            </tr>
-            <tr>
-                <td>5 Kuruş</td>
-                <td><input type="number" id="adet0_05" oninput="hesapla()"></td>
-                <td id="toplam0_05">0</td>
-            </tr>
-            <tr>
-                <td>1 Kuruş</td>
-                <td><input type="number" id="adet0_01" oninput="hesapla()"></td>
-                <td id="toplam0_01">0</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Türk Lirası</th>
+                    <th>Adet</th>
+                    <th>Toplam</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>5 TL</td>
+                    <td><input type="number" id="adet5_demir" oninput="hesapla()"></td>
+                    <td id="toplam5_demir">0</td>
+                </tr>
+                <tr>
+                    <td>1 TL</td>
+                    <td><input type="number" id="adet1" oninput="hesapla()"></td>
+                    <td id="toplam1">0</td>
+                </tr>
+                <tr>
+                    <td>50 Kuruş</td>
+                    <td><input type="number" id="adet0_50" oninput="hesapla()"></td>
+                    <td id="toplam0_50">0</td>
+                </tr>
+                <tr>
+                    <td>25 Kuruş</td>
+                    <td><input type="number" id="adet0_25" oninput="hesapla()"></td>
+                    <td id="toplam0_25">0</td>
+                </tr>
+                <tr>
+                    <td>10 Kuruş</td>
+                    <td><input type="number" id="adet0_10" oninput="hesapla()"></td>
+                    <td id="toplam0_10">0</td>
+                </tr>
+                <tr>
+                    <td>5 Kuruş</td>
+                    <td><input type="number" id="adet0_05" oninput="hesapla()"></td>
+                    <td id="toplam0_05">0</td>
+                </tr>
+                <tr>
+                    <td>1 Kuruş</td>
+                    <td><input type="number" id="adet0_01" oninput="hesapla()"></td>
+                    <td id="toplam0_01">0</td>
+                </tr>
+            </tbody>
         </table>
-        <h2>Toplam Tutar: <span id="total">0 TL</span></h2>
-        <div class="buttons">
-            <button onclick="kaydet()">Kaydet</button>
-            <button onclick="pdfOlustur()">PDF Oluştur</button>
-            <button onclick="sil()">Sil</button>
-        </div>
+
+        <h3>Toplam Tutar: <span id="total">0 TL</span></h3>
+        <button onclick="kaydet()">Kaydet</button>
+        <button onclick="pdfOlustur()">PDF Oluştur</button>
+        <button onclick="sil()">Sil</button>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>

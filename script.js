@@ -8,24 +8,25 @@ function hesapla() {
         '20': 20,
         '10': 10,
         '5': 5,
+        '5_demir': 5,
         '1': 1,
         '0_50': 0.50,
         '0_25': 0.25,
         '0_10': 0.10,
         '0_05': 0.05,
-        '0_01': 0.01,
-        '5_demir': 5
+        '0_01': 0.01
     };
+
     for (var key in values) {
         var adet = document.getElementById("adet" + key).value || 0;
         var toplam = adet * values[key];
         document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
-        total += parseFloat(toplam);
+        total += toplam;
     }
-    document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+    document.getElementById("total").innerText = total.toFixed(2) + " TL";
 }
 
-// Tarihin otomatik olarak ayarlanması
+// Tarihin otomatik ayarlanması
 function setDate() {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -41,22 +42,17 @@ function kaydet() {
         kasiyerSicil: document.getElementById("kasiyer_sicil").value,
         kasaNo: document.getElementById("kasa_no").value,
         tarih: document.getElementById("tarih").value,
-        paralar: {
-            200: document.getElementById("adet200").value,
-            100: document.getElementById("adet100").value,
-            50: document.getElementById("adet50").value,
-            20: document.getElementById("adet20").value,
-            10: document.getElementById("adet10").value,
-            5: document.getElementById("adet5").value,
-            5_demir: document.getElementById("adet5_demir").value,
-            1: document.getElementById("adet1").value,
-            0_50: document.getElementById("adet0_50").value,
-            0_25: document.getElementById("adet0_25").value,
-            0_10: document.getElementById("adet0_10").value,
-            0_05: document.getElementById("adet0_05").value,
-            0_01: document.getElementById("adet0_01").value,
-        }
+        paralar: {}
     };
+    var keys = [
+        "200", "100", "50", "20", "10", "5", "5_demir",
+        "1", "0_50", "0_25", "0_10", "0_05", "0_01"
+    ];
+
+    keys.forEach(function(key) {
+        data.paralar[key] = document.getElementById("adet" + key).value || 0;
+    });
+
     localStorage.setItem("kasaSayimi", JSON.stringify(data));
     alert("Kasa sayımı başarıyla kaydedildi!");
 }
@@ -64,31 +60,24 @@ function kaydet() {
 // Verilerin silinmesi
 function sil() {
     localStorage.removeItem("kasaSayimi");
-    document.getElementById("kasiyer_sicil").value = "";
-    document.getElementById("kasa_no").value = "";
-    document.getElementById("tarih").value = "";
-    var keys = [
-        "200", "100", "50", "20", "10", "5", "5_demir",
-        "1", "0_50", "0_25", "0_10", "0_05", "0_01"
-    ];
-    keys.forEach(function(key) {
-        document.getElementById("adet" + key).value = "";
-        document.getElementById("toplam" + key).innerText = "0";
-    });
-    document.getElementById("total").innerText = "0 TL";
-    alert("Kasa sayımı başarıyla silindi!");
+    location.reload();
+    alert("Tüm veriler silindi!");
 }
 
 // PDF oluşturma
 function pdfOlustur() {
+    const { jsPDF } = window.jspdf;
     var doc = new jsPDF();
-    doc.fromHTML(document.querySelector('.container'), 15, 15, {
-        'width': 170
+    doc.html(document.querySelector(".container"), {
+        callback: function (doc) {
+            doc.save("kasa_sayimi.pdf");
+        },
+        x: 10,
+        y: 10
     });
-    doc.save('kasa_sayimi.pdf');
 }
 
-// Verilerin yüklenmesi
+// Sayfa yüklenirken verilerin yüklenmesi
 function loadData() {
     setDate();
     var savedData = localStorage.getItem("kasaSayimi");
@@ -97,17 +86,22 @@ function loadData() {
         document.getElementById("kasiyer_sicil").value = savedData.kasiyerSicil;
         document.getElementById("kasa_no").value = savedData.kasaNo;
         document.getElementById("tarih").value = savedData.tarih;
+
         var keys = [
             "200", "100", "50", "20", "10", "5", "5_demir",
             "1", "0_50", "0_25", "0_10", "0_05", "0_01"
         ];
-        keys.forEach(function(key) {
-            document.getElementById("adet" + key).value = savedData.paralar[key];
-            var toplam = savedData.paralar[key] * parseFloat(key.replace('_', '.').replace('demir', ''));
-            document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
+
+        keys.forEach(function (key) {
+            document.getElementById("adet" + key).value = savedData.paralar[key] || 0;
         });
+
+        // Hesaplamayı güncelle
         hesapla();
     }
 }
 
-window.onload = loadData;
+// Sayfa yüklendiğinde otomatik olarak çalıştırılacak fonksiyon
+window.onload = function () {
+    loadData();
+};

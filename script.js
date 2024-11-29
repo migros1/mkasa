@@ -103,3 +103,5 @@ function loadData() {
         hesapla();
     }
 }
+
+window.onload = loadData;

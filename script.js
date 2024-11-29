@@ -1,91 +1,76 @@
-// Paraların hesaplanması
+// Toplam hesapla fonksiyonu
 function hesapla() {
-    var total = 0;
-    var values = {
-        '200': 200,
-        '100': 100,
-        '50': 50,
-        '20': 20,
-        '10': 10,
-        '5': 5,
-        '5_demir': 5,
-        '1': 1,
-        '0_50': 0.50,
-        '0_25': 0.25,
-        '0_10': 0.10,
-        '0_05': 0.05,
-        '0_01': 0.01
-    };
+    var keys = [
+        { key: "200", multiplier: 200 },
+        { key: "100", multiplier: 100 },
+        { key: "50", multiplier: 50 },
+        { key: "20", multiplier: 20 },
+        { key: "10", multiplier: 10 },
+        { key: "5", multiplier: 5 },
+        { key: "5_demir", multiplier: 5 },
+        { key: "1", multiplier: 1 },
+        { key: "0_50", multiplier: 0.5 },
+        { key: "0_25", multiplier: 0.25 },
+        { key: "0_10", multiplier: 0.1 },
+        { key: "0_05", multiplier: 0.05 },
+        { key: "0_01", multiplier: 0.01 },
+    ];
 
-    for (var key in values) {
-        var adet = document.getElementById("adet" + key).value || 0;
-        var toplam = adet * values[key];
-        document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
+    let total = 0;
+
+    keys.forEach(function (item) {
+        var adet = document.getElementById("adet" + item.key).value;
+        var toplam = (adet ? parseFloat(adet) : 0) * item.multiplier;
+        document.getElementById("toplam" + item.key).textContent = toplam.toFixed(2);
         total += toplam;
-    }
-    document.getElementById("total").innerText = total.toFixed(2) + " TL";
+    });
+
+    document.getElementById("toplamTutar").textContent = total.toFixed(2) + " TL";
 }
 
-// Tarihin otomatik ayarlanması
-function setDate() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-    var yyyy = today.getFullYear();
-    today = dd + '/' + mm + '/' + yyyy;
-    document.getElementById("tarih").value = today;
-}
+// Kaydet fonksiyonu (LocalStorage)
+function saveData() {
+    var kasaNo = document.getElementById("kasaNo").value;
+    var subeNo = document.getElementById("subeNo").value;
+    var tarih = document.getElementById("tarih").value;
 
-// Verilerin kaydedilmesi
-function kaydet() {
-    var data = {
-        kasiyerSicil: document.getElementById("kasiyer_sicil").value,
-        kasaNo: document.getElementById("kasa_no").value,
-        tarih: document.getElementById("tarih").value,
-        paralar: {}
-    };
     var keys = [
         "200", "100", "50", "20", "10", "5", "5_demir",
         "1", "0_50", "0_25", "0_10", "0_05", "0_01"
     ];
 
-    keys.forEach(function(key) {
-        data.paralar[key] = document.getElementById("adet" + key).value || 0;
+    var paralar = {};
+    keys.forEach(function (key) {
+        paralar[key] = document.getElementById("adet" + key).value || 0;
     });
+
+    var data = {
+        kasaNo: kasaNo,
+        subeNo: subeNo,
+        tarih: tarih,
+        paralar: paralar,
+    };
 
     localStorage.setItem("kasaSayimi", JSON.stringify(data));
-    alert("Kasa sayımı başarıyla kaydedildi!");
+    alert("Veriler başarıyla kaydedildi!");
 }
 
-// Verilerin silinmesi
-function sil() {
-    localStorage.removeItem("kasaSayimi");
-    location.reload();
-    alert("Tüm veriler silindi!");
+// Sil fonksiyonu
+function clearData() {
+    if (confirm("Tüm veriler silinecek, emin misiniz?")) {
+        localStorage.removeItem("kasaSayimi");
+        location.reload();
+    }
 }
 
-// PDF oluşturma
-function pdfOlustur() {
-    const { jsPDF } = window.jspdf;
-    var doc = new jsPDF();
-    doc.html(document.querySelector(".container"), {
-        callback: function (doc) {
-            doc.save("kasa_sayimi.pdf");
-        },
-        x: 10,
-        y: 10
-    });
-}
-
-// Sayfa yüklenirken verilerin yüklenmesi
+// Verileri yükleme fonksiyonu
 function loadData() {
-    setDate();
-    var savedData = localStorage.getItem("kasaSayimi");
+    var savedData = JSON.parse(localStorage.getItem("kasaSayimi"));
+
     if (savedData) {
-        savedData = JSON.parse(savedData);
-        document.getElementById("kasiyer_sicil").value = savedData.kasiyerSicil;
-        document.getElementById("kasa_no").value = savedData.kasaNo;
-        document.getElementById("tarih").value = savedData.tarih;
+        document.getElementById("kasaNo").value = savedData.kasaNo || "";
+        document.getElementById("subeNo").value = savedData.subeNo || "";
+        document.getElementById("tarih").value = savedData.tarih || "";
 
         var keys = [
             "200", "100", "50", "20", "10", "5", "5_demir",
@@ -96,12 +81,30 @@ function loadData() {
             document.getElementById("adet" + key).value = savedData.paralar[key] || 0;
         });
 
-        // Hesaplamayı güncelle
         hesapla();
     }
 }
 
-// Sayfa yüklendiğinde otomatik olarak çalıştırılacak fonksiyon
+// PDF oluşturma fonksiyonu
+function generatePDF() {
+    const element = document.body; // Tüm sayfayı PDF'e çeviriyoruz
+    html2pdf()
+        .set({
+            margin: 1,
+            filename: "Kasa_Sayimi.pdf",
+            html2canvas: { scale: 2 },
+            jsPDF: { orientation: "portrait" },
+        })
+        .from(element)
+        .save();
+}
+
+// Sayfa yüklendiğinde otomatik yükleme
 window.onload = function () {
     loadData();
 };
+
+// Olay dinleyicileri
+document.getElementById("kaydet").addEventListener("click", saveData);
+document.getElementById("sil").addEventListener("click", clearData);
+document.getElementById("pdf").addEventListener("click", generatePDF);

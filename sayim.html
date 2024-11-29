@@ -4,116 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasa Sayımı</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <script src="scripts/script.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #FF6600; /* Migros turuncusu */
+        }
+
+        header h1 .orange {
+            color: #FF6600;
+        }
+
+        h2 {
+            margin: 20px 0;
+            color: #FF6600;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #FF6600;
+            color: white;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .buttons button {
+            flex: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #FF6600;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .buttons button:hover {
+            background-color: #e95500;
+        }
+
+        .buttons button:active {
+            transform: scale(0.98);
+        }
+
+        .buttons button:nth-child(2) {
+            background-color: #e74c3c;
+        }
+
+        .buttons button:nth-child(2):hover {
+            background-color: #c0392b;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>MiGROS</h1>
-        <h2>Kasa Sayımı</h2>
-        <label for="kasiyer_sicil">Kasiyer Sicil:</label>
-        <input type="text" id="kasiyer_sicil" placeholder="Kasiyer Sicil">
-        <label for="kasa_no">Kasa No:</label>
-        <input type="text" id="kasa_no" placeholder="Kasa No">
-        <label for="tarih">Tarih:</label>
-        <input type="text" id="tarih" readonly>
+        <header>
+            <h1>Mi<span class="orange">GROS</span></h1>
+        </header>
+        <form>
+            <div class="form-group">
+                <input type="text" id="kasaNo" placeholder="Kasa Numarası">
+                <input type="text" id="subeNo" placeholder="Şube Numarası">
+                <input type="date" id="tarih">
+            </div>
 
-        <h3>Kağıt Paralar</h3>
-        <table>
-            <thead>
+            <h2>Kağıt Paralar</h2>
+            <table>
                 <tr>
                     <th>Türk Lirası</th>
                     <th>Adet</th>
                     <th>Toplam</th>
                 </tr>
-            </thead>
-            <tbody>
                 <tr>
                     <td>200 TL</td>
-                    <td><input type="number" id="adet200" oninput="hesapla()"></td>
+                    <td><input id="adet200" type="number" oninput="hesapla()"></td>
                     <td id="toplam200">0</td>
                 </tr>
                 <tr>
                     <td>100 TL</td>
-                    <td><input type="number" id="adet100" oninput="hesapla()"></td>
+                    <td><input id="adet100" type="number" oninput="hesapla()"></td>
                     <td id="toplam100">0</td>
                 </tr>
                 <tr>
                     <td>50 TL</td>
-                    <td><input type="number" id="adet50" oninput="hesapla()"></td>
+                    <td><input id="adet50" type="number" oninput="hesapla()"></td>
                     <td id="toplam50">0</td>
                 </tr>
                 <tr>
                     <td>20 TL</td>
-                    <td><input type="number" id="adet20" oninput="hesapla()"></td>
+                    <td><input id="adet20" type="number" oninput="hesapla()"></td>
                     <td id="toplam20">0</td>
                 </tr>
                 <tr>
                     <td>10 TL</td>
-                    <td><input type="number" id="adet10" oninput="hesapla()"></td>
+                    <td><input id="adet10" type="number" oninput="hesapla()"></td>
                     <td id="toplam10">0</td>
                 </tr>
                 <tr>
                     <td>5 TL</td>
-                    <td><input type="number" id="adet5" oninput="hesapla()"></td>
+                    <td><input id="adet5" type="number" oninput="hesapla()"></td>
                     <td id="toplam5">0</td>
                 </tr>
-            </tbody>
-        </table>
+            </table>
 
-        <h3>Bozuk Paralar</h3>
-        <table>
-            <thead>
+            <h2>Bozuk Paralar</h2>
+            <table>
                 <tr>
                     <th>Türk Lirası</th>
                     <th>Adet</th>
                     <th>Toplam</th>
                 </tr>
-            </thead>
-            <tbody>
                 <tr>
                     <td>5 TL</td>
-                    <td><input type="number" id="adet5_demir" oninput="hesapla()"></td>
+                    <td><input id="adet5_demir" type="number" oninput="hesapla()"></td>
                     <td id="toplam5_demir">0</td>
                 </tr>
                 <tr>
                     <td>1 TL</td>
-                    <td><input type="number" id="adet1" oninput="hesapla()"></td>
+                    <td><input id="adet1" type="number" oninput="hesapla()"></td>
                     <td id="toplam1">0</td>
                 </tr>
                 <tr>
                     <td>50 Kuruş</td>
-                    <td><input type="number" id="adet0_50" oninput="hesapla()"></td>
+                    <td><input id="adet0_50" type="number" oninput="hesapla()"></td>
                     <td id="toplam0_50">0</td>
                 </tr>
                 <tr>
                     <td>25 Kuruş</td>
-                    <td><input type="number" id="adet0_25" oninput="hesapla()"></td>
+                    <td><input id="adet0_25" type="number" oninput="hesapla()"></td>
                     <td id="toplam0_25">0</td>
                 </tr>
                 <tr>
                     <td>10 Kuruş</td>
-                    <td><input type="number" id="adet0_10" oninput="hesapla()"></td>
+                    <td><input id="adet0_10" type="number" oninput="hesapla()"></td>
                     <td id="toplam0_10">0</td>
                 </tr>
                 <tr>
                     <td>5 Kuruş</td>
-                    <td><input type="number" id="adet0_05" oninput="hesapla()"></td>
+                    <td><input id="adet0_05" type="number" oninput="hesapla()"></td>
                     <td id="toplam0_05">0</td>
                 </tr>
-                <tr>
-                    <td>1 Kuruş</td>
-                    <td><input type="number" id="adet0_01" oninput="hesapla()"></td>
-                    <td id="toplam0_01">0</td>
-                </tr>
-            </tbody>
-        </table>
+            </table>
 
-        <h3>Toplam Tutar: <span id="total">0 TL</span></h3>
-        <button onclick="kaydet()">Kaydet</button>
-        <button onclick="pdfOlustur()">PDF Oluştur</button>
-        <button onclick="sil()">Sil</button>
+            <div class="buttons">
+                <button type="button" id="kaydet">Kaydet</button>
+                <button type="button" id="sil">Sil</button>
+                <button type="button" id="pdf">PDF Oluştur</button>
+            </div>
+            <p style="text-align:center; margin-top:20px;"><strong>Toplam Tutar: <span id="toplamTutar">0 TL</span></strong></p>
+        </form>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>

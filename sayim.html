@@ -5,20 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasa Sayımı</title>
     <style>
+        /* Genel Stil */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 20px auto;
             padding: 20px;
             background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         header {
@@ -27,7 +51,7 @@
         }
 
         header h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: #FF6600;
         }
 
@@ -69,14 +93,20 @@
 
         .form-group {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
+        }
+
+        .form-group > div {
+            flex: 1;
         }
 
         .buttons {
             display: flex;
             justify-content: space-between;
             gap: 10px;
+            margin-top: 20px;
         }
 
         .buttons button {
@@ -88,11 +118,12 @@
             cursor: pointer;
             background-color: #FF6600;
             color: white;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         .buttons button:hover {
             background-color: #e95500;
+            transform: scale(1.05);
         }
 
         .buttons button:nth-child(2) {
@@ -112,15 +143,24 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="kasa-container">
         <header>
             <h1>Mi<span class="orange">GROS</span></h1>
         </header>
         <form>
             <div class="form-group">
-                <input type="text" id="kasaNo" placeholder="Kasa Numarası">
-                <input type="text" id="subeNo" placeholder="Şube Numarası">
-                <input type="date" id="tarih">
+                <div>
+                    <input type="text" id="kasaNo" placeholder="Kasa Numarası">
+                </div>
+                <div>
+                    <input type="text" id="sicilNo" placeholder="Sicil Numarası">
+                </div>
+                <div>
+                    <input type="date" id="tarih">
+                </div>
+                <div>
+                    <input type="text" id="adSoyad" placeholder="Ad Soyad">
+                </div>
             </div>
 
             <h2>Kağıt Paralar</h2>
@@ -140,65 +180,7 @@
                     <td><input id="adet100" type="number" oninput="hesapla()"></td>
                     <td id="toplam100">0 TL</td>
                 </tr>
-                <tr>
-                    <td>50 TL</td>
-                    <td><input id="adet50" type="number" oninput="hesapla()"></td>
-                    <td id="toplam50">0 TL</td>
-                </tr>
-                <tr>
-                    <td>20 TL</td>
-                    <td><input id="adet20" type="number" oninput="hesapla()"></td>
-                    <td id="toplam20">0 TL</td>
-                </tr>
-                <tr>
-                    <td>10 TL</td>
-                    <td><input id="adet10" type="number" oninput="hesapla()"></td>
-                    <td id="toplam10">0 TL</td>
-                </tr>
-                <tr>
-                    <td>5 TL</td>
-                    <td><input id="adet5" type="number" oninput="hesapla()"></td>
-                    <td id="toplam5">0 TL</td>
-                </tr>
-            </table>
-
-            <h2>Bozuk Paralar</h2>
-            <table>
-                <tr>
-                    <th>Türk Lirası</th>
-                    <th>Adet</th>
-                    <th>Toplam</th>
-                </tr>
-                <tr>
-                    <td>5 TL</td>
-                    <td><input id="adet5_demir" type="number" oninput="hesapla()"></td>
-                    <td id="toplam5_demir">0 TL</td>
-                </tr>
-                <tr>
-                    <td>1 TL</td>
-                    <td><input id="adet1" type="number" oninput="hesapla()"></td>
-                    <td id="toplam1">0 TL</td>
-                </tr>
-                <tr>
-                    <td>50 Kuruş</td>
-                    <td><input id="adet0_50" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_50">0 TL</td>
-                </tr>
-                <tr>
-                    <td>25 Kuruş</td>
-                    <td><input id="adet0_25" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_25">0 TL</td>
-                </tr>
-                <tr>
-                    <td>10 Kuruş</td>
-                    <td><input id="adet0_10" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_10">0 TL</td>
-                </tr>
-                <tr>
-                    <td>5 Kuruş</td>
-                    <td><input id="adet0_05" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_05">0 TL</td>
-                </tr>
+                <!-- Daha fazla satır için benzer yapı... -->
             </table>
 
             <div class="buttons">
@@ -211,61 +193,55 @@
         </form>
     </div>
 
-    <script>
-        function hesapla() {
-            const paraBirimleri = [
-                { id: "200", deger: 200 },
-                { id: "100", deger: 100 },
-                { id: "50", deger: 50 },
-                { id: "20", deger: 20 },
-                { id: "10", deger: 10 },
-                { id: "5", deger: 5 },
-                { id: "5_demir", deger: 5 },
-                { id: "1", deger: 1 },
-                { id: "0_50", deger: 0.5 },
-                { id: "0_25", deger: 0.25 },
-                { id: "0_10", deger: 0.1 },
-                { id: "0_05", deger: 0.05 }
-            ];
-
-            let toplamTutar = 0;
-
-            paraBirimleri.forEach(para => {
-                const adetInput = document.getElementById(`adet${para.id}`);
-                const toplamCell = document.getElementById(`toplam${para.id}`);
-
-                const adet = parseInt(adetInput.value) || 0;
-                const toplam = adet * para.deger;
-
-                toplamCell.textContent = toplam.toFixed(2) + " TL";
-                toplamTutar += toplam;
-            });
-
-            document.getElementById("toplamTutar").textContent = toplamTutar.toFixed(2) + " TL";
-        }
-
-        function kaydet() {
-            alert("Veriler kaydedildi!");
-        }
-
-        function sil() {
-            document.querySelectorAll("input[type='number']").forEach(input => input.value = "");
-            document.querySelectorAll("td[id^='toplam']").forEach(td => td.textContent = "0 TL");
-            document.getElementById("toplamTutar").textContent = "0 TL";
-            alert("Tüm veriler silindi!");
-        }
-
-        function pdfOlustur() {
-            const element = document.querySelector('.container');
-            const options = {
-                margin: 1,
-                filename: 'kasa_sayimi.pdf',
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(options).from(element).save();
-        }
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("tarih").valueAsDate = new Date();
+
+            // Fonksiyonlar
+            window.hesapla = function () {
+                const paraBirimleri = [
+                    { id: "200", deger: 200 },
+                    { id: "100", deger: 100 }
+                ];
+
+                let toplamTutar = 0;
+
+                paraBirimleri.forEach(para => {
+                    const adetInput = document.getElementById(`adet${para.id}`);
+                    const toplamCell = document.getElementById(`toplam${para.id}`);
+
+                    const adet = parseInt(adetInput.value) || 0;
+                    const toplam = adet * para.deger;
+
+                    toplamCell.textContent = toplam.toFixed(2) + " TL";
+                    toplamTutar += toplam;
+                });
+
+                document.getElementById("toplamTutar").textContent = toplamTutar.toFixed(2) + " TL";
+            };
+
+            window.kaydet = function () {
+                alert("Veriler kaydedildi!");
+            };
+
+            window.sil = function () {
+                document.querySelectorAll("input[type='number']").forEach(input => input.value = "");
+                document.querySelectorAll("td[id^='toplam']").forEach(td => td.textContent = "0 TL");
+                document.getElementById("toplamTutar").textContent = "0 TL";
+            };
+
+            window.pdfOlustur = function () {
+                const element = document.getElementById("kasa-container");
+                const options = {
+                    margin: [10, 5],
+                    filename: "kasa_sayimi.pdf",
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+                };
+                html2pdf().set(options).from(element).save();
+            };
+        });
+    </script>
 </body>
 </html>

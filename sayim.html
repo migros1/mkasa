@@ -92,7 +92,7 @@
 </head>
 <body onload="setDate()">
     <div class="container">
-        <img src="logo_linkiniz_buraya" alt="Migros Logo" class="logo">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn38yw4X3c_0FE53CqcE3TTAFUcK4JpB5Ktg&usqp=CAU" alt="Migros Logo" class="logo">
         <h1>Kasa Sayımı</h1>
         <div class="header">
             <input type="text" placeholder="Kasiyer Sicil" id="kasiyer_sicil">
@@ -187,6 +187,7 @@
             <button onclick="sil()">Sil</button>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
     <script>
         function hesapla() {
             var total = 0;
@@ -211,7 +212,7 @@
                 document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
                 total += parseFloat(toplam);
             }
-            document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
         }
 
         function setDate() {
@@ -267,10 +268,31 @@
 
         function pdfOlustur() {
             var doc = new jsPDF();
-            doc.fromHTML(document.body, 15, 15, {
+            doc.fromHTML(document.querySelector('.container'), 15, 15, {
                 'width': 170
             });
             doc.save('kasa_sayimi.pdf');
+        }
+
+        window.onload = function() {
+            setDate();
+            var savedData = localStorage.getItem("kasaSayimi");
+            if (savedData) {
+                savedData = JSON.parse(savedData);
+                document.getElementById("kasiyer_sicil").value = savedData.kasiyerSicil;
+                document.getElementById("kasa_no").value = savedData.kasaNo;
+                document.getElementById("tarih").value = savedData.tarih;
+                var keys = [
+                    "200", "100", "50", "20", "10", "5", "5_demir",
+                    "1", "0_50", "0_25", "0_10", "0_05", "0_01"
+                ];
+                keys.forEach(function(key) {
+                    document.getElementById("adet" + key).value = savedData.paralar[key];
+                    var toplam = savedData.paralar[key] * parseFloat(key.replace('_', '.').replace('demir', ''));
+                    document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
+                });
+                hesapla();
+            }
         }
     </script>
     <!-- jsPDF kütüphanesi -->

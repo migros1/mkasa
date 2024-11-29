@@ -1,3 +1,4 @@
+// Paraların hesaplanması
 function hesapla() {
     var total = 0;
     var values = {
@@ -24,6 +25,7 @@ function hesapla() {
     document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
 }
 
+// Tarihin otomatik olarak ayarlanması
 function setDate() {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -33,6 +35,7 @@ function setDate() {
     document.getElementById("tarih").value = today;
 }
 
+// Verilerin kaydedilmesi
 function kaydet() {
     var data = {
         kasiyerSicil: document.getElementById("kasiyer_sicil").value,
@@ -58,6 +61,7 @@ function kaydet() {
     alert("Kasa sayımı başarıyla kaydedildi!");
 }
 
+// Verilerin silinmesi
 function sil() {
     localStorage.removeItem("kasaSayimi");
     document.getElementById("kasiyer_sicil").value = "";
@@ -75,6 +79,7 @@ function sil() {
     alert("Kasa sayımı başarıyla silindi!");
 }
 
+// PDF oluşturma
 function pdfOlustur() {
     var doc = new jsPDF();
     doc.fromHTML(document.querySelector('.container'), 15, 15, {
@@ -83,6 +88,7 @@ function pdfOlustur() {
     doc.save('kasa_sayimi.pdf');
 }
 
+// Verilerin yüklenmesi
 function loadData() {
     setDate();
     var savedData = localStorage.getItem("kasaSayimi");

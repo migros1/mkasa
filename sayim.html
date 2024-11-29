@@ -18,6 +18,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -39,6 +40,7 @@
                 transform: translateY(20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -50,14 +52,14 @@
             margin-bottom: 20px;
         }
 
-        header h1 {
-            font-size: 2.5rem;
-            color: #FF6600;
-        }
+            header h1 {
+                font-size: 2.5rem;
+                color: #FF6600;
+            }
 
-        header h1 .orange {
-            color: #FF6600;
-        }
+                header h1 .orange {
+                    color: #FF6600;
+                }
 
         h2 {
             margin: 20px 0;
@@ -71,16 +73,16 @@
             margin-bottom: 20px;
         }
 
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
 
-        table th {
-            background-color: #FF6600;
-            color: white;
-        }
+            table th {
+                background-color: #FF6600;
+                color: white;
+            }
 
         input[type="text"], input[type="number"], input[type="date"] {
             width: 100%;
@@ -98,9 +100,9 @@
             margin-bottom: 20px;
         }
 
-        .form-group > div {
-            flex: 1;
-        }
+            .form-group > div {
+                flex: 1;
+            }
 
         .buttons {
             display: flex;
@@ -109,30 +111,30 @@
             margin-top: 20px;
         }
 
-        .buttons button {
-            flex: 1;
-            padding: 10px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #FF6600;
-            color: white;
-            transition: background-color 0.3s, transform 0.2s;
-        }
+            .buttons button {
+                flex: 1;
+                padding: 10px;
+                font-size: 1rem;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                background-color: #FF6600;
+                color: white;
+                transition: background-color 0.3s, transform 0.2s;
+            }
 
-        .buttons button:hover {
-            background-color: #e95500;
-            transform: scale(1.05);
-        }
+                .buttons button:hover {
+                    background-color: #e95500;
+                    transform: scale(1.05);
+                }
 
-        .buttons button:nth-child(2) {
-            background-color: #e74c3c;
-        }
+                .buttons button:nth-child(2) {
+                    background-color: #e74c3c;
+                }
 
-        .buttons button:nth-child(2):hover {
-            background-color: #c0392b;
-        }
+                    .buttons button:nth-child(2):hover {
+                        background-color: #c0392b;
+                    }
 
         .total {
             text-align: center;
@@ -145,9 +147,9 @@
             margin-top: 30px;
         }
 
-        .extra-section h2 {
-            margin-bottom: 10px;
-        }
+            .extra-section h2 {
+                margin-bottom: 10px;
+            }
     </style>
 </head>
 <body>
@@ -207,6 +209,11 @@
                     <td>5 TL</td>
                     <td><input id="adet5" type="number" oninput="hesapla()"></td>
                     <td id="toplam5">0 TL</td>
+                </tr>
+                <tr>
+                    <td>Demir 5 TL</td>
+                    <td><input id="adetDemir5" type="number" oninput="hesapla()"></td>
+                    <td id="toplamDemir5">0 TL</td>
                 </tr>
                 <tr>
                     <td>1 TL</td>
@@ -279,6 +286,7 @@
                     { id: "20", deger: 20 },
                     { id: "10", deger: 10 },
                     { id: "5", deger: 5 },
+                    { id: "Demir5", deger: 5 }, // Demir 5 TL eklendi
                     { id: "1", deger: 1 },
                     { id: "0_50", deger: 0.5 },
                     { id: "0_25", deger: 0.25 },

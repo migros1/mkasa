@@ -72,15 +72,31 @@
         h1, h2 {
             color: #f37021;
         }
+        .buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f37021;
+            color: white;
+            cursor: pointer;
+        }
+        .buttons button:hover {
+            background-color: #d85e1e;
+        }
     </style>
 </head>
 <body onload="setDate()">
     <div class="container">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn38yw4X3c_0FE53CqcE3TTAFUcK4JpB5Ktg&usqp=CAU" alt="Migros Logo" class="logo">
+        <img src="logo_linkiniz_buraya" alt="Migros Logo" class="logo">
         <h1>Kasa Sayımı</h1>
         <div class="header">
-            <input type="text" placeholder="Kasiyer Sicil">
-            <input type="number" placeholder="Kasa No (0-99)" min="0" max="99">
+            <input type="text" placeholder="Kasiyer Sicil" id="kasiyer_sicil">
+            <input type="number" placeholder="Kasa No (0-99)" id="kasa_no" min="0" max="99">
             <input type="text" id="tarih" placeholder="Tarih">
         </div>
         <h2>Kağıt Paralar</h2>
@@ -165,6 +181,11 @@
             </tr>
         </table>
         <h2>Toplam Tutar: <span id="total">0 TL</span></h2>
+        <div class="buttons">
+            <button onclick="kaydet()">Kaydet</button>
+            <button onclick="pdfOlustur()">PDF Oluştur</button>
+            <button onclick="sil()">Sil</button>
+        </div>
     </div>
     <script>
         function hesapla() {
@@ -192,6 +213,7 @@
             }
             document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
+
         function setDate() {
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
@@ -200,6 +222,58 @@
             today = dd + '/' + mm + '/' + yyyy;
             document.getElementById("tarih").value = today;
         }
+
+        function kaydet() {
+            var data = {
+                kasiyerSicil: document.getElementById("kasiyer_sicil").value,
+                kasaNo: document.getElementById("kasa_no").value,
+                tarih: document.getElementById("tarih").value,
+                paralar: {
+                    200: document.getElementById("adet200").value,
+                    100: document.getElementById("adet100").value,
+                    50: document.getElementById("adet50").value,
+                    20: document.getElementById("adet20").value,
+                    10: document.getElementById("adet10").value,
+                    5: document.getElementById("adet5").value,
+                    5_demir: document.getElementById("adet5_demir").value,
+                    1: document.getElementById("adet1").value,
+                    0.50: document.getElementById("adet0_50").value,
+                    0.25: document.getElementById("adet0_25").value,
+                    0.10: document.getElementById("adet0_10").value,
+                    0.05: document.getElementById("adet0_05").value,
+                    0.01: document.getElementById("adet0_01").value,
+                }
+            };
+            localStorage.setItem("kasaSayimi", JSON.stringify(data));
+            alert("Kasa sayımı başarıyla kaydedildi!");
+        }
+
+        function sil() {
+            localStorage.removeItem("kasaSayimi");
+            document.getElementById("kasiyer_sicil").value = "";
+            document.getElementById("kasa_no").value = "";
+            document.getElementById("tarih").value = "";
+            var keys = [
+                "200", "100", "50", "20", "10", "5", "5_demir",
+                "1", "0_50", "0_25", "0_10", "0_05", "0_01"
+            ];
+            keys.forEach(function(key) {
+                document.getElementById("adet" + key).value = "";
+                document.getElementById("toplam" + key).innerText = "0";
+            });
+            document.getElementById("total").innerText = "0 TL";
+            alert("Kasa sayımı başarıyla silindi!");
+        }
+
+        function pdfOlustur() {
+            var doc = new jsPDF();
+            doc.fromHTML(document.body, 15, 15, {
+                'width': 170
+            });
+            doc.save('kasa_sayimi.pdf');
+        }
     </script>
+    <!-- jsPDF kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
 </body>
 </html>

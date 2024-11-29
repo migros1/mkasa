@@ -237,17 +237,38 @@
             currencyTable.appendChild(row);
         });
 
+        // Sayıların animasyonlu olarak artış veya azalışını sağla
+        function animateValue(element, start, end, duration) {
+            let startTime = null;
+            const step = (currentTime) => {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                element.textContent = (progress * (end - start) + start).toFixed(2);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
         // Toplam tutarı hesapla
         function calculateTotal() {
             let total = 0;
             const rows = currencyTable.querySelectorAll('tr');
             rows.forEach((row, index) => {
                 const adet = row.querySelector('input').value;
-                const toplam = paraBirimleri[index].deger * adet;
-                row.cells[2].textContent = toplam.toFixed(2);
-                total += toplam;
+                const toplamYeni = paraBirimleri[index].deger * adet;
+                const toplamCell = row.cells[2];
+
+                // Eski toplamı al ve animasyon başlat
+                const toplamEski = parseFloat(toplamCell.textContent);
+                animateValue(toplamCell, toplamEski, toplamYeni, 500);
+
+                total += toplamYeni;
             });
-            document.getElementById('toplamTutar').textContent = total.toFixed(2);
+            const toplamTutarElement = document.getElementById('toplamTutar');
+            const toplamTutarEski = parseFloat(toplamTutarElement.textContent);
+            animateValue(toplamTutarElement, toplamTutarEski, total, 500);
         }
 
         // Kasiyer Sicili alanını doğrula
@@ -312,7 +333,7 @@
             const doc = new jsPDF();
 
             // Logo ekle
-            const imgUrl = 'https://migros1.github.io/mkasa/mgrs.png';
+            const imgUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/MiGROS_Logo.svg/2560px-MiGROS_Logo.svg.png';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();

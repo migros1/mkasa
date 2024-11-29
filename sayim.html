@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasa Sayım Formu</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root {
@@ -223,6 +224,7 @@
                     <div class="total" id="total5">Toplam: 0 TL</div>
                 </div>
             </div>
+
             <div class="form-section">
                 <div class="section-title">BOZUK PARA BİRİMLERİ</div>
                 <div class="form-group">
@@ -296,183 +298,189 @@
             </div>
         </form>
     </div>
-
     <script>
-        let formKilitli = false;
+    let formKilitli = false;
 
-        function hesapla() {
-            if (formKilitli) return;
+    // Hesaplama fonksiyonu
+    function hesapla() {
+        if (formKilitli) return;
 
-            const hesaplamalar = {
-                tl200: { deger: 200, input: 'tl200', total: 'total200' },
-                tl100: { deger: 100, input: 'tl100', total: 'total100' },
-                tl50: { deger: 50, input: 'tl50', total: 'total50' },
-                tl10: { deger: 10, input: 'tl10', total: 'total10' },
-                tl5: { deger: 5, input: 'tl5', total: 'total5' },
-                bozuk5: { deger: 5, input: 'bozuk5', total: 'totalBozuk5' },
-                bozuk1: { deger: 1, input: 'bozuk1', total: 'totalBozuk1' },
-                kr50: { deger: 0.5, input: 'kr50', total: 'total50kr' },
-                kr25: { deger: 0.25, input: 'kr25', total: 'total25kr' },
-                kr10: { deger: 0.1, input: 'kr10', total: 'total10kr' },
-                kr5: { deger: 0.05, input: 'kr5', total: 'total5kr' }
-            };
+        const hesaplamalar = {
+            tl200: { deger: 200, input: 'tl200', total: 'total200' },
+            tl100: { deger: 100, input: 'tl100', total: 'total100' },
+            tl50: { deger: 50, input: 'tl50', total: 'total50' },
+            tl10: { deger: 10, input: 'tl10', total: 'total10' },
+            tl5: { deger: 5, input: 'tl5', total: 'total5' },
+            bozuk5: { deger: 5, input: 'bozuk5', total: 'totalBozuk5' },
+            bozuk1: { deger: 1, input: 'bozuk1', total: 'totalBozuk1' },
+            kr50: { deger: 0.5, input: 'kr50', total: 'total50kr' },
+            kr25: { deger: 0.25, input: 'kr25', total: 'total25kr' },
+            kr10: { deger: 0.1, input: 'kr10', total: 'total10kr' },
+            kr5: { deger: 0.05, input: 'kr5', total: 'total5kr' }
+        };
 
-            let genelToplam = 0;
+        let genelToplam = 0;
 
-            // Para birimleri hesaplama
-            for (let key in hesaplamalar) {
-                const adet = Number(document.getElementById(hesaplamalar[key].input).value) || 0;
-                const toplam = adet * hesaplamalar[key].deger;
-                document.getElementById(hesaplamalar[key].total).textContent = 
-                    `Toplam: ${toplam.toFixed(2)} TL`;
-                genelToplam += toplam;
-            }
-
-            // Değerli çıkışlar hesaplama
-            const degerliCikislar = ['moneyClub', 'istanbulKart', 'mpCeyrek', 'mpYarim', 'mpTam'];
-            degerliCikislar.forEach(id => {
-                const miktar = Number(document.getElementById(id).value) || 0;
-                document.getElementById('total' + id.charAt(0).toUpperCase() + id.slice(1)).textContent = 
-                    `Toplam: ${miktar.toFixed(2)} TL`;
-                genelToplam += miktar;
-            });
-
-            document.getElementById('genelToplam').textContent = genelToplam.toFixed(2) + ' TL';
+        // Para birimleri hesaplama
+        for (let key in hesaplamalar) {
+            const adet = Number(document.getElementById(hesaplamalar[key].input).value) || 0;
+            const toplam = adet * hesaplamalar[key].deger;
+            document.getElementById(hesaplamalar[key].total).textContent = 
+                `Toplam: ${toplam.toFixed(2)} TL`;
+            genelToplam += toplam;
         }
 
-        function kaydet() {
-            if (!document.getElementById('sayimForm').checkValidity()) {
-                alert('Lütfen tüm zorunlu alanları doldurun!');
-                return;
-            }
-
-            formKilitli = true;
-            document.querySelectorAll('input').forEach(input => {
-                input.readOnly = true;
-            });
-            document.getElementById('pdfButton').disabled = false;
-            alert('Form kaydedildi! Artık PDF oluşturabilirsiniz.');
-        }
-
-        function pdfOlustur() {
-            try {
-                if (!formKilitli) {
-                    alert('Önce formu kaydetmelisiniz!');
-                    return;
-                }
-
-                const doc = new window.jspdf.jsPDF();
-
-                // Logo ve Başlık
-                doc.setFontSize(20);
-                doc.text('KASİYER TESLİMAT FORMU', 105, 20, { align: 'center' });
-                
-                // Kasiyer Bilgileri
-                doc.setFontSize(12);
-                let y = 40;
-                doc.text(`ADI SOYADI: ${document.getElementById('adSoyad').value}`, 20, y);
-                doc.text(`KASA NO: ${document.getElementById('kasaNo').value}`, 20, y + 10);
-                doc.text(`SİCİL NO: ${document.getElementById('sicilNo').value}`, 20, y + 20);
-                doc.text(`TARİH: ${document.getElementById('tarih').value}`, 20, y + 30);
-
-                // Kağıt Para Birimleri
-                y += 45;
-                doc.setFontSize(14);
-                doc.text('KAĞIT PARA BİRİMLERİ', 20, y);
-                doc.setFontSize(12);
-                y += 10;
-                
-                const kagitParalar = ['200', '100', '50', '10', '5'];
-                kagitParalar.forEach(birim => {
-                    const adet = document.getElementById('tl' + birim).value || '0';
-                    const toplam = document.getElementById('total' + birim).textContent;
-                    doc.text(`${birim} TL: ${adet} adet - ${toplam}`, 20, y);
-                    y += 8;
-                });
-
-                // Bozuk Para Birimleri
-                y += 10;
-                doc.setFontSize(14);
-                doc.text('BOZUK PARA BİRİMLERİ', 20, y);
-                doc.setFontSize(12);
-                y += 10;
-
-                const bozukParalar = [
-                    { id: 'bozuk5', label: '5 TL' },
-                    { id: 'bozuk1', label: '1 TL' },
-                    { id: 'kr50', label: '50 KR' },
-                    { id: 'kr25', label: '25 KR' },
-                    { id: 'kr10', label: '10 KR' },
-                    { id: 'kr5', label: '5 KR' }
-                ];
-
-                bozukParalar.forEach(para => {
-                    const adet = document.getElementById(para.id).value || '0';
-                    const toplam = document.getElementById('total' + para.id.charAt(0).toUpperCase() + para.id.slice(1)).textContent;
-                    doc.text(`${para.label}: ${adet} adet - ${toplam}`, 20, y);
-                    y += 8;
-                });
-
-                // Değerli Çıkışlar
-                y += 10;
-                doc.setFontSize(14);
-                doc.text('DEĞERLİ ÇIKIŞLAR', 20, y);
-                doc.setFontSize(12);
-                y += 10;
-
-                const degerliCikislar = [
-                    { id: 'moneyClub', label: 'MONEY CLUB KART' },
-                    { id: 'istanbulKart', label: 'İSTANBUL KART' },
-                    { id: 'mpCeyrek', label: 'MİLLİ PİYANGO ÇEYREK' },
-                    { id: 'mpYarim', label: 'MİLLİ PİYANGO YARIM' },
-                    { id: 'mpTam', label: 'MİLLİ PİYANGO TAM' }
-                ];
-
-                degerliCikislar.forEach(cikis => {
-                    const miktar = document.getElementById(cikis.id).value || '0';
-                    const toplam = document.getElementById('total' + cikis.id.charAt(0).toUpperCase() + cikis.id.slice(1)).textContent;
-                    doc.text(`${cikis.label}: ${miktar} TL`, 20, y);
-                    y += 8;
-                });
-
-                // Genel Toplam
-                y += 10;
-                doc.setFontSize(16);
-                doc.text(`GENEL TOPLAM: ${document.getElementById('genelToplam').textContent}`, 20, y);
-
-                // İmza Alanları
-                y += 20;
-                doc.setFontSize(12);
-                doc.text('Teslim Eden:', 20, y);
-                doc.text('Teslim Alan:', 120, y);
-                
-                y += 20;
-                doc.line(20, y, 80, y); // Teslim eden çizgisi
-                doc.line(120, y, 180, y); // Teslim alan çizgisi
-
-                // Tarihi al ve formatla
-                const now = new Date();
-                const tarih = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`;
-                const saat = `${now.getHours()}-${now.getMinutes()}`;
-                
-                // PDF'i indir
-                doc.save(`kasa_sayim_${tarih}_${saat}.pdf`);
-
-            } catch (error) {
-                console.error('PDF oluşturma hatası:', error);
-                alert('PDF oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
-            }
-        }
-
-        // Sayfa yüklendiğinde tarih alanını otomatik doldur
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('tarih').valueAsDate = new Date();
-            
-            // Tüm input alanlarına hesapla fonksiyonunu bağla
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                input.addEventListener('input', hesapla);
-            });
+        // Değerli çıkışlar hesaplama
+        const degerliCikislar = ['moneyClub', 'istanbulKart', 'mpCeyrek', 'mpYarim', 'mpTam'];
+        degerliCikislar.forEach(id => {
+            const miktar = Number(document.getElementById(id).value) || 0;
+            document.getElementById('total' + id.charAt(0).toUpperCase() + id.slice(1)).textContent = 
+                `Toplam: ${miktar.toFixed(2)} TL`;
+            genelToplam += miktar;
         });
-    </script>
+
+        document.getElementById('genelToplam').textContent = genelToplam.toFixed(2) + ' TL';
+    }
+
+    // Kaydetme fonksiyonu
+    function kaydet() {
+        if (!document.getElementById('sayimForm').checkValidity()) {
+            alert('Lütfen tüm zorunlu alanları doldurun!');
+            return;
+        }
+
+        formKilitli = true;
+        document.querySelectorAll('input').forEach(input => {
+            input.readOnly = true;
+        });
+        document.getElementById('pdfButton').disabled = false;
+        alert('Form kaydedildi! Artık PDF oluşturabilirsiniz.');
+    }
+
+    // PDF oluşturma fonksiyonu
+    function pdfOlustur() {
+        if (!formKilitli) {
+            alert('Önce formu kaydetmelisiniz!');
+            return;
+        }
+
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Başlık
+            doc.setFontSize(16);
+            doc.text('KASİYER TESLİMAT FORMU', doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+
+            // Kasiyer Bilgileri
+            doc.setFontSize(12);
+            let y = 40;
+            const kasiyerBilgileri = [
+                `Adı Soyadı: ${document.getElementById('adSoyad').value}`,
+                `Kasa No: ${document.getElementById('kasaNo').value}`,
+                `Sicil No: ${document.getElementById('sicilNo').value}`,
+                `Tarih: ${document.getElementById('tarih').value}`
+            ];
+
+            kasiyerBilgileri.forEach(bilgi => {
+                doc.text(bilgi, 20, y);
+                y += 10;
+            });
+
+            // Kağıt Paralar
+            y += 10;
+            doc.setFontSize(14);
+            doc.text('KAĞIT PARA BİRİMLERİ', 20, y);
+            y += 10;
+            doc.setFontSize(12);
+
+            const kagitParalar = ['200', '100', '50', '10', '5'];
+            kagitParalar.forEach(birim => {
+                const adet = document.getElementById('tl' + birim).value || '0';
+                const toplam = document.getElementById('total' + birim).textContent;
+                doc.text(`${birim} TL: ${adet} adet - ${toplam}`, 20, y);
+                y += 8;
+            });
+
+            // Bozuk Paralar
+            y += 10;
+            doc.setFontSize(14);
+            doc.text('BOZUK PARA BİRİMLERİ', 20, y);
+            y += 10;
+            doc.setFontSize(12);
+
+            const bozukParalar = [
+                { id: 'bozuk5', label: '5 TL' },
+                { id: 'bozuk1', label: '1 TL' },
+                { id: 'kr50', label: '50 KR' },
+                { id: 'kr25', label: '25 KR' },
+                { id: 'kr10', label: '10 KR' },
+                { id: 'kr5', label: '5 KR' }
+            ];
+
+            bozukParalar.forEach(para => {
+                const adet = document.getElementById(para.id).value || '0';
+                const toplam = document.getElementById('total' + para.id.charAt(0).toUpperCase() + para.id.slice(1)).textContent;
+                doc.text(`${para.label}: ${adet} adet - ${toplam}`, 20, y);
+                y += 8;
+            });
+
+            // Değerli Çıkışlar
+            y += 10;
+            doc.setFontSize(14);
+            doc.text('DEĞERLİ ÇIKIŞLAR', 20, y);
+            y += 10;
+            doc.setFontSize(12);
+
+            const degerliCikislar = [
+                { id: 'moneyClub', label: 'Money Club Kart' },
+                { id: 'istanbulKart', label: 'İstanbul Kart' },
+                { id: 'mpCeyrek', label: 'Milli Piyango Çeyrek' },
+                { id: 'mpYarim', label: 'Milli Piyango Yarım' },
+                { id: 'mpTam', label: 'Milli Piyango Tam' }
+            ];
+
+            degerliCikislar.forEach(cikis => {
+                const miktar = document.getElementById(cikis.id).value || '0';
+                const toplam = document.getElementById('total' + cikis.id.charAt(0).toUpperCase() + cikis.id.slice(1)).textContent;
+                doc.text(`${cikis.label}: ${miktar} TL`, 20, y);
+                y += 8;
+            });
+
+            // Genel Toplam
+            y += 10;
+            doc.setFontSize(14);
+            doc.text(`GENEL TOPLAM: ${document.getElementById('genelToplam').textContent}`, 20, y);
+
+            // İmza alanları
+            y += 20;
+            doc.setFontSize(12);
+            doc.text('Teslim Eden:', 20, y);
+            doc.text('Teslim Alan:', 120, y);
+            y += 20;
+            doc.line(20, y, 80, y);
+            doc.line(120, y, 180, y);
+
+            // PDF'i kaydet
+            const tarih = new Date().toLocaleDateString('tr-TR').replace(/\./g, '-');
+            const saat = new Date().toLocaleTimeString('tr-TR').replace(/:/g, '-');
+            doc.save(`kasa_sayim_${tarih}_${saat}.pdf`);
+
+        } catch (error) {
+            console.error('PDF oluşturma hatası:', error);
+            alert('PDF oluşturulurken bir hata oluştu: ' + error.message);
+        }
+    }
+
+    // Sayfa yüklendiğinde tarih alanını otomatik doldur
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('tarih').valueAsDate = new Date();
+        
+        // Tüm input alanlarına hesapla fonksiyonunu bağla
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', hesapla);
+        });
+    });
+</script>
 </body>
 </html>

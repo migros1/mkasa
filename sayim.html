@@ -1,492 +1,103 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kasa Sayım Formu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <title>Kasa Sayımı</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f6f8;
-            color: #333;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
         }
-
         .container {
-            max-width: 800px;
+            width: 50%;
             margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ff6600;
-            padding-bottom: 20px;
-        }
-
-        .form-header img {
-            max-width: 200px;
-            margin-bottom: 20px;
-        }
-
-        .form-header h1 {
-            color: #ff6600;
-            margin: 0;
-        }
-
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #ff6600;
-            border-bottom: 2px solid #ff6600;
-            padding-bottom: 5px;
-        }
-
-        .form-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            gap: 10px;
-        }
-
-        .form-group label {
-            width: 150px;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #ff6600;
-            box-shadow: 0 0 5px rgba(255, 102, 0, 0.2);
-        }
-
-        .form-group .total {
-            margin-left: 20px;
-            font-weight: bold;
-            color: #ff6600;
-            min-width: 120px;
-        }
-
-        .total-section {
-            margin-top: 30px;
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             border-radius: 10px;
-            text-align: right;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        .total-amount {
-            font-size: 24px;
-            font-weight: 700;
-            color: #ff6600;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-
-        .button-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
+        table, th, td {
+            border: 1px solid #ddd;
         }
-
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        th, td {
+            padding: 10px;
+            text-align: center;
         }
-
-        .btn-save {
-            background-color: #ff6600;
-            color: #fff;
+        th {
+            background-color: #f37021;
+            color: white;
         }
-
-        .btn-save:hover {
-            background-color: #e65c00;
+        input {
+            width: 100px;
+            padding: 5px;
+            text-align: center;
         }
-
-        .btn-pdf {
-            background-color: #4CAF50;
-            color: #fff;
-        }
-
-        .btn-pdf:hover {
-            background-color: #45a049;
-        }
-
-        .btn-pdf:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .home-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #ff6600;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .home-link:hover {
-            text-decoration: underline;
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 100px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="casa.html" class="home-link">← Ana Sayfaya Dön</a>
-        
-        <div class="form-header">
-            <img src="https://seeklogo.com/images/M/Migros-logo-8E7D2406C3-seeklogo.com.png" alt="Migros Logo">
-            <h1>Kasiyer Teslimat Formu</h1>
-        </div>
-
-        <form id="sayimForm">
-            <div class="form-section">
-                <div class="section-title">Kasiyer Bilgileri</div>
-                <div class="form-group">
-                    <label>ADI VE SOYADI:</label>
-                    <input type="text" id="adSoyad" required>
-                </div>
-                <div class="form-group">
-                    <label>KASA NO:</label>
-                    <input type="text" id="kasaNo" required>
-                </div>
-                <div class="form-group">
-                    <label>SİCİL NO:</label>
-                    <input type="text" id="sicilNo" required>
-                </div>
-                <div class="form-group">
-                    <label>TARİH:</label>
-                    <input type="date" id="tarih" required>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title">KAĞIT PARA BİRİMLERİ</div>
-                <div class="form-group">
-                    <label>200 TL:</label>
-                    <input type="number" min="0" id="tl200" oninput="hesapla()">
-                    <div class="total" id="total200">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>100 TL:</label>
-                    <input type="number" min="0" id="tl100" oninput="hesapla()">
-                    <div class="total" id="total100">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>50 TL:</label>
-                    <input type="number" min="0" id="tl50" oninput="hesapla()">
-                    <div class="total" id="total50">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>20 TL:</label>
-                    <input type="number" min="0" id="tl20" oninput="hesapla()">
-                    <div class="total" id="total20">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>10 TL:</label>
-                    <input type="number" min="0" id="tl10" oninput="hesapla()">
-                    <div class="total" id="total10">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>5 TL:</label>
-                    <input type="number" min="0" id="tl5" oninput="hesapla()">
-                    <div class="total" id="total5">Toplam: 0 TL</div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title">BOZUK PARA BİRİMLERİ</div>
-                <div class="form-group">
-                    <label>5 TL:</label>
-                    <input type="number" min="0" id="bozuk5" oninput="hesapla()">
-                    <div class="total" id="totalBozuk5">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>1 TL:</label>
-                    <input type="number" min="0" id="bozuk1" oninput="hesapla()">
-                    <div class="total" id="totalBozuk1">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>50 KR:</label>
-                    <input type="number" min="0" id="kr50" oninput="hesapla()">
-                    <div class="total" id="total50kr">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>25 KR:</label>
-                    <input type="number" min="0" id="kr25" oninput="hesapla()">
-                    <div class="total" id="total25kr">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>10 KR:</label>
-                    <input type="number" min="0" id="kr10" oninput="hesapla()">
-                    <div class="total" id="total10kr">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>5 KR:</label>
-                    <input type="number" min="0" id="kr5" oninput="hesapla()">
-                    <div class="total" id="total5kr">Toplam: 0 TL</div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title">DEĞERLİ ÇIKIŞLAR</div>
-                <div class="form-group">
-                    <label>MONEY CLUB KART:</label>
-                    <input type="number" min="0" id="moneyClub" oninput="hesapla()">
-                    <div class="total" id="totalMoneyClub">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>İSTANBUL KART:</label>
-                    <input type="number" min="0" id="istanbulKart" oninput="hesapla()">
-                    <div class="total" id="totalIstanbulKart">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>MİLLİ PİYANGO ÇEYREK:</label>
-                    <input type="number" min="0" id="mpCeyrek" oninput="hesapla()">
-                    <div class="total" id="totalMPCeyrek">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>MİLLİ PİYANGO YARIM:</label>
-                    <input type="number" min="0" id="mpYarim" oninput="hesapla()">
-                    <div class="total" id="totalMPYarim">Toplam: 0 TL</div>
-                </div>
-                <div class="form-group">
-                    <label>MİLLİ PİYANGO TAM:</label>
-                    <input type="number" min="0" id="mpTam" oninput="hesapla()">
-                    <div class="total" id="totalMPTam">Toplam: 0 TL</div>
-                </div>
-            </div>
-
-            <div class="total-section">
-                <div class="total-amount">GENEL TOPLAM: <span id="genelToplam">0 TL</span></div>
-            </div>
-
-            <div class="button-group">
-                <button type="button" class="btn btn-save" onclick="kaydet()">Kaydet</button>
-                <button type="button" class="btn btn-pdf" onclick="pdfOlustur()" id="pdfButton" disabled>PDF Oluştur</button>
-            </div>
-        </form>
+        <img src="https://seeklogo.com/images/M/Migros-logo-8E7D2406C3-seeklogo.com.png" alt="Migros Logo" class="logo">
+        <h1>Kasa Sayımı</h1>
+        <table>
+            <tr>
+                <th>Türk Lirası</th>
+                <th>Adet</th>
+                <th>Toplam</th>
+            </tr>
+            <tr>
+                <td>200 TL</td>
+                <td><input type="number" id="adet200" oninput="hesapla()"></td>
+                <td id="toplam200">0</td>
+            </tr>
+            <tr>
+                <td>100 TL</td>
+                <td><input type="number" id="adet100" oninput="hesapla()"></td>
+                <td id="toplam100">0</td>
+            </tr>
+            <tr>
+                <td>50 TL</td>
+                <td><input type="number" id="adet50" oninput="hesapla()"></td>
+                <td id="toplam50">0</td>
+            </tr>
+            <tr>
+                <td>20 TL</td>
+                <td><input type="number" id="adet20" oninput="hesapla()"></td>
+                <td id="toplam20">0</td>
+            </tr>
+            <tr>
+                <td>10 TL</td>
+                <td><input type="number" id="adet10" oninput="hesapla()"></td>
+                <td id="toplam10">0</td>
+            </tr>
+            <tr>
+                <td>5 TL</td>
+                <td><input type="number" id="adet5" oninput="hesapla()"></td>
+                <td id="toplam5">0</td>
+            </tr>
+        </table>
+        <h2>Toplam Tutar: <span id="total">0</span> TL</h2>
     </div>
-
     <script>
-        let formKilitli = false;
-
         function hesapla() {
-            if (formKilitli) return;
-
-            const hesaplamalar = {
-                tl200: { deger: 200, input: 'tl200', total: 'total200' },
-                tl100: { deger: 100, input: 'tl100', total: 'total100' },
-                tl50: { deger: 50, input: 'tl50', total: 'total50' },
-                tl20: { deger: 20, input: 'tl20', total: 'total20' },
-                tl10: { deger: 10, input: 'tl10', total: 'total10' },
-                tl5: { deger: 5, input: 'tl5', total: 'total5' },
-                bozuk5: { deger: 5, input: 'bozuk5', total: 'totalBozuk5' },
-                bozuk1: { deger: 1, input: 'bozuk1', total: 'totalBozuk1' },
-                kr50: { deger: 0.5, input: 'kr50', total: 'total50kr' },
-                kr25: { deger: 0.25, input: 'kr25', total: 'total25kr' },
-                kr10: { deger: 0.1, input: 'kr10', total: 'total10kr' },
-                kr5: { deger: 0.05, input: 'kr5', total: 'total5kr' }
-            };
-
-            let genelToplam = 0;
-
-            // Para birimleri hesaplama
-            for (let key in hesaplamalar) {
-                const adet = Number(document.getElementById(hesaplamalar[key].input).value) || 0;
-                const toplam = adet * hesaplamalar[key].deger;
-                document.getElementById(hesaplamalar[key].total).textContent = 
-                    `Toplam: ${toplam.toFixed(2)} TL`;
-                genelToplam += toplam;
-            }
-
-            // Değerli çıkışlar hesaplama
-            const degerliCikislar = ['moneyClub', 'istanbulKart', 'mpCeyrek', 'mpYarim', 'mpTam'];
-            degerliCikislar.forEach(id => {
-                const miktar = Number(document.getElementById(id).value) || 0;
-                document.getElementById('total' + id.charAt(0).toUpperCase() + id.slice(1)).textContent = 
-                    `Toplam: ${miktar.toFixed(2)} TL`;
-                genelToplam += miktar;
+            var total = 0;
+            var values = [200, 100, 50, 20, 10, 5];
+            values.forEach(function(value) {
+                var adet = document.getElementById("adet" + value).value;
+                var toplam = adet * value;
+                document.getElementById("toplam" + value).innerText = toplam;
+                total += toplam;
             });
-
-            document.getElementById('genelToplam').textContent = genelToplam.toFixed(2) + ' TL';
+            document.getElementById("total").innerText = total;
         }
-
-        function kaydet() {
-            if (!document.getElementById('sayimForm').checkValidity()) {
-                alert('Lütfen tüm zorunlu alanları doldurun!');
-                return;
-            }
-
-            formKilitli = true;
-            document.querySelectorAll('input').forEach(input => {
-                input.readOnly = true;
-            });
-            document.getElementById('pdfButton').disabled = false;
-            alert('Form kaydedildi! Artık PDF oluşturabilirsiniz.');
-        }
-
-        function pdfOlustur() {
-            if (!formKilitli) {
-                alert('Önce formu kaydetmelisiniz!');
-                return;
-            }
-
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-
-                // Fontu yükle
-                doc.addFileToVFS("DejaVuSans.ttf", "base64 içerik");
-                doc.addFont("DejaVuSans.ttf", "DejaVuSans", "normal");
-                doc.setFont("DejaVuSans");
-
-                // Başlık
-                doc.setFontSize(16);
-                doc.text('KASİYER TESLİMAT FORMU', doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
-
-                // Kasiyer Bilgileri
-                let y = 40;
-                const kasiyerBilgileri = [
-                    `Adı Soyadı: ${document.getElementById('adSoyad').value || ''}`,
-                    `Kasa No: ${document.getElementById('kasaNo').value || ''}`,
-                    `Sicil No: ${document.getElementById('sicilNo').value || ''}`,
-                    `Tarih: ${document.getElementById('tarih').value || ''}`
-                ];
-
-                kasiyerBilgileri.forEach(bilgi => {
-                    doc.text(bilgi, 20, y);
-                    y += 10;
-                });
-
-                // Kağıt Paralar
-                y += 10;
-                doc.setFontSize(14);
-                doc.text('KAĞIT PARA BİRİMLERİ', 20, y);
-                y += 10;
-                doc.setFontSize(12);
-
-                const kagitParalar = ['200', '100', '50', '20', '10', '5'];
-                kagitParalar.forEach(birim => {
-                    const input = document.getElementById('tl' + birim);
-                    const totalElement = document.getElementById('total' + birim);
-                    const adet = input ? (input.value || '0') : '0';
-                    const toplam = totalElement ? totalElement.textContent : 'Toplam: 0 TL';
-                    doc.text(`${birim} TL: ${adet} adet - ${toplam}`, 20, y);
-                    y += 8;
-                });
-
-                // Bozuk Paralar
-                y += 10;
-                doc.setFontSize(14);
-                doc.text('BOZUK PARA BİRİMLERİ', 20, y);
-                y += 10;
-                doc.setFontSize(12);
-
-                const bozukParalar = [
-                    { id: 'bozuk5', label: '5 TL' },
-                    { id: 'bozuk1', label: '1 TL' },
-                    { id: 'kr50', label: '50 KR' },
-                    { id: 'kr25', label: '25 KR' },
-                    { id: 'kr10', label: '10 KR' },
-                    { id: 'kr5', label: '5 KR' }
-                ];
-
-                bozukParalar.forEach(para => {
-                    const input = document.getElementById(para.id);
-                    const totalElement = document.getElementById('total' + para.id.charAt(0).toUpperCase() + para.id.slice(1));
-                    const adet = input ? (input.value || '0') : '0';
-                    const toplam = totalElement ? totalElement.textContent : 'Toplam: 0 TL';
-                    doc.text(`${para.label}: ${adet} adet - ${toplam}`, 20, y);
-                    y += 8;
-                });
-
-                // Değerli Çıkışlar
-                y += 10;
-                doc.setFontSize(14);
-                doc.text('DEĞERLİ ÇIKIŞLAR', 20, y);
-                y += 10;
-                doc.setFontSize(12);
-
-                const degerliCikislar = [
-                    { id: 'moneyClub', label: 'Money Club Kart' },
-                    { id: 'istanbulKart', label: 'İstanbul Kart' },
-                    { id: 'mpCeyrek', label: 'Milli Piyango Çeyrek' },
-                    { id: 'mpYarim', label: 'Milli Piyango Yarım' },
-                    { id: 'mpTam', label: 'Milli Piyango Tam' }
-                ];
-
-                degerliCikislar.forEach(cikis => {
-                    const input = document.getElementById(cikis.id);
-                    const totalElement = document.getElementById('total' + cikis.id.charAt(0).toUpperCase() + cikis.id.slice(1));
-                    const miktar = input ? (input.value || '0') : '0';
-                    const toplam = totalElement ? totalElement.textContent : 'Toplam: 0 TL';
-                    doc.text(`${cikis.label}: ${miktar} TL`, 20, y);
-                    y += 8;
-                });
-
-                // Genel Toplam
-                y += 10;
-                doc.setFontSize(14);
-                const genelToplamElement = document.getElementById('genelToplam');
-                const genelToplamText = genelToplamElement ? genelToplamElement.textContent : '0 TL';
-                doc.text(`GENEL TOPLAM: ${genelToplamText}`, 20, y);
-
-                // İmza alanları
-                y += 20;
-                doc.setFontSize(12);
-                doc.text('Teslim Eden:', 20, y);
-                doc.text('Teslim Alan:', 120, y);
-                y += 20;
-                doc.line(20, y, 80, y);
-                doc.line(120, y, 180, y);
-
-                // PDF'i kaydet
-                const tarih = new Date().toLocaleDateString('tr-TR').replace(/\./g, '-');
-                const saat = new Date().toLocaleTimeString('tr-TR').replace(/:/g, '-');
-                doc.save(`kasa_sayim_${tarih}_${saat}.pdf`);
-
-            } catch (error) {
-                console.error('PDF oluşturma hatası:', error);
-                alert('PDF oluşturulurken bir hata oluştu: ' + error.message);
-            }
-        }
-
-        // Sayfa yüklendiğinde tarih alanını otomatik doldur
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('tarih').valueAsDate = new Date();
-            
-            // Tüm input alanlarına hesapla fonksiyonunu bağla
-            document.querySelectorAll('input[type="number"]').forEach(input => {
-                input.addEventListener('input', hesapla);
-            });
-        });
     </script>
 </body>
 </html>

@@ -164,7 +164,7 @@
                 <td id="toplam0_01">0</td>
             </tr>
         </table>
-        <h2>Toplam Tutar: <span id="total">0</span> TL</h2>
+        <h2>Toplam Tutar: <span id="total">0 TL</span></h2>
     </div>
     <script>
         function hesapla() {
@@ -190,7 +190,7 @@
                 document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
                 total += parseFloat(toplam);
             }
-            document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+            document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         function setDate() {
             var today = new Date();

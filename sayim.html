@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasa Sayımı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         /* Genel Stil */
         body {
@@ -81,7 +82,7 @@
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                box-sizing: border-box;
+                box-sizing: border box;
             }
 
         .extra-section {
@@ -104,30 +105,31 @@
                 border-radius: 5px;
             }
 
-        .total {
-            text-align: center;
-            font-weight: bold;
-            margin-top: 30px;
-            font-size: 1.4rem;
-        }
-
         .buttons {
             display: flex;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
             .buttons button {
-                margin: 0 10px;
-                padding: 10px 20px;
                 background-color: #FF6600;
                 color: white;
                 border: none;
-                border-radius: 5px;
+                padding: 10px 20px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 0 10px;
                 cursor: pointer;
+                border-radius: 5px;
             }
 
-        .confirm-modal {
+                .buttons button:hover {
+                    background-color: #e65c00;
+                }
+
+        #confirmModal {
             display: none;
             position: fixed;
             z-index: 1;
@@ -147,158 +149,167 @@
             width: 30%;
         }
 
-        .confirm-modal-buttons {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-            .confirm-modal-buttons button {
-                margin: 0 10px;
-                padding: 10px 20px;
-                background-color: #FF6600;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
+            .confirm-modal-content h2 {
+                text-align: center;
+                margin-bottom: 20px;
             }
+
+            .confirm-modal-content .buttons {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+                .confirm-modal-content .buttons button {
+                    margin: 0 10px;
+                }
     </style>
 </head>
 <body>
     <div class="container" id="kasa-container">
         <header>
-            <h1>Mi<span class="orange">GROS</span></h1>
-            <p>migros.com.tr</p>
+            <h1>Migros <span class="orange">Kasa Sayımı</span></h1>
+            <p>Kasadaki para ve diğer değerlerin sayımını gerçekleştirin.</p>
         </header>
-        <form>
-            <div class="form-group">
-                <label for="kasaNo">Kasa Numarası:</label>
-                <input type="text" id="kasaNo" placeholder="Kasa Numarası">
-            </div>
-            <div class="form-group">
-                <label for="sicilNo">Sicil Numarası:</label>
-                <input type="text" id="sicilNo" placeholder="Sicil Numarası">
-            </div>
-            <div class="form-group">
-                <label for="tarih">Tarih:</label>
-                <input type="date" id="tarih">
-            </div>
-            <div class="form-group">
-                <label for="adSoyad">Ad Soyad:</label>
-                <input type="text" id="adSoyad" placeholder="Ad Soyad">
-            </div>
 
-            <h2>Kağıt Paralar</h2>
-            <table id="paratablo">
-                <tr>
-                    <th>Türk Lirası</th>
-                    <th>Adet</th>
-                    <th>Toplam</th>
-                </tr>
-                <tr>
-                    <td>200 TL</td>
-                    <td><input type="number" id="adet200" value="10"></td>
-                    <td id="toplam200">2000 TL</td>
-                </tr>
-                <tr>
-                    <td>100 TL</td>
-                    <td><input type="number" id="adet100" value="20"></td>
-                    <td id="toplam100">2000 TL</td>
-                </tr>
-                <tr>
-                    <td>50 TL</td>
-                    <td><input type="number" id="adet50" value="30"></td>
-                    <td id="toplam50">1500 TL</td>
-                </tr>
-                <tr>
-                    <td>20 TL</td>
-                    <td><input type="number" id="adet20" value="40"></td>
-                    <td id="toplam20">800 TL</td>
-                </tr>
-                <tr>
-                    <td>10 TL</td>
-                    <td><input type="number" id="adet10" value="50"></td>
-                    <td id="toplam10">500 TL</td>
-                </tr>
-                <tr>
-                    <td>5 TL</td>
-                    <td><input type="number" id="adet5" value="60"></td>
-                    <td id="toplam5">300 TL</td>
-                </tr>
-                <tr>
-                    <td>Demir 5 TL</td>
-                    <td><input type="number" id="adetDemir5" value="70"></td>
-                    <td id="toplamDemir5">350 TL</td>
-                </tr>
-                <tr>
-                    <td>1 TL</td>
-                    <td><input type="number" id="adet1" value="80"></td>
-                    <td id="toplam1">80 TL</td>
-                </tr>
-                <tr>
-                    <td>50 Kuruş</td>
-                    <td><input type="number" id="adet50Kurus" value="90"></td>
-                    <td id="toplam50Kurus">45 TL</td>
-                </tr>
-                <tr>
-                    <td>25 Kuruş</td>
-                    <td><input type="number" id="adet25Kurus" value="100"></td>
-                    <td id="toplam25Kurus">25 TL</td>
-                </tr>
-                <tr>
-                    <td>10 Kuruş</td>
-                    <td><input type="number" id="adet10Kurus" value="110"></td>
-                    <td id="toplam10Kurus">11 TL</td>
-                </tr>
-                <tr>
-                    <td>5 Kuruş</td>
-                    <td><input type="number" id="adet5Kurus" value="120"></td>
-                    <td id="toplam5Kurus">6 TL</td>
-                </tr>
-                <tr>
-                    <td>1 Kuruş</td>
-                    <td><input type="number" id="adet1Kurus" value="130"></td>
-                    <td id="toplam1Kurus">1.30 TL</td>
-                </tr>
-            </table>
+        <div class="form-group">
+            <label for="kasaNo">Kasa No:</label>
+            <input type="text" id="kasaNo" placeholder="Kasa numarasını giriniz">
+        </div>
 
-            <div class="extra-section">
-                <h2>Ek Bilgiler</h2>
+        <div class="form-group">
+            <label for="sicilNo">Sicil No:</label>
+            <input type="text" id="sicilNo" placeholder="Sicil numarasını giriniz">
+        </div>
+
+        <div class="form-group">
+            <label for="tarih">Tarih:</label>
+            <input type="date" id="tarih">
+        </div>
+
+        <div class="form-group">
+            <label for="adSoyad">Ad Soyad:</label>
+            <input type="text" id="adSoyad" placeholder="Adınızı ve soyadınızı giriniz">
+        </div>
+
+        <h2>Para Sayımı</h2>
+        <table id="paratablo">
+            <tr>
+                <th>Türk Lirası</th>
+                <th>Adet</th>
+                <th>Toplam</th>
+            </tr>
+            <tr>
+                <td>200 TL</td>
+                <td><input type="number" id="adet200"></td>
+                <td id="toplam200"></td>
+            </tr>
+            <tr>
+                <td>100 TL</td>
+                <td><input type="number" id="adet100"></td>
+                <td id="toplam100"></td>
+            </tr>
+            <tr>
+                <td>50 TL</td>
+                <td><input type="number" id="adet50"></td>
+                <td id="toplam50"></td>
+            </tr>
+            <tr>
+                <td>20 TL</td>
+                <td><input type="number" id="adet20"></td>
+                <td id="toplam20"></td>
+            </tr>
+            <tr>
+                <td>10 TL</td>
+                <td><input type="number" id="adet10"></td>
+                <td id="toplam10"></td>
+            </tr>
+            <tr>
+                <td>5 TL</td>
+                <td><input type="number" id="adet5"></td>
+                <td id="toplam5"></td>
+            </tr>
+            <tr>
+                <td>5 TL (Demir)</td>
+                <td><input type="number" id="adetDemir5"></td>
+                <td id="toplamDemir5"></td>
+            </tr>
+            <tr>
+                <td>1 TL</td>
+                <td><input type="number" id="adet1"></td>
+                <td id="toplam1"></td>
+            </tr>
+            <tr>
+                <td>50 Kuruş</td>
+                <td><input type="number" id="adet50Kurus"></td>
+                <td id="toplam50Kurus"></td>
+            </tr>
+            <tr>
+                <td>25 Kuruş</td>
+                <td><input type="number" id="adet25Kurus"></td>
+                <td id="toplam25Kurus"></td>
+            </tr>
+            <tr>
+                <td>10 Kuruş</td>
+                <td><input type="number" id="adet10Kurus"></td>
+                <td id="toplam10Kurus"></td>
+            </tr>
+            <tr>
+                <td>5 Kuruş</td>
+                <td><input type="number" id="adet5Kurus"></td>
+                <td id="toplam5Kurus"></td>
+            </tr>
+            <tr>
+                <td>1 Kuruş</td>
+                <td><input type="number" id="adet1Kurus"></td>
+                <td id="toplam1Kurus"></td>
+            </tr>
+        </table>
+
+        <div class="extra-section">
+            <h2>Diğer Değerler</h2>
+            <div>
                 <label for="moneyKartAdet">Money Kart Adet:</label>
-                <input type="number" id="moneyKartAdet" value="5">
+                <input type="number" id="moneyKartAdet">
+            </div>
+            <div>
                 <label for="istanbulKartAdet">İstanbul Kart Adet:</label>
-                <input type="number" id="istanbulKartAdet" value="10">
-                <h3>Milli Piyango</h3>
-                <label for="milliPiyangoCeyrek">Çeyrek:</label>
-                <input type="number" id="milliPiyangoCeyrek" value="2">
-                <label for="milliPiyangoYarim">Yarım:</label>
-                <input type="number" id="milliPiyangoYarim" value="1">
-                <label for="milliPiyangoTam">Tam:</label>
-                <input type="number" id="milliPiyangoTam" value="1">
+                <input type="number" id="istanbulKartAdet">
             </div>
-
-            <p class="total" id="toplamTutar">Toplam Tutar: 7,118.30 TL</p>
-
-            <div class="buttons">
-                <button id="kaydet">Kaydet</button>
-                <button id="sil">Sil</button>
-                <button id="pdfOlustur">PDF Oluştur</button>
+            <div>
+                <label for="milliPiyangoCeyrek">Milli Piyango Çeyrek:</label>
+                <input type="number" id="milliPiyangoCeyrek">
             </div>
-        </form>
-    </div>
-
-    <div id="confirmModal" class="confirm-modal">
-        <div class="confirm-modal-content">
-            <h2>Emin misiniz?</h2>
-            <p>Tüm kaydedilmiş verileri silmek istediğinizden emin misiniz?</p>
-            <div class="confirm-modal-buttons">
-                <button id="confirmYes">Evet</button>
-                <button id="confirmNo">Hayır</button>
+            <div>
+                <label for="milliPiyangoYarim">Milli Piyango Yarım:</label>
+                <input type="number" id="milliPiyangoYarim">
+            </div>
+            <div>
+                <label for="milliPiyangoTam">Milli Piyango Tam:</label>
+                <input type="number" id="milliPiyangoTam">
             </div>
         </div>
+
+        <div class="buttons">
+            <button id="kaydet">Kaydet</button>
+            <button id="sil">Sil</button>
+            <button id="pdfOlustur">PDF Oluştur</button>
+        </div>
+
+        <div id="confirmModal" class="confirm-modal">
+            <div class="confirm-modal-content">
+                <h2>Emin misiniz?</h2>
+                <div class="buttons">
+                    <button id="confirmYes">Evet</button>
+                    <button id="confirmNo">Hayır</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toplamTutar">Toplam Tutar: 0.00 TL</div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("tarih").valueAsDate = new Date();
@@ -336,7 +347,17 @@
                     adSoyad: document.getElementById("adSoyad").value,
                     adet200: document.getElementById("adet200").value,
                     adet100: document.getElementById("adet100").value,
-                    // Diğer adetler...
+                    adet50: document.getElementById("adet50").value,
+                    adet20: document.getElementById("adet20").value,
+                    adet10: document.getElementById("adet10").value,
+                    adet5: document.getElementById("adet5").value,
+                    adetDemir5: document.getElementById("adetDemir5").value,
+                    adet1: document.getElementById("adet1").value,
+                    adet50Kurus: document.getElementById("adet50Kurus").value,
+                    adet25Kurus: document.getElementById("adet25Kurus").value,
+                    adet10Kurus: document.getElementById("adet10Kurus").value,
+                    adet5Kurus: document.getElementById("adet5Kurus").value,
+                    adet1Kurus: document.getElementById("adet1Kurus").value,
                     moneyKartAdet: document.getElementById("moneyKartAdet").value,
                     istanbulKartAdet: document.getElementById("istanbulKartAdet").value,
                     milliPiyangoCeyrek: document.getElementById("milliPiyangoCeyrek").value,
@@ -394,24 +415,24 @@
             // Toplam Tutarı Hesaplama
             function calculateTotalAmount() {
                 let total = 0;
-                total += parseInt(document.getElementById("adet200").value) * 200;
-                total += parseInt(document.getElementById("adet100").value) * 100;
-                total += parseInt(document.getElementById("adet50").value) * 50;
-                total += parseInt(document.getElementById("adet20").value) * 20;
-                total += parseInt(document.getElementById("adet10").value) * 10;
-                total += parseInt(document.getElementById("adet5").value) * 5;
-                total += parseInt(document.getElementById("adetDemir5").value) * 5;
-                total += parseInt(document.getElementById("adet1").value) * 1;
-                total += parseInt(document.getElementById("adet50Kurus").value) * 0.5;
-                total += parseInt(document.getElementById("adet25Kurus").value) * 0.25;
-                total += parseInt(document.getElementById("adet10Kurus").value) * 0.1;
-                total += parseInt(document.getElementById("adet5Kurus").value) * 0.05;
-                total += parseInt(document.getElementById("adet1Kurus").value) * 0.01;
-                total += parseInt(document.getElementById("moneyKartAdet").value) * 0;
-                total += parseInt(document.getElementById("istanbulKartAdet").value) * 0;
-                total += parseInt(document.getElementById("milliPiyangoCeyrek").value) * 2.5;
-                total += parseInt(document.getElementById("milliPiyangoYarim").value) * 5;
-                total += parseInt(document.getElementById("milliPiyangoTam").value) * 10;
+                total += parseFloat(document.getElementById("adet200").value) * 200;
+                total += parseFloat(document.getElementById("adet100").value) * 100;
+                total += parseFloat(document.getElementById("adet50").value) * 50;
+                total += parseFloat(document.getElementById("adet20").value) * 20;
+                total += parseFloat(document.getElementById("adet10").value) * 10;
+                total += parseFloat(document.getElementById("adet5").value) * 5;
+                total += parseFloat(document.getElementById("adetDemir5").value) * 5;
+                total += parseFloat(document.getElementById("adet1").value) * 1;
+                total += parseFloat(document.getElementById("adet50Kurus").value) * 0.5;
+                total += parseFloat(document.getElementById("adet25Kurus").value) * 0.25;
+                total += parseFloat(document.getElementById("adet10Kurus").value) * 0.1;
+                total += parseFloat(document.getElementById("adet5Kurus").value) * 0.05;
+                total += parseFloat(document.getElementById("adet1Kurus").value) * 0.01;
+                total += parseFloat(document.getElementById("moneyKartAdet").value) * 0;
+                total += parseFloat(document.getElementById("istanbulKartAdet").value) * 0;
+                total += parseFloat(document.getElementById("milliPiyangoCeyrek").value) * 2.5;
+                total += parseFloat(document.getElementById("milliPiyangoYarim").value) * 5;
+                total += parseFloat(document.getElementById("milliPiyangoTam").value) * 10;
                 return total;
             }
 
@@ -423,14 +444,24 @@
                     document.getElementById("sicilNo").value = data.sicilNo;
                     document.getElementById("tarih").value = data.tarih;
                     document.getElementById("adSoyad").value = data.adSoyad;
-                    document.getElementById("adet200").value = data.adet200;
-                    document.getElementById("adet100").value = data.adet100;
-                    // Diğer adetleri yükle...
-                    document.getElementById("moneyKartAdet").value = data.moneyKartAdet;
-                    document.getElementById("istanbulKartAdet").value = data.istanbulKartAdet;
-                    document.getElementById("milliPiyangoCeyrek").value = data.milliPiyangoCeyrek;
-                    document.getElementById("milliPiyangoYarim").value = data.milliPiyangoYarim;
-                    document.getElementById("milliPiyangoTam").value = data.milliPiyangoTam;
+                    document.getElementById("adet200").value = data.adet200 || "";
+                    document.getElementById("adet100").value = data.adet100 || "";
+                    document.getElementById("adet50").value = data.adet50 || "";
+                    document.getElementById("adet20").value = data.adet20 || "";
+                    document.getElementById("adet10").value = data.adet10 || "";
+                    document.getElementById("adet5").value = data.adet5 || "";
+                    document.getElementById("adetDemir5").value = data.adetDemir5 || "";
+                    document.getElementById("adet1").value = data.adet1 || "";
+                    document.getElementById("adet50Kurus").value = data.adet50Kurus || "";
+                    document.getElementById("adet25Kurus").value = data.adet25Kurus || "";
+                    document.getElementById("adet10Kurus").value = data.adet10Kurus || "";
+                    document.getElementById("adet5Kurus").value = data.adet5Kurus || "";
+                    document.getElementById("adet1Kurus").value = data.adet1Kurus || "";
+                    document.getElementById("moneyKartAdet").value = data.moneyKartAdet || "";
+                    document.getElementById("istanbulKartAdet").value = data.istanbulKartAdet || "";
+                    document.getElementById("milliPiyangoCeyrek").value = data.milliPiyangoCeyrek || "";
+                    document.getElementById("milliPiyangoYarim").value = data.milliPiyangoYarim || "";
+                    document.getElementById("milliPiyangoTam").value = data.milliPiyangoTam || "";
                     updateTotalAmount();
                 }
             }
@@ -441,12 +472,125 @@
                 document.getElementById("sicilNo").value = "";
                 document.getElementById("tarih").valueAsDate = new Date();
                 document.getElementById("adSoyad").value = "";
-                document.getElementById("adet200").value = "10";
-                document.getElementById("adet100").value = "20";
-                // Diğer adetleri sıfırla...
-                document.getElementById("moneyKartAdet").value = "5";
-                document.getElementById("istanbulKartAdet").value = "10";
-                document.getElementById("milliPiyangoCeyrek").value = "2";
-                document.getElementById("milliPiyangoYarim").value = "1";
-                document.getElementById("milliPiyangoTam").value = "1";
+                document.getElementById("adet200").value = "";
+                document.getElementById("adet100").value = "";
+                document.getElementById("adet50").value = "";
+                document.getElementById("adet20").value = "";
+                document.getElementById("adet10").value = "";
+                document.getElementById("adet5").value = "";
+                document.getElementById("adetDemir5").value = "";
+                document.getElementById("adet1").value = "";
+                document.getElementById("adet50Kurus").value = "";
+                document.getElementById("adet25Kurus").value = "";
+                document.getElementById("adet10Kurus").value = "";
+                document.getElementById("adet5Kurus").value = "";
+                document.getElementById("adet1Kurus").value = "";
+                document.getElementById("moneyKartAdet").value = "";
+                document.getElementById("istanbulKartAdet").value = "";
+                document.getElementById("milliPiyangoCeyrek").value = "";
+                document.getElementById("milliPiyangoYarim").value = "";
+                document.getElementById("milliPiyangoTam").value = "";
             }
+
+            // Sayfa Yüklendiğinde Başlangıç İşlemleri
+            document.addEventListener("DOMContentLoaded", () => {
+                document.getElementById("tarih").valueAsDate = new Date();
+
+                // Kaydet butonu
+                document.getElementById("kaydet").addEventListener("click", () => {
+                    saveData();
+                });
+
+                // Sil butonu
+                document.getElementById("sil").addEventListener("click", () => {
+                    showConfirmModal();
+                });
+
+                // PDF Oluştur butonu
+                document.getElementById("pdfOlustur").addEventListener("click", () => {
+                    generatePDF();
+                });
+
+                // Confirm Modal Butonları
+                document.getElementById("confirmYes").addEventListener("click", () => {
+                    clearData();
+                    hideConfirmModal();
+                });
+                document.getElementById("confirmNo").addEventListener("click", () => {
+                    hideConfirmModal();
+                });
+
+                // Veri Kaydetme Fonksiyonu
+                function saveData() {
+                    const data = {
+                        kasaNo: document.getElementById("kasaNo").value,
+                        sicilNo: document.getElementById("sicilNo").value,
+                        tarih: document.getElementById("tarih").value,
+                        adSoyad: document.getElementById("adSoyad").value,
+                        adet200: document.getElementById("adet200").value,
+                        adet100: document.getElementById("adet100").value,
+                        adet50: document.getElementById("adet50").value,
+                        adet20: document.getElementById("adet20").value,
+                        adet10: document.getElementById("adet10").value,
+                        adet5: document.getElementById("adet5").value,
+                        adetDemir5: document.getElementById("adetDemir5").value,
+                        adet1: document.getElementById("adet1").value,
+                        adet50Kurus: document.getElementById("adet50Kurus").value,
+                        adet25Kurus: document.getElementById("adet25Kurus").value,
+                        adet10Kurus: document.getElementById("adet10Kurus").value,
+                        adet5Kurus: document.getElementById("adet5Kurus").value,
+                        adet1Kurus: document.getElementById("adet1Kurus").value,
+                        moneyKartAdet: document.getElementById("moneyKartAdet").value,
+                        istanbulKartAdet: document.getElementById("istanbulKartAdet").value,
+                        milliPiyangoCeyrek: document.getElementById("milliPiyangoCeyrek").value,
+                        milliPiyangoYarim: document.getElementById("milliPiyangoYarim").value,
+                        milliPiyangoTam: document.getElementById("milliPiyangoTam").value
+                    };
+                    localStorage.setItem("kasaSayimiData", JSON.stringify(data));
+                    updateTotalAmount();
+                }
+
+                // Veri Silme Fonksiyonu
+                function clearData() {
+                    localStorage.removeItem("kasaSayimiData");
+                    resetForm();
+                    updateTotalAmount();
+                }
+
+                // Confirm Modal Gösterme/Gizleme
+                function showConfirmModal() {
+                    document.getElementById("confirmModal").style.display = "block";
+                }
+                function hideConfirmModal() {
+                    document.getElementById("confirmModal").style.display = "none";
+                }
+
+                // PDF Oluşturma Fonksiyonu
+                function generatePDF() {
+                    const element = document.getElementById("kasa-container");
+                    const options = {
+                        margin: [20, 20, 20, 20],
+                        filename: "kasa_sayimi.pdf",
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+                    };
+
+                    // Butonları gizle
+                    const buttons = element.getElementsByClassName("buttons")[0];
+                    buttons.style.display = "none";
+
+                    html2pdf().set(options).from(element).save();
+
+                    // Butonları tekrar göster
+                    buttons.style.display = "flex";
+                }
+
+                // Form Verilerini Yükleme
+                loadData();
+
+                // Toplam Tutarı Güncelleme
+                function updateTotalAmount() {
+                    const totalAmount = calculateTotalAmount();
+                    document.getElementById("toplamTutar").textContent = `Toplam Tutar: ${totalAmount.toFixed(2)} TL`;
+                }
+            });

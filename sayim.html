@@ -148,12 +148,12 @@
     <script>
         function hesapla() {
             var total = 0;
-            var values = [200, 100, 50, 20, 10, 5, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01];
+            var values = [200, 100, 50, 20, 10, 5, "5_demir", 1, 0.50, 0.25, 0.10, 0.05, 0.01];
             values.forEach(function(value) {
-                var idSuffix = value === 5 ? "5_demir" : value.toString().replace('.', '_');
+                var idSuffix = value.toString().replace('.', '_');
                 var adet = document.getElementById("adet" + idSuffix).value;
-                var toplam = adet * value;
-                document.getElementById("toplam" + idSuffix).innerText = toplam;
+                var toplam = parseFloat(adet * (typeof value === "string" ? parseFloat(value.replace('_', '.')) : value));
+                document.getElementById("toplam" + idSuffix).innerText = toplam.toFixed(2);
                 total += toplam;
             });
             document.getElementById("total").innerText = total.toFixed(2);

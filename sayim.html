@@ -190,7 +190,7 @@
                 document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
                 total += parseFloat(toplam);
             }
-            document.getElementById("total").innerText = total.toFixed(2);
+            document.getElementById("total").innerText = total.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
         }
         function setDate() {
             var today = new Date();

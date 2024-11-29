@@ -11,58 +11,39 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-            animation: slideIn 1s ease-in-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
         }
 
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
             header h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
                 color: #FF6600;
+                margin-bottom: 10px;
             }
 
                 header h1 .orange {
                     color: #FF6600;
                 }
 
+            header p {
+                font-size: 1.2rem;
+                color: #666;
+            }
+
         h2 {
-            margin: 20px 0;
+            margin: 30px 0 20px;
             color: #FF6600;
             text-align: center;
         }
@@ -70,12 +51,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
             table th, table td {
                 border: 1px solid #ddd;
-                padding: 10px;
+                padding: 12px;
                 text-align: center;
             }
 
@@ -84,79 +65,74 @@
                 color: white;
             }
 
-        input[type="text"], input[type="number"], input[type="date"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
         .form-group {
             display: flex;
-            flex-direction: column; /* Değişiklik yapıldı */
+            flex-direction: column;
             margin-bottom: 20px;
         }
 
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-            .buttons button {
-                flex: 1;
-                padding: 10px;
-                font-size: 1rem;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                background-color: #FF6600;
-                color: white;
-                transition: background-color 0.3s, transform 0.2s;
+            .form-group label {
+                font-weight: bold;
+                margin-bottom: 5px;
             }
 
-                .buttons button:hover {
-                    background-color: #e95500;
-                    transform: scale(1.05);
-                }
-
-                .buttons button:nth-child(2) {
-                    background-color: #e74c3c;
-                }
-
-                    .buttons button:nth-child(2):hover {
-                        background-color: #c0392b;
-                    }
-
-        .total {
-            text-align: center;
-            font-weight: bold;
-            margin-top: 20px;
-            font-size: 1.2rem;
-        }
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
 
         .extra-section {
             margin-top: 30px;
         }
 
             .extra-section h2 {
-                margin-bottom: 10px;
+                margin-bottom: 15px;
             }
+
+            .extra-section label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+            .extra-section input {
+                width: 80px;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+        .total {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 30px;
+            font-size: 1.4rem;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="kasa-container">
         <header>
             <h1>Mi<span class="orange">GROS</span></h1>
+            <p>migros.com.tr</p>
         </header>
         <form>
             <div class="form-group">
+                <label for="kasaNo">Kasa Numarası:</label>
                 <input type="text" id="kasaNo" placeholder="Kasa Numarası">
+            </div>
+            <div class="form-group">
+                <label for="sicilNo">Sicil Numarası:</label>
                 <input type="text" id="sicilNo" placeholder="Sicil Numarası">
+            </div>
+            <div class="form-group">
+                <label for="tarih">Tarih:</label>
                 <input type="date" id="tarih">
+            </div>
+            <div class="form-group">
+                <label for="adSoyad">Ad Soyad:</label>
                 <input type="text" id="adSoyad" placeholder="Ad Soyad">
             </div>
 
@@ -169,93 +145,87 @@
                 </tr>
                 <tr>
                     <td>200 TL</td>
-                    <td><input id="adet200" type="number" oninput="hesapla()"></td>
-                    <td id="toplam200">0 TL</td>
+                    <td>10</td>
+                    <td>2000 TL</td>
                 </tr>
                 <tr>
                     <td>100 TL</td>
-                    <td><input id="adet100" type="number" oninput="hesapla()"></td>
-                    <td id="toplam100">0 TL</td>
+                    <td>20</td>
+                    <td>2000 TL</td>
                 </tr>
                 <tr>
                     <td>50 TL</td>
-                    <td><input id="adet50" type="number" oninput="hesapla()"></td>
-                    <td id="toplam50">0 TL</td>
+                    <td>30</td>
+                    <td>1500 TL</td>
                 </tr>
                 <tr>
                     <td>20 TL</td>
-                    <td><input id="adet20" type="number" oninput="hesapla()"></td>
-                    <td id="toplam20">0 TL</td>
+                    <td>40</td>
+                    <td>800 TL</td>
                 </tr>
                 <tr>
                     <td>10 TL</td>
-                    <td><input id="adet10" type="number" oninput="hesapla()"></td>
-                    <td id="toplam10">0 TL</td>
+                    <td>50</td>
+                    <td>500 TL</td>
                 </tr>
                 <tr>
                     <td>5 TL</td>
-                    <td><input id="adet5" type="number" oninput="hesapla()"></td>
-                    <td id="toplam5">0 TL</td>
+                    <td>60</td>
+                    <td>300 TL</td>
                 </tr>
                 <tr>
                     <td>Demir 5 TL</td>
-                    <td><input id="adetDemir5" type="number" oninput="hesapla()"></td>
-                    <td id="toplamDemir5">0 TL</td>
+                    <td>70</td>
+                    <td>350 TL</td>
                 </tr>
                 <tr>
                     <td>1 TL</td>
-                    <td><input id="adet1" type="number" oninput="hesapla()"></td>
-                    <td id="toplam1">0 TL</td>
+                    <td>80</td>
+                    <td>80 TL</td>
                 </tr>
                 <tr>
                     <td>50 Kuruş</td>
-                    <td><input id="adet0_50" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_50">0 TL</td>
+                    <td>90</td>
+                    <td>45 TL</td>
                 </tr>
                 <tr>
                     <td>25 Kuruş</td>
-                    <td><input id="adet0_25" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_25">0 TL</td>
+                    <td>100</td>
+                    <td>25 TL</td>
                 </tr>
                 <tr>
                     <td>10 Kuruş</td>
-                    <td><input id="adet0_10" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_10">0 TL</td>
+                    <td>110</td>
+                    <td>11 TL</td>
                 </tr>
                 <tr>
                     <td>5 Kuruş</td>
-                    <td><input id="adet0_05" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_05">0 TL</td>
+                    <td>120</td>
+                    <td>6 TL</td>
                 </tr>
                 <tr>
                     <td>1 Kuruş</td>
-                    <td><input id="adet0_01" type="number" oninput="hesapla()"></td>
-                    <td id="toplam0_01">0 TL</td>
+                    <td>130</td>
+                    <td>1.30 TL</td>
                 </tr>
             </table>
 
             <div class="extra-section">
                 <h2>Ek Bilgiler</h2>
-                <label>Money Kart Adet:</label>
-                <input type="number" id="moneyKartAdet" oninput="hesapla()"><br>
-                <label>İstanbul Kart Adet:</label>
-                <input type="number" id="istanbulKartAdet" oninput="hesapla()"><br>
+                <label for="moneyKartAdet">Money Kart Adet:</label>
+                <input type="number" id="moneyKartAdet" value="5">
+                <label for="istanbulKartAdet">İstanbul Kart Adet:</label>
+                <input type="number" id="istanbulKartAdet" value="10">
                 <h3>Milli Piyango</h3>
-                <label>Çeyrek:</label>
-                <input type="number" id="milliPiyangoCeyrek" oninput="hesapla()"><br>
-                <label>Yarım:</label>
-                <input type="number" id="milliPiyangoYarim" oninput="hesapla()"><br>
-                <label>Tam:</label>
-                <input type="number" id="milliPiyangoTam" oninput="hesapla()">
+                <label for="milliPiyangoCeyrek">Çeyrek:</label>
+                <input type="number" id="milliPiyangoCeyrek" value="2">
+                <label for="milliPiyangoYarim">Yarım:</label>
+                <input type="number" id="milliPiyangoYarim" value="1">
+                <label for="milliPiyangoTam">Tam:</label>
+                <input type="number" id="milliPiyangoTam" value="1">
             </div>
 
-            <div class="buttons">
-                <button type="button" onclick="kaydet()">Kaydet</button>
-                <button type="button" onclick="sil()">Sil</button>
-                <button type="button" onclick="pdfOlustur()">PDF Oluştur</button>
-            </div>
-
-            <p class="total">Toplam Tutar: <span id="toplamTutar">0 TL</span></p>
+            <p class="total">Toplam Tutar: 7,118.30 TL</p>
         </form>
     </div>
 
@@ -264,69 +234,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("tarih").valueAsDate = new Date();
 
-            // Fonksiyonlar
-            window.hesapla = function () {
-                const paraBirimleri = [
-                    { id: "200", deger: 200 },
-                    { id: "100", deger: 100 },
-                    { id: "50", deger: 50 },
-                    { id: "20", deger: 20 },
-                    { id: "10", deger: 10 },
-                    { id: "5", deger: 5 },
-                    { id: "Demir5", deger: 5 }, // Demir 5 TL eklendi
-                    { id: "1", deger: 1 },
-                    { id: "0_50", deger: 0.5 },
-                    { id: "0_25", deger: 0.25 },
-                    { id: "0_10", deger: 0.1 },
-                    { id: "0_05", deger: 0.05 },
-                    { id: "0_01", deger: 0.01 }
-                ];
-
-                let toplamTutar = 0;
-
-                paraBirimleri.forEach(para => {
-                    const adetInput = document.getElementById(`adet${para.id}`);
-                    const toplamCell = document.getElementById(`toplam${para.id}`);
-
-                    const adet = parseInt(adetInput.value) || 0;
-                    const toplam = adet * para.deger;
-
-                    toplamCell.textContent = toplam.toFixed(2) + " TL";
-                    toplamTutar += toplam;
-                });
-
-                // Ekstra alanlar
-                const moneyKartAdet = parseInt(document.getElementById("moneyKartAdet").value) || 0;
-                const istanbulKartAdet = parseInt(document.getElementById("istanbulKartAdet").value) || 0;
-                const milliPiyangoCeyrek = parseInt(document.getElementById("milliPiyangoCeyrek").value) || 0;
-                const milliPiyangoYarim = parseInt(document.getElementById("milliPiyangoYarim").value) || 0;
-                const milliPiyangoTam = parseInt(document.getElementById("milliPiyangoTam").value) || 0;
-
-                toplamTutar += (moneyKartAdet * 0) + (istanbulKartAdet * 0) + (milliPiyangoCeyrek * 0) + (milliPiyangoYarim * 0) + (milliPiyangoTam * 0);
-
-                document.getElementById("toplamTutar").textContent = toplamTutar.toFixed(2) + " TL";
-            };
-
-            window.kaydet = function () {
-                alert("Veriler kaydedildi!");
-            };
-
-            window.sil = function () {
-                document.querySelectorAll("input[type='number']").forEach(input => input.value = "");
-                document.querySelectorAll("td[id^='toplam']").forEach(td => td.textContent = "0 TL");
-                document.getElementById("toplamTutar").textContent = "0 TL";
-            };
-
             window.pdfOlustur = function () {
                 const element = document.getElementById("kasa-container");
                 const options = {
-                    margin: [10, 5],
+                    margin: [20, 20, 20, 20],
                     filename: "kasa_sayimi.pdf",
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
                 };
                 html2pdf().set(options).from(element).save();
             };
+
+            pdfOlustur();
         });
     </script>
 </body>

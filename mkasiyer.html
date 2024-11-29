@@ -7,11 +7,11 @@
     <title>Kasiyer Teslimat Formu</title>
     
     <!-- Meta Taglar -->
-    <meta name="description" content="Migros Kasiyer Teslimat Formu ile kasiyer bilgilerini kolayca kaydedin ve PDF olarak indirin.">
+    <meta name="description" content="Kasiyer Teslimat Formu ile kasiyer bilgilerini kolayca kaydedin ve PDF olarak indirin.">
     <meta name="keywords" content="Kasiyer, Teslimat Formu, PDF, Migros, Para Birimleri, Zimmet">
-    <meta name="author" content="Migros Ticaret A.Ş">
-    <meta property="og:title" content="Migros Kasiyer Teslimat Formu">
-    <meta property="og:description" content="Kasa birimlerini kaydedin ve PDF olarak indirin.">
+    <meta name="author" content="Migros Teknoloji Birimleri">
+    <meta property="og:title" content="Kasiyer Teslimat Formu">
+    <meta property="og:description" content="Kasiyer bilgilerini kaydedin ve PDF olarak indirin.">
     <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
     <meta property="og:url" content="https://migros1.github.io/mkasa/mkasiyer.html">
     <meta property="og:type" content="website">
@@ -141,10 +141,10 @@
         <input type="text" id="kasiyerAdi">
 
         <label for="kasiyerSicili">Kasiyer Sicili:</label>
-        <input type="text" id="kasiyerSicili">
+        <input type="text" id="kasiyerSicili" placeholder="M" oninput="validateSicili()">
 
         <label for="kasaNo">Kasa No:</label>
-        <input type="text" id="kasaNo">
+        <input type="text" id="kasaNo" oninput="validateKasaNo()">
 
         <label for="tarih">Tarih:</label>
         <input type="text" id="tarih" readonly>
@@ -249,6 +249,18 @@
             });
             document.getElementById('toplamTutar').textContent = total.toFixed(2);
         }
+
+        // Kasiyer Sicili alanını doğrula
+        window.validateSicili = function() {
+            const siciliInput = document.getElementById('kasiyerSicili');
+            siciliInput.value = 'M' + siciliInput.value.replace(/[^0-9]/g, '').substring(0, 6);
+        };
+
+        // Kasa No alanını doğrula
+        window.validateKasaNo = function() {
+            const kasaNoInput = document.getElementById('kasaNo');
+            kasaNoInput.value = kasaNoInput.value.replace(/[^0-9]/g, '');
+        };
 
         // Kaydet butonuna tıklama işlevi
         document.getElementById('saveButton').addEventListener('click', () => {

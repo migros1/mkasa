@@ -95,14 +95,9 @@
 
         .form-group {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-direction: column; /* Değişiklik yapıldı */
             margin-bottom: 20px;
         }
-
-            .form-group > div {
-                flex: 1;
-            }
 
         .buttons {
             display: flex;
@@ -159,18 +154,10 @@
         </header>
         <form>
             <div class="form-group">
-                <div>
-                    <input type="text" id="kasaNo" placeholder="Kasa Numarası">
-                </div>
-                <div>
-                    <input type="text" id="sicilNo" placeholder="Sicil Numarası">
-                </div>
-                <div>
-                    <input type="date" id="tarih">
-                </div>
-                <div>
-                    <input type="text" id="adSoyad" placeholder="Ad Soyad">
-                </div>
+                <input type="text" id="kasaNo" placeholder="Kasa Numarası">
+                <input type="text" id="sicilNo" placeholder="Sicil Numarası">
+                <input type="date" id="tarih">
+                <input type="text" id="adSoyad" placeholder="Ad Soyad">
             </div>
 
             <h2>Kağıt Paralar</h2>

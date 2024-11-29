@@ -16,7 +16,7 @@ function hesapla() {
         '5_demir': 5
     };
     for (var key in values) {
-        var adet = document.getElementById("adet" + key).value;
+        var adet = document.getElementById("adet" + key).value || 0;
         var toplam = adet * values[key];
         document.getElementById("toplam" + key).innerText = toplam.toFixed(2);
         total += parseFloat(toplam);
@@ -47,11 +47,11 @@ function kaydet() {
             5: document.getElementById("adet5").value,
             5_demir: document.getElementById("adet5_demir").value,
             1: document.getElementById("adet1").value,
-            0.50: document.getElementById("adet0_50").value,
-            0.25: document.getElementById("adet0_25").value,
-            0.10: document.getElementById("adet0_10").value,
-            0.05: document.getElementById("adet0_05").value,
-            0.01: document.getElementById("adet0_01").value,
+            0_50: document.getElementById("adet0_50").value,
+            0_25: document.getElementById("adet0_25").value,
+            0_10: document.getElementById("adet0_10").value,
+            0_05: document.getElementById("adet0_05").value,
+            0_01: document.getElementById("adet0_01").value,
         }
     };
     localStorage.setItem("kasaSayimi", JSON.stringify(data));

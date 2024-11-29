@@ -302,23 +302,24 @@
 
             // Kasiyer bilgileri
             doc.setFontSize(12);
-            doc.text(`Kasiyer Adı Soyadı: ${document.getElementById('kasiyerAdi').value}`, 20, y);
+            doc.text(`Kasiyer Adı Soyadı: ${document.getElementById('kasiyerAdi').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight;
-            doc.text(`Kasiyer Sicili: ${document.getElementById('kasiyerSicili').value}`, 20, y);
+            doc.text(`Kasiyer Sicili: ${document.getElementById('kasiyerSicili').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight;
-            doc.text(`Kasa No: ${document.getElementById('kasaNo').value}`, 20, y);
+            doc.text(`Kasa No: ${document.getElementById('kasaNo').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight;
-            doc.text(`Tarih: ${document.getElementById('tarih').value}`, 20, y);
+            doc.text(`Tarih: ${document.getElementById('tarih').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight * 2;
 
             // Para Birimi Listesi
             doc.setFontSize(14);
-            doc.text('Para Birimi Listesi', 20, y);
+            doc.text('Para Birimi Listesi', 20, y, {encoding: "UTF-8"});
             y += lineHeight;
             paraBirimleri.slice(0, 6).forEach((item, index) => {
                 const adet = currencyTable.querySelectorAll('tr')[index].querySelector('input').value;
+                const toplam = parseFloat(currencyTable.querySelectorAll('tr')[index].cells[2].textContent);
                 doc.setFontSize(12);
-                doc.text(`${item.birim}: ${adet}`, 20, y);
+                doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y, {encoding: "UTF-8"});
                 y += lineHeight;
             });
 
@@ -326,12 +327,13 @@
 
             // Madeni Listesi
             doc.setFontSize(14);
-            doc.text('Madeni Listesi', 20, y);
+            doc.text('Madeni Listesi', 20, y, {encoding: "UTF-8"});
             y += lineHeight;
             paraBirimleri.slice(6).forEach((item, index) => {
                 const adet = currencyTable.querySelectorAll('tr')[index + 6].querySelector('input').value;
+                const toplam = parseFloat(currencyTable.querySelectorAll('tr')[index + 6].cells[2].textContent);
                 doc.setFontSize(12);
-                doc.text(`${item.birim}: ${adet}`, 20, y);
+                doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y, {encoding: "UTF-8"});
                 y += lineHeight;
             });
 
@@ -339,9 +341,14 @@
 
             // Kart adetleri
             doc.setFontSize(12);
-            doc.text(`Money Club Kart Adet: ${document.getElementById('moneyClubKart').value}`, 20, y);
+            doc.text(`Money Club Kart Adet: ${document.getElementById('moneyClubKart').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight;
-            doc.text(`İstanbul Kart Adet: ${document.getElementById('istanbulKart').value}`, 20, y);
+            doc.text(`İstanbul Kart Adet: ${document.getElementById('istanbulKart').value}`, 20, y, {encoding: "UTF-8"});
+            y += lineHeight * 2;
+
+            // Toplam Tutar
+            doc.setFontSize(14);
+            doc.text(`Toplam Tutar: ${document.getElementById('toplamTutar').textContent} TL`, 20, y, {encoding: "UTF-8"});
 
             // PDF'i indir
             doc.save('KasiyerTeslimatFormu.pdf');

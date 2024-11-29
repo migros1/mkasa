@@ -16,9 +16,19 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .header input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            display: block;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         table, th, td {
             border: 1px solid #ddd;
@@ -31,7 +41,7 @@
             background-color: #f37021;
             color: white;
         }
-        input {
+        input[type="number"] {
             width: 100px;
             padding: 5px;
             text-align: center;
@@ -41,25 +51,18 @@
             margin: 0 auto 20px;
             max-width: 100px;
         }
-        .header input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            display: block;
-            margin: 10px auto;
-            text-align: center;
-        }
     </style>
 </head>
-<body>
+<body onload="setDate()">
     <div class="container">
         <img src="logo_linkiniz_buraya" alt="Migros Logo" class="logo">
         <h1>Kasa Sayımı</h1>
         <div class="header">
             <input type="text" placeholder="Kasiyer Sicil">
-            <input type="text" placeholder="Kasa No">
-            <input type="text" placeholder="Tarih">
+            <input type="number" placeholder="Kasa No (0-99)" min="0" max="99">
+            <input type="text" id="tarih" placeholder="Tarih">
         </div>
+        <h2>Kağıt Paralar</h2>
         <table>
             <tr>
                 <th>Türk Lirası</th>
@@ -95,6 +98,19 @@
                 <td>5 TL</td>
                 <td><input type="number" id="adet5" oninput="hesapla()"></td>
                 <td id="toplam5">0</td>
+            </tr>
+        </table>
+        <h2>Bozuk Paralar</h2>
+        <table>
+            <tr>
+                <th>Türk Lirası</th>
+                <th>Adet</th>
+                <th>Toplam</th>
+            </tr>
+            <tr>
+                <td>5 TL</td>
+                <td><input type="number" id="adet5_demir" oninput="hesapla()"></td>
+                <td id="toplam5_demir">0</td>
             </tr>
             <tr>
                 <td>1 TL</td>
@@ -132,14 +148,23 @@
     <script>
         function hesapla() {
             var total = 0;
-            var values = [200, 100, 50, 20, 10, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01];
+            var values = [200, 100, 50, 20, 10, 5, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01];
             values.forEach(function(value) {
-                var adet = document.getElementById("adet" + value.toString().replace('.', '_')).value;
+                var idSuffix = value === 5 ? "5_demir" : value.toString().replace('.', '_');
+                var adet = document.getElementById("adet" + idSuffix).value;
                 var toplam = adet * value;
-                document.getElementById("toplam" + value.toString().replace('.', '_')).innerText = toplam;
+                document.getElementById("toplam" + idSuffix).innerText = toplam;
                 total += toplam;
             });
             document.getElementById("total").innerText = total.toFixed(2);
+        }
+        function setDate() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+            var yyyy = today.getFullYear();
+            today = dd + '/' + mm + '/' + yyyy;
+            document.getElementById("tarih").value = today;
         }
     </script>
 </body>

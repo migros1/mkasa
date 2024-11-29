@@ -17,7 +17,6 @@
             background-color: #ff6600;
             padding: 20px;
             text-align: center;
-            position: relative;
         }
         header a {
             display: inline-block;
@@ -73,13 +72,30 @@
             margin-top: 20px;
             text-align: right;
         }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #ff6600;
+            color: #fff;
+        }
+        .buttons button.clear {
+            background-color: #e74c3c;
+        }
     </style>
 </head>
 <body>
 
 <header>
     <a href="https://www.migros.com.tr" target="_blank">
-        <img src="https://migros1.github.io/mkasa/mgrs.png" alt="Migros Logo">
+        <img src="https://www.migros.com.tr/assets/images/logo.png" alt="Migros Logo">
     </a>
 </header>
 
@@ -129,10 +145,16 @@
     <div class="total">
         Toplam Tutar: <span id="toplamTutar">0</span> TL
     </div>
+
+    <div class="buttons">
+        <button id="saveButton">Kaydet</button>
+        <button id="clearButton" class="clear">Listeyi Temizle</button>
+    </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Tarihi ayarla
         const tarihInput = document.getElementById('tarih');
         tarihInput.value = new Date().toLocaleDateString('tr-TR');
 
@@ -143,6 +165,7 @@
             { birim: '20 TL', deger: 20 },
             { birim: '10 TL', deger: 10 },
             { birim: '5 TL', deger: 5 },
+            { birim: '5 TL (Demir)', deger: 5 },
             { birim: '1 TL', deger: 1 },
             { birim: '50 Kuruş', deger: 0.5 },
             { birim: '25 Kuruş', deger: 0.25 },
@@ -153,6 +176,7 @@
 
         const currencyTable = document.getElementById('currencyTable');
 
+        // Para birimleri için satırları oluştur
         paraBirimleri.forEach(item => {
             const row = document.createElement('tr');
 
@@ -176,6 +200,7 @@
             currencyTable.appendChild(row);
         });
 
+        // Toplam tutarı hesapla
         function calculateTotal() {
             let total = 0;
             const rows = currencyTable.querySelectorAll('tr');
@@ -187,6 +212,71 @@
             });
             document.getElementById('toplamTutar').textContent = total.toFixed(2);
         }
+
+        // Kaydet butonuna tıklama işlevi
+        document.getElementById('saveButton').addEventListener('click', () => {
+            const kasiyerAdi = document.getElementById('kasiyerAdi').value;
+            const kasiyerSicili = document.getElementById('kasiyerSicili').value;
+            const kasaNo = document.getElementById('kasaNo').value;
+            const moneyClubKart = document.getElementById('moneyClubKart').value;
+            const istanbulKart = document.getElementById('istanbulKart').value;
+
+            const paraAdetleri = [];
+            currencyTable.querySelectorAll('tr').forEach((row, index) => {
+                const adet = row.querySelector('input').value;
+                paraAdetleri.push(adet);
+            });
+
+            const data = {
+                kasiyerAdi,
+                kasiyerSicili,
+                kasaNo,
+                moneyClubKart,
+                istanbulKart,
+                paraAdetleri
+            };
+
+            localStorage.setItem('kasiyerData', JSON.stringify(data));
+            alert('Veriler kaydedildi!');
+        });
+
+        // Listeyi Temizle butonuna tıklama işlevi
+        document.getElementById('clearButton').addEventListener('click', () => {
+            if (confirm('Tüm verileri silmek istediğinizden emin misiniz?')) {
+                document.getElementById('kasiyerAdi').value = '';
+                document.getElementById('kasiyerSicili').value = '';
+                document.getElementById('kasaNo').value = '';
+                document.getElementById('moneyClubKart').value = '';
+                document.getElementById('istanbulKart').value = '';
+                currencyTable.querySelectorAll('tr').forEach(row => {
+                    row.querySelector('input').value = '0';
+                    row.cells[2].textContent = '0.00';
+                });
+                document.getElementById('toplamTutar').textContent = '0.00';
+                localStorage.removeItem('kasiyerData');
+            }
+        });
+
+        // Sayfa yüklendiğinde verileri geri yükle
+        function loadData() {
+            const savedData = localStorage.getItem('kasiyerData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('kasiyerAdi').value = data.kasiyerAdi;
+                document.getElementById('kasiyerSicili').value = data.kasiyerSicili;
+                document.getElementById('kasaNo').value = data.kasaNo;
+                document.getElementById('moneyClubKart').value = data.moneyClubKart;
+                document.getElementById('istanbulKart').value = data.istanbulKart;
+                currencyTable.querySelectorAll('tr').forEach((row, index) => {
+                    row.querySelector('input').value = data.paraAdetleri[index];
+                    const toplam = paraBirimleri[index].deger * data.paraAdetleri[index];
+                    row.cells[2].textContent = toplam.toFixed(2);
+                });
+                calculateTotal();
+            }
+        }
+
+        loadData();
     });
 </script>
 

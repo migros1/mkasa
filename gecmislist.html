@@ -52,6 +52,37 @@
         .back-button:hover {
             background-color: #e65c00;
         }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="date"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .search-container select {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .search-container button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+        .search-container button:hover {
+            background-color: #2980b9;
+        }
         .record {
             margin-bottom: 20px;
             padding: 15px;
@@ -139,7 +170,17 @@
 <div class="container">
     <h1>Geçmiş Liste</h1>
     <div class="info">Son tüm 30 gün boyunca kayıtlı kasiyer formların!</div>
-    <a href="mkasiyer.html" class="back-button">Kasiyer Formuna Geri Dön</a>
+    <a href="mkasiyer.html" class="back-button">Kasiyer Forumuna Geri Dön</a>
+    <div class="search-container">
+        <input type="date" id="searchDate" placeholder="Tarih Seçin">
+        <select id="dateRange">
+            <option value="all">Tüm Kayıtlar</option>
+            <option value="1">Son 1 Gün</option>
+            <option value="3">Son 3 Gün</option>
+            <option value="7">Son 1 Hafta</option>
+        </select>
+        <button onclick="filterRecords()">Filtrele</button>
+    </div>
     <div id="recordsContainer"></div>
 </div>
 
@@ -148,103 +189,139 @@
     document.addEventListener('DOMContentLoaded', function() {
         const recordsContainer = document.getElementById('recordsContainer');
         const savedList = JSON.parse(localStorage.getItem('kasiyerDataList')) || [];
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        displayRecords(savedList);
 
-        const validRecords = savedList.filter(record => new Date(record.tarih) >= oneMonthAgo);
+        window.filterRecords = function() {
+            const searchDate = document.getElementById('searchDate').value;
+            const dateRange = document.getElementById('dateRange').value;
+            let filteredRecords = savedList;
 
-        if (validRecords.length === 0) {
-            recordsContainer.innerHTML = '<p class="no-records">Son 1 ay içerisinde ki işlemleriniz bitmiştir! Yeni Liste Bekleniyor...</p>';
-        } else {
-            validRecords.forEach((record, index) => {
-                const recordDiv = document.createElement('div');
-                recordDiv.classList.add('record');
-                const recordDate = new Date(record.tarih);
-                recordDiv.innerHTML = `
-                    <h3>${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - Kasiyer Formunuz için tıklayın</h3>
-                    <button onclick="downloadPDF(${index})">PDF İndir</button>
-                    <button onclick="showList(${index})">Listeyi Göster</button>
-                `;
-                recordsContainer.appendChild(recordDiv);
+            if (searchDate) {
+                filteredRecords = filteredRecords.filter(record => {
+                    const recordDate = new Date(record.tarih);
+                    return recordDate.toISOString().split('T')[0] === searchDate;
+                });
+            }
+
+            if (dateRange !== 'all') {
+                const daysAgo = new Date();
+                daysAgo.setDate(daysAgo.getDate() - parseInt(dateRange));
+                filteredRecords = filteredRecords.filter(record => new Date(record.tarih) >= daysAgo);
+            }
+
+            displayRecords(filteredRecords);
+        }
+
+        function displayRecords(records) {
+            recordsContainer.innerHTML = '';
+            if (records.length === 0) {
+                recordsContainer.innerHTML = '<p class="no-records">Seçilen kriterlere uygun kayıt bulunamadı.</p>';
+            } else {
+                records.forEach((record, index) => {
+                    const recordDiv = document.createElement('div');
+                    recordDiv.classList.add('record');
+                    const recordDate = new Date(record.tarih);
+                    recordDiv.innerHTML = `
+                        <h3>${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - Kasiyer Formunuz için tıklayın</h3>
+                        <button onclick="downloadPDF(${index})">PDF İndir</button>
+                        <button onclick="showList(${index})">Listeyi Göster</button>
+                    `;
+                    recordsContainer.appendChild(recordDiv);
+                });
+            }
+        }
+
+        // PDF indirme işlevi
+        window.downloadPDF = function(index) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const record = savedList[index];
+            const recordDate = new Date(record.tarih);
+
+            doc.setFont("helvetica", "normal");
+
+            let y = 20; // Başlangıç Y konumu
+            const lineHeight = 10;
+
+            doc.setFontSize(12);
+            doc.text(`Kasiyer Adı Soyadı: ${record.kasiyerAdi}`, 20, y);
+            y += lineHeight;
+            doc.text(`Kasiyer Sicili: ${record.kasiyerSicili}`, 20, y);
+            y += lineHeight;
+            doc.text(`Kasa No: ${record.kasaNo}`, 20, y);
+            y += lineHeight;
+            doc.text(`Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, 20, y);
+            y += lineHeight * 2;
+
+            doc.setFontSize(14);
+            doc.text('Kağıt Para Listesi', 20, y);
+            y += lineHeight;
+            record.paraAdetleri.slice(0, 6).forEach((adet, index) => {
+                doc.setFontSize(12);
+                doc.text(`${paraBirimleri[index].birim}: ${adet} - Tutar: ${(paraBirimleri[index].deger * adet).toFixed(2)} TL`, 20, y);
+                y += lineHeight;
             });
 
-            // PDF indirme işlevi
-            window.downloadPDF = function(index) {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                const record = validRecords[index];
-                const recordDate = new Date(record.tarih);
+            y += lineHeight;
 
-                doc.setFont("helvetica", "normal");
-
-                let y = 20; // Başlangıç Y konumu
-                const lineHeight = 10;
-
+            doc.setFontSize(14);
+            doc.text('Bozuk Para Listesi', 20, y);
+            y += lineHeight;
+            record.paraAdetleri.slice(6).forEach((adet, index) => {
                 doc.setFontSize(12);
-                doc.text(`Kasiyer Adı Soyadı: ${record.kasiyerAdi}`, 20, y);
+                doc.text(`${paraBirimleri[index + 6].birim}: ${adet} - Tutar: ${(paraBirimleri[index + 6].deger * adet).toFixed(2)} TL`, 20, y);
                 y += lineHeight;
-                doc.text(`Kasiyer Sicili: ${record.kasiyerSicili}`, 20, y);
-                y += lineHeight;
-                doc.text(`Kasa No: ${record.kasaNo}`, 20, y);
-                y += lineHeight;
-                doc.text(`Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, 20, y);
-                y += lineHeight * 2;
+            });
 
-                doc.setFontSize(14);
-                doc.text('Para Birimi Listesi', 20, y);
-                y += lineHeight;
-                record.paraAdetleri.forEach((adet, index) => {
-                    doc.setFontSize(12);
-                    doc.text(`${paraBirimleri[index].birim}: ${adet} - Tutar: ${(paraBirimleri[index].deger * adet).toFixed(2)} TL`, 20, y);
-                    y += lineHeight;
-                });
+            y += lineHeight;
 
-                y += lineHeight;
+            doc.setFontSize(12);
+            doc.text(`Money Club Kart Adet: ${record.moneyClubKart}`, 20, y);
+            y += lineHeight;
+            doc.text(`İstanbul Kart Adet: ${record.istanbulKart}`, 20, y);
+            y += lineHeight;
+            doc.text(`Milli Piyango Çeyrek Adet: ${record.milliPiyangoCeyrek}`, 20, y);
+            y += lineHeight;
+            doc.text(`Milli Piyango Yarım Adet: ${record.milliPiyangoYarim}`, 20, y);
+            y += lineHeight;
+            doc.text(`Milli Piyango Tam Adet: ${record.milliPiyangoTam}`, 20, y);
+            y += lineHeight * 2;
 
-                doc.setFontSize(12);
-                doc.text(`Money Club Kart Adet: ${record.moneyClubKart}`, 20, y);
-                y += lineHeight;
-                doc.text(`İstanbul Kart Adet: ${record.istanbulKart}`, 20, y);
-                y += lineHeight;
-                doc.text(`Milli Piyango Çeyrek Adet: ${record.milliPiyangoCeyrek}`, 20, y);
-                y += lineHeight;
-                doc.text(`Milli Piyango Yarım Adet: ${record.milliPiyangoYarim}`, 20, y);
-                y += lineHeight;
-                doc.text(`Milli Piyango Tam Adet: ${record.milliPiyangoTam}`, 20, y);
-                y += lineHeight * 2;
+            doc.setFontSize(14);
+            doc.text(`Toplam Tutar: ${record.paraAdetleri.reduce((sum, adet, i) => sum + paraBirimleri[i].deger * adet, 0).toFixed(2)} TL`, 20, y);
 
-                doc.setFontSize(14);
-                doc.text(`Toplam Tutar: ${record.paraAdetleri.reduce((sum, adet, i) => sum + paraBirimleri[i].deger * adet, 0).toFixed(2)} TL`, 20, y);
+            doc.save(`KasiyerFormu_${recordDate.toLocaleDateString('tr-TR')}.pdf`);
+        }
 
-                doc.save(`KasiyerFormu_${recordDate.toLocaleDateString('tr-TR')}.pdf`);
-            }
-
-            // Listeyi gösterme işlevi
-            window.showList = function(index) {
-                const record = validRecords[index];
-                const recordDate = new Date(record.tarih);
-                const listContent = `
-                    <div class="detail-container">
-                        <h1>Liste Detayları</h1>
-                        <p><strong>Kasiyer Adı Soyadı:</strong> ${record.kasiyerAdi}</p>
-                        <p><strong>Kasiyer Sicili:</strong> ${record.kasiyerSicili}</p>
-                        <p><strong>Kasa No:</strong> ${record.kasaNo}</p>
-                        <p><strong>Tarih:</strong> ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</p>
-                        <h2>Para Birimi Listesi</h2>
-                        <ul>
-                            ${record.paraAdetleri.map((adet, i) => `<li>${paraBirimleri[i].birim}: ${adet} - Tutar: ${(paraBirimleri[i].deger * adet).toFixed(2)} TL</li>`).join('')}
-                        </ul>
-                        <h2>Zimmetler</h2>
-                        <p><strong>Money Club Kart Adet:</strong> ${record.moneyClubKart}</p>
-                        <p><strong>İstanbul Kart Adet:</strong> ${record.istanbulKart}</p>
-                        <p><strong>Milli Piyango Çeyrek Adet:</strong> ${record.milliPiyangoCeyrek}</p>
-                        <p><strong>Milli Piyango Yarım Adet:</strong> ${record.milliPiyangoYarim}</p>
-                        <p><strong>Milli Piyango Tam Adet:</strong> ${record.milliPiyangoTam}</p>
-                        <button onclick="window.location.reload()">Geri</button>
-                    </div>
-                `;
-                document.body.innerHTML = listContent;
-            }
+        // Listeyi gösterme işlevi
+        window.showList = function(index) {
+            const record = savedList[index];
+            const recordDate = new Date(record.tarih);
+            const listContent = `
+                <div class="detail-container">
+                    <h1>Liste Detayları</h1>
+                    <p><strong>Kasiyer Adı Soyadı:</strong> ${record.kasiyerAdi}</p>
+                    <p><strong>Kasiyer Sicili:</strong> ${record.kasiyerSicili}</p>
+                    <p><strong>Kasa No:</strong> ${record.kasaNo}</p>
+                    <p><strong>Tarih:</strong> ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</p>
+                    <h2>Kağıt Para Listesi</h2>
+                    <ul>
+                        ${record.paraAdetleri.slice(0, 6).map((adet, i) => `<li>${paraBirimleri[i].birim}: ${adet} - Tutar: ${(paraBirimleri[i].deger * adet).toFixed(2)} TL</li>`).join('')}
+                    </ul>
+                    <h2>Bozuk Para Listesi</h2>
+                    <ul>
+                        ${record.paraAdetleri.slice(6).map((adet, i) => `<li>${paraBirimleri[i + 6].birim}: ${adet} - Tutar: ${(paraBirimleri[i + 6].deger * adet).toFixed(2)} TL</li>`).join('')}
+                    </ul>
+                    <h2>Zimmetler</h2>
+                    <p><strong>Money Club Kart Adet:</strong> ${record.moneyClubKart}</p>
+                    <p><strong>İstanbul Kart Adet:</strong> ${record.istanbulKart}</p>
+                    <p><strong>Milli Piyango Çeyrek Adet:</strong> ${record.milliPiyangoCeyrek}</p>
+                    <p><strong>Milli Piyango Yarım Adet:</strong> ${record.milliPiyangoYarim}</p>
+                    <p><strong>Milli Piyango Tam Adet:</strong> ${record.milliPiyangoTam}</p>
+                    <button onclick="window.location.reload()">Geri</button>
+                </div>
+            `;
+            document.body.innerHTML = listContent;
         }
     });
 

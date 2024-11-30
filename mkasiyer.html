@@ -102,6 +102,7 @@
             flex: 1;
             min-width: 150px;
             margin-right: 10px;
+            display: block;
         }
         .buttons button.clear {
             background-color: #e74c3c;
@@ -241,11 +242,11 @@
     </div>
 
     <div class="total">
-        Toplam Tutar: <span id="toplamTutar">0</span> TL
+        Toplam Tutar: <span id="toplamTutar">0.00</span> TL
     </div>
 
     <div class="buttons">
-        <button id="saveButton">Kaydet</button>
+        <button id="saveButton" disabled>Kaydet</button>
         <button id="clearButton" class="clear">Listeyi Temizle</button>
         <button id="pdfButton" disabled>PDF'e Dönüştür</button>
         <button onclick="location.href='gecmislist.html'">Geçmişi Listele</button>
@@ -281,7 +282,8 @@
         const paperCurrencyTable = document.getElementById('paperCurrencyTable');
         const coinCurrencyTable = document.getElementById('coinCurrencyTable');
         const errorMessage = document.getElementById('error-message');
-        let isDataSaved = false;
+        const saveButton = document.getElementById('saveButton');
+        const pdfButton = document.getElementById('pdfButton');
 
         // Kağıt para için satırları oluştur
         paraBirimleri.slice(0, 6).forEach(item => {
@@ -302,6 +304,7 @@
                 } else {
                     errorMessage.style.display = 'none';
                     calculateTotal();
+                    validateForm();
                 }
             };
             adetInput.classList.add('currency-input');
@@ -335,6 +338,7 @@
                 } else {
                     errorMessage.style.display = 'none';
                     calculateTotal();
+                    validateForm();
                 }
             };
             adetInput.classList.add('currency-input');
@@ -395,18 +399,32 @@
             kasaNoInput.value = kasaNoInput.value.replace(/[^0-9]/g, '');
         };
 
-        // Bildirim göster
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
+        // Formun geçerliliğini kontrol et
+        function validateForm() {
+            const kasiyerAdi = document.getElementById('kasiyerAdi').value.trim();
+            const kasiyerSicili = document.getElementById('kasiyerSicili').value.trim();
+            const kasaNo = document.getElementById('kasaNo').value.trim();
+            const moneyClubKart = parseInt(document.getElementById('moneyClubKart').value) || 0;
+            const istanbulKart = parseInt(document.getElementById('istanbulKart').value) || 0;
+            const milliPiyangoCeyrek = parseInt(document.getElementById('milliPiyangoCeyrek').value) || 0;
+            const milliPiyangoYarim = parseInt(document.getElementById('milliPiyangoYarim').value) || 0;
+            const milliPiyangoTam = parseInt(document.getElementById('milliPiyangoTam').value) || 0;
+
+            const hasKasiyerInfo = kasiyerAdi && kasiyerSicili && kasaNo;
+            const hasCurrency = [...paperCurrencyTable.querySelectorAll('input'), ...coinCurrencyTable.querySelectorAll('input')].some(input => parseInt(input.value) > 0);
+            const hasZimmet = moneyClubKart > 0 || istanbulKart > 0 || milliPiyangoCeyrek > 0 || milliPiyangoYarim > 0 || milliPiyangoTam > 0;
+
+            if (hasKasiyerInfo && (hasCurrency || hasZimmet)) {
+                saveButton.disabled = false;
+                pdfButton.disabled = false;
+            } else {
+                saveButton.disabled = true;
+                pdfButton.disabled = true;
+            }
         }
 
         // Kaydet butonuna tıklama işlevi
-        document.getElementById('saveButton').addEventListener('click', () => {
+        saveButton.addEventListener('click', () => {
             const kasiyerAdi = document.getElementById('kasiyerAdi').value;
             const kasiyerSicili = document.getElementById('kasiyerSicili').value;
             const kasaNo = document.getElementById('kasaNo').value;
@@ -440,8 +458,6 @@
             localStorage.setItem('kasiyerDataList', JSON.stringify(savedList));
 
             showNotification('Girdiğiniz değerler başarıyla kaydedildi!');
-            isDataSaved = true;
-            document.getElementById('pdfButton').disabled = false; // PDF butonunu etkinleştir
         });
 
         // Listeyi Temizle butonuna tıklama işlevi
@@ -461,18 +477,12 @@
                 });
                 document.getElementById('toplamTutar').textContent = '0.00';
                 showNotification('Liste başarıyla temizlendi!');
-                isDataSaved = false;
-                document.getElementById('pdfButton').disabled = true; // PDF butonunu devre dışı bırak
+                validateForm();
             }
         });
 
         // PDF'e Dönüştür butonuna tıklama işlevi
-        document.getElementById('pdfButton').addEventListener('click', async () => {
-            if (!isDataSaved) {
-                showNotification('Lütfen önce verileri kaydedin!');
-                return;
-            }
-
+        pdfButton.addEventListener('click', async () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
@@ -508,7 +518,7 @@
 
             // Para Birimi Listesi
             doc.setFontSize(14);
-            doc.text('Para Birimi Listesi', 20, y);
+            doc.text('Kağıt Para Listesi', 20, y);
             y += lineHeight;
             paraBirimleri.slice(0, 6).forEach((item, index) => {
                 const adet = paperCurrencyTable.querySelectorAll('tr')[index].querySelector('input').value;
@@ -520,9 +530,8 @@
 
             y += lineHeight;
 
-            // Madeni Listesi
             doc.setFontSize(14);
-            doc.text('Madeni Listesi', 20, y);
+            doc.text('Bozuk Para Listesi', 20, y);
             y += lineHeight;
             paraBirimleri.slice(6).forEach((item, index) => {
                 const adet = coinCurrencyTable.querySelectorAll('tr')[index].querySelector('input').value;
@@ -557,6 +566,16 @@
             doc.save('KasiyerTeslimatFormu.pdf');
         });
 
+        // Bildirim göster
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
         // Sayfa yüklendiğinde verileri geri yükle
         function loadData() {
             const savedData = localStorage.getItem('kasiyerData');
@@ -576,8 +595,7 @@
                     row.cells[2].textContent = toplam.toFixed(2);
                 });
                 calculateTotal();
-                isDataSaved = true;
-                document.getElementById('pdfButton').disabled = false; // PDF butonunu etkinleştir
+                validateForm();
             }
         }
 

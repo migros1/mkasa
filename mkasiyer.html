@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Migros Kasiyer Teslimat Formu</title>
+    <title>Kasiyer Teslimat Formu</title>
     
     <!-- Meta Taglar -->
     <meta name="description" content="Kasiyer Teslimat Formu ile kasiyer bilgilerini kolayca kaydedin ve PDF olarak indirin.">
@@ -13,7 +13,7 @@
     <meta property="og:title" content="Kasiyer Teslimat Formu">
     <meta property="og:description" content="Kasiyer bilgilerini kaydedin ve PDF olarak indirin.">
     <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
-    <meta property="og:url" content="https://migros1.github.io/mkasa/mkasiyer.html">
+    <meta property="og:url" content="https://migros.com.tr">
     <meta property="og:type" content="website">
     
     <!-- Favicon -->
@@ -381,8 +381,11 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            // Türkçe karakterleri destekleyen font ekleyin
+            doc.setFont("helvetica", "normal");
+
             // Logo ekle
-            const imgUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/MiGROS_Logo.svg/2560px-MiGROS_Logo.svg.png';
+            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&s';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -399,24 +402,24 @@
 
             // Kasiyer bilgileri
             doc.setFontSize(12);
-            doc.text(`Kasiyer Adı Soyadı: ${document.getElementById('kasiyerAdi').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Kasiyer Adı Soyadı: ${document.getElementById('kasiyerAdi').value}`, 20, y);
             y += lineHeight;
-            doc.text(`Kasiyer Sicili: ${document.getElementById('kasiyerSicili').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Kasiyer Sicili: ${document.getElementById('kasiyerSicili').value}`, 20, y);
             y += lineHeight;
-            doc.text(`Kasa No: ${document.getElementById('kasaNo').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Kasa No: ${document.getElementById('kasaNo').value}`, 20, y);
             y += lineHeight;
-            doc.text(`Tarih: ${document.getElementById('tarih').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Tarih: ${document.getElementById('tarih').value}`, 20, y);
             y += lineHeight * 2;
 
             // Para Birimi Listesi
             doc.setFontSize(14);
-            doc.text('Para Birimi Listesi', 20, y, {encoding: "UTF-8"});
+            doc.text('Para Birimi Listesi', 20, y);
             y += lineHeight;
             paraBirimleri.slice(0, 6).forEach((item, index) => {
                 const adet = currencyTable.querySelectorAll('tr')[index].querySelector('input').value;
                 const toplam = parseFloat(currencyTable.querySelectorAll('tr')[index].cells[2].textContent);
                 doc.setFontSize(12);
-                doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y, {encoding: "UTF-8"});
+                doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y);
                 y += lineHeight;
             });
 
@@ -424,13 +427,13 @@
 
             // Madeni Listesi
             doc.setFontSize(14);
-            doc.text('Madeni Listesi', 20, y, {encoding: "UTF-8"});
+            doc.text('Madeni Listesi', 20, y);
             y += lineHeight;
             paraBirimleri.slice(6).forEach((item, index) => {
                 const adet = currencyTable.querySelectorAll('tr')[index + 6].querySelector('input').value;
                 const toplam = parseFloat(currencyTable.querySelectorAll('tr')[index + 6].cells[2].textContent);
                 doc.setFontSize(12);
-                doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y, {encoding: "UTF-8"});
+                doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y);
                 y += lineHeight;
             });
 
@@ -438,22 +441,22 @@
 
             // Kart adetleri
             doc.setFontSize(12);
-            doc.text(`Money Club Kart Adet: ${document.getElementById('moneyClubKart').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Money Club Kart Adet: ${document.getElementById('moneyClubKart').value}`, 20, y);
             y += lineHeight;
-            doc.text(`İstanbul Kart Adet: ${document.getElementById('istanbulKart').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`İstanbul Kart Adet: ${document.getElementById('istanbulKart').value}`, 20, y);
             y += lineHeight;
 
             // Milli Piyango Biletleri
-            doc.text(`Milli Piyango Çeyrek Adet: ${document.getElementById('milliPiyangoCeyrek').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Milli Piyango Çeyrek Adet: ${document.getElementById('milliPiyangoCeyrek').value}`, 20, y);
             y += lineHeight;
-            doc.text(`Milli Piyango Yarım Adet: ${document.getElementById('milliPiyangoYarim').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Milli Piyango Yarım Adet: ${document.getElementById('milliPiyangoYarim').value}`, 20, y);
             y += lineHeight;
-            doc.text(`Milli Piyango Tam Adet: ${document.getElementById('milliPiyangoTam').value}`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Milli Piyango Tam Adet: ${document.getElementById('milliPiyangoTam').value}`, 20, y);
             y += lineHeight * 2;
 
             // Toplam Tutar
             doc.setFontSize(14);
-            doc.text(`Toplam Tutar: ${document.getElementById('toplamTutar').textContent} TL`, 20, y, {encoding: "UTF-8"});
+            doc.text(`Toplam Tutar: ${document.getElementById('toplamTutar').textContent} TL`, 20, y);
 
             // PDF'i indir
             doc.save('KasiyerTeslimatFormu.pdf');

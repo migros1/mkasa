@@ -25,7 +25,32 @@
         h1 {
             text-align: center;
             color: #444;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .back-button {
+            display: block;
+            width: 200px;
+            margin: 0 auto 30px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #ff6600;
+            color: #fff;
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .back-button:hover {
+            background-color: #e65c00;
         }
         .record {
             margin-bottom: 20px;
@@ -113,6 +138,8 @@
 
 <div class="container">
     <h1>Geçmiş Liste</h1>
+    <div class="info">Son tüm 30 gün boyunca kayıtlı kasiyer formların!</div>
+    <a href="mkasiyer.html" class="back-button">Kasiyer Formuna Geri Dön</a>
     <div id="recordsContainer"></div>
 </div>
 

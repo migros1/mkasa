@@ -9,15 +9,15 @@
     <!-- Meta Taglar -->
     <meta name="description" content="Kasiyer Teslimat Formu ile kasiyer bilgilerini kolayca kaydedin ve PDF olarak indirin.">
     <meta name="keywords" content="Kasiyer, Teslimat Formu, PDF, Migros, Para Birimleri, Zimmet">
-    <meta name="author" content="Migros Teknoloji Birimleri">
+    <meta name="author" content="Tolga Öztürk">
     <meta property="og:title" content="Kasiyer Teslimat Formu">
     <meta property="og:description" content="Kasiyer bilgilerini kaydedin ve PDF olarak indirin.">
-    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnZGjNTxUDpl8sLJSTdK0YuW-s4yo9bCeo9g&usqp=CAU">
+    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
     <meta property="og:url" content="https://migros1.github.io/mkasa/mkasiyer.html">
     <meta property="og:type" content="website">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnZGjNTxUDpl8sLJSTdK0YuW-s4yo9bCeo9g&usqp=CAU">
+    <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
 
     <style>
         /* Stil tanımlamaları */
@@ -25,48 +25,46 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f1f3f6;
+            background-color: #f9fafc;
             color: #333;
+            line-height: 1.6;
         }
         header {
             background-color: #ff6600;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
-        header a {
-            display: inline-block;
-        }
         header img {
-            width: 255px;
-            height: 55px;
+            width: 180px;
+            height: auto;
         }
         .container {
             margin: 20px auto;
-            max-width: 800px;
+            max-width: 900px;
             background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         h1, h2 {
             color: #444;
             text-align: center;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: bold;
             color: #555;
         }
         input[type="text"], input[type="number"] {
             width: calc(100% - 20px);
+            padding: 10px;
             margin-bottom: 15px;
-            padding: 12px 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             transition: border-color 0.3s;
+            font-size: 16px;
         }
         input[type="text"]:focus, input[type="number"]:focus {
             border-color: #ff6600;
@@ -78,25 +76,26 @@
             border-collapse: collapse;
             overflow: hidden;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         th, td {
-            padding: 15px;
+            padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #eee;
         }
         th {
-            background-color: #f8f8f8;
+            background-color: #f5f5f5;
             font-weight: bold;
         }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+        tbody tr:hover {
+            background-color: #f1f1f1;
         }
         .total {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             margin-top: 20px;
             text-align: right;
-            color: #555;
+            color: #333;
         }
         .buttons {
             margin-top: 30px;
@@ -105,10 +104,10 @@
             flex-wrap: wrap;
         }
         .buttons button {
-            padding: 12px 30px;
+            padding: 12px 20px;
             font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             background-color: #ff6600;
             color: #fff;
@@ -121,10 +120,14 @@
         .buttons button.clear {
             background-color: #e74c3c;
         }
-        .buttons button:hover {
+        .buttons button:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+        .buttons button:hover:enabled {
             opacity: 0.9;
         }
-        .buttons button.clear:hover {
+        .buttons button.clear:hover:enabled {
             background-color: #c0392b;
         }
         .notification {
@@ -145,6 +148,26 @@
         }
         .currency-total {
             width: 100px; /* Sabit genişlik */
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            .buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .buttons button {
+                margin-right: 0;
+                margin-bottom: 10px;
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -188,6 +211,7 @@
                 <!-- Para birimleri satırları JavaScript ile eklenecek -->
             </tbody>
         </table>
+        <div class="error-message" id="error-message">Adet sayısı 6 karakteri aşamaz!</div>
     </div>
 
     <div>
@@ -215,7 +239,7 @@
     <div class="buttons">
         <button id="saveButton">Kaydet</button>
         <button id="clearButton" class="clear">Listeyi Temizle</button>
-        <button id="pdfButton">PDF'e Dönüştür</button>
+        <button id="pdfButton" disabled>PDF'e Dönüştür</button>
     </div>
 </div>
 
@@ -246,6 +270,8 @@
         ];
 
         const currencyTable = document.getElementById('currencyTable');
+        const errorMessage = document.getElementById('error-message');
+        let isDataSaved = false;
 
         // Para birimleri için satırları oluştur
         paraBirimleri.forEach(item => {
@@ -260,7 +286,14 @@
             adetInput.type = 'number';
             adetInput.min = '0';
             adetInput.value = '0';
-            adetInput.oninput = calculateTotal;
+            adetInput.oninput = function() {
+                if (adetInput.value.length > 6) {
+                    errorMessage.style.display = 'block';
+                } else {
+                    errorMessage.style.display = 'none';
+                    calculateTotal();
+                }
+            };
             adetInput.classList.add('currency-input');
             cell2.appendChild(adetInput);
             row.appendChild(cell2);
@@ -360,6 +393,8 @@
 
             localStorage.setItem('kasiyerData', JSON.stringify(data));
             showNotification('Girdiğiniz değerler başarıyla kaydedildi!');
+            isDataSaved = true;
+            document.getElementById('pdfButton').disabled = false; // PDF butonunu etkinleştir
         });
 
         // Listeyi Temizle butonuna tıklama işlevi
@@ -380,11 +415,18 @@
                 document.getElementById('toplamTutar').textContent = '0.00';
                 localStorage.removeItem('kasiyerData');
                 showNotification('Liste başarıyla temizlendi!');
+                isDataSaved = false;
+                document.getElementById('pdfButton').disabled = true; // PDF butonunu devre dışı bırak
             }
         });
 
         // PDF'e Dönüştür butonuna tıklama işlevi
         document.getElementById('pdfButton').addEventListener('click', async () => {
+            if (!isDataSaved) {
+                showNotification('Lütfen önce verileri kaydedin!');
+                return;
+            }
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
@@ -488,6 +530,8 @@
                     row.cells[2].textContent = toplam.toFixed(2);
                 });
                 calculateTotal();
+                isDataSaved = true;
+                document.getElementById('pdfButton').disabled = false; // PDF butonunu etkinleştir
             }
         }
 

@@ -5,20 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasiyer Teslimat Formu</title>
-    
-    <!-- Meta Taglar -->
-    <meta name="description" content="Kasiyer Teslimat Formu ile kasiyer bilgilerini kolayca kaydedin ve PDF olarak indirin.">
-    <meta name="keywords" content="Kasiyer, Teslimat Formu, PDF, Migros, Para Birimleri, Zimmet">
-    <meta name="author" content="Tolga Öztürk">
-    <meta property="og:title" content="Kasiyer Teslimat Formu">
-    <meta property="og:description" content="Kasiyer bilgilerini kaydedin ve PDF olarak indirin.">
-    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
-    <meta property="og:url" content="https://migros1.github.io/mkasa/mkasiyer.html">
-    <meta property="og:type" content="website">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
-
     <style>
         /* Stil tanımlamaları */
         body {
@@ -33,10 +19,27 @@
             background-color: #ff6600;
             padding: 15px;
             text-align: center;
+            position: relative;
         }
         header img {
             width: 180px;
             height: auto;
+        }
+        .header-buttons {
+            margin-top: 10px;
+        }
+        .header-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+        .header-buttons button:hover {
+            background-color: #2980b9;
         }
         .container {
             margin: 20px auto;
@@ -177,6 +180,9 @@
     <a href="https://www.migros.com.tr" target="_blank">
         <img src="https://migros1.github.io/mkasa/mgrs.png" alt="Migros Logo">
     </a>
+    <div class="header-buttons">
+        <button onclick="location.href='gecmislist.html'">Geçmişi Listele</button>
+    </div>
 </header>
 
 <div class="container">
@@ -388,10 +394,14 @@
                 milliPiyangoCeyrek,
                 milliPiyangoYarim,
                 milliPiyangoTam,
-                paraAdetleri
+                paraAdetleri,
+                tarih: new Date().toISOString()
             };
 
-            localStorage.setItem('kasiyerData', JSON.stringify(data));
+            const savedList = JSON.parse(localStorage.getItem('kasiyerDataList')) || [];
+            savedList.push(data);
+            localStorage.setItem('kasiyerDataList', JSON.stringify(savedList));
+
             showNotification('Girdiğiniz değerler başarıyla kaydedildi!');
             isDataSaved = true;
             document.getElementById('pdfButton').disabled = false; // PDF butonunu etkinleştir
@@ -413,7 +423,6 @@
                     row.cells[2].textContent = '0.00';
                 });
                 document.getElementById('toplamTutar').textContent = '0.00';
-                localStorage.removeItem('kasiyerData');
                 showNotification('Liste başarıyla temizlendi!');
                 isDataSaved = false;
                 document.getElementById('pdfButton').disabled = true; // PDF butonunu devre dışı bırak
@@ -434,7 +443,7 @@
             doc.setFont("helvetica", "normal");
 
             // Logo ekle
-            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&usqp=CAU';
+            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn38yw4X3c_0FE53CqcE3TTAFUcK4JpB5Ktg&usqp=CAU';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();

@@ -66,6 +66,47 @@
             font-size: 16px;
             margin-top: 20px;
         }
+        .detail-container {
+            margin: 40px auto;
+            max-width: 600px;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+            color: #444;
+        }
+        .detail-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #555;
+            text-align: center;
+        }
+        .detail-container p, .detail-container ul {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .detail-container ul {
+            padding-left: 20px;
+        }
+        .detail-container ul li {
+            margin-bottom: 5px;
+        }
+        .detail-container button {
+            display: block;
+            width: 100%;
+            padding: 15px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .detail-container button:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -156,22 +197,22 @@
                 const record = validRecords[index];
                 const recordDate = new Date(record.tarih);
                 const listContent = `
-                    <div class="container">
+                    <div class="detail-container">
                         <h1>Liste Detayları</h1>
-                        <p>Kasiyer Adı Soyadı: ${record.kasiyerAdi}</p>
-                        <p>Kasiyer Sicili: ${record.kasiyerSicili}</p>
-                        <p>Kasa No: ${record.kasaNo}</p>
-                        <p>Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</p>
+                        <p><strong>Kasiyer Adı Soyadı:</strong> ${record.kasiyerAdi}</p>
+                        <p><strong>Kasiyer Sicili:</strong> ${record.kasiyerSicili}</p>
+                        <p><strong>Kasa No:</strong> ${record.kasaNo}</p>
+                        <p><strong>Tarih:</strong> ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</p>
                         <h2>Para Birimi Listesi</h2>
                         <ul>
                             ${record.paraAdetleri.map((adet, i) => `<li>${paraBirimleri[i].birim}: ${adet} - Tutar: ${(paraBirimleri[i].deger * adet).toFixed(2)} TL</li>`).join('')}
                         </ul>
                         <h2>Zimmetler</h2>
-                        <p>Money Club Kart Adet: ${record.moneyClubKart}</p>
-                        <p>İstanbul Kart Adet: ${record.istanbulKart}</p>
-                        <p>Milli Piyango Çeyrek Adet: ${record.milliPiyangoCeyrek}</p>
-                        <p>Milli Piyango Yarım Adet: ${record.milliPiyangoYarim}</p>
-                        <p>Milli Piyango Tam Adet: ${record.milliPiyangoTam}</p>
+                        <p><strong>Money Club Kart Adet:</strong> ${record.moneyClubKart}</p>
+                        <p><strong>İstanbul Kart Adet:</strong> ${record.istanbulKart}</p>
+                        <p><strong>Milli Piyango Çeyrek Adet:</strong> ${record.milliPiyangoCeyrek}</p>
+                        <p><strong>Milli Piyango Yarım Adet:</strong> ${record.milliPiyangoYarim}</p>
+                        <p><strong>Milli Piyango Tam Adet:</strong> ${record.milliPiyangoTam}</p>
                         <button onclick="window.location.reload()">Geri</button>
                     </div>
                 `;

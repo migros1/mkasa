@@ -34,6 +34,8 @@
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
         }
         .record:hover {
             transform: translateY(-3px);
@@ -53,6 +55,7 @@
             background-color: #3498db;
             color: #fff;
             transition: background-color 0.3s;
+            margin-bottom: 5px;
         }
         .record button:hover {
             background-color: #2980b9;
@@ -92,6 +95,7 @@
                 recordDiv.innerHTML = `
                     <h3>${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - Kasiyer Formunuz için tıklayın</h3>
                     <button onclick="downloadPDF(${index})">PDF İndir</button>
+                    <button onclick="showList(${index})">Listeyi Göster</button>
                 `;
                 recordsContainer.appendChild(recordDiv);
             });
@@ -145,6 +149,33 @@
                 doc.text(`Toplam Tutar: ${record.paraAdetleri.reduce((sum, adet, i) => sum + paraBirimleri[i].deger * adet, 0).toFixed(2)} TL`, 20, y);
 
                 doc.save(`KasiyerFormu_${recordDate.toLocaleDateString('tr-TR')}.pdf`);
+            }
+
+            // Listeyi gösterme işlevi
+            window.showList = function(index) {
+                const record = validRecords[index];
+                const recordDate = new Date(record.tarih);
+                const listContent = `
+                    <div class="container">
+                        <h1>Liste Detayları</h1>
+                        <p>Kasiyer Adı Soyadı: ${record.kasiyerAdi}</p>
+                        <p>Kasiyer Sicili: ${record.kasiyerSicili}</p>
+                        <p>Kasa No: ${record.kasaNo}</p>
+                        <p>Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</p>
+                        <h2>Para Birimi Listesi</h2>
+                        <ul>
+                            ${record.paraAdetleri.map((adet, i) => `<li>${paraBirimleri[i].birim}: ${adet} - Tutar: ${(paraBirimleri[i].deger * adet).toFixed(2)} TL</li>`).join('')}
+                        </ul>
+                        <h2>Zimmetler</h2>
+                        <p>Money Club Kart Adet: ${record.moneyClubKart}</p>
+                        <p>İstanbul Kart Adet: ${record.istanbulKart}</p>
+                        <p>Milli Piyango Çeyrek Adet: ${record.milliPiyangoCeyrek}</p>
+                        <p>Milli Piyango Yarım Adet: ${record.milliPiyangoYarim}</p>
+                        <p>Milli Piyango Tam Adet: ${record.milliPiyangoTam}</p>
+                        <button onclick="window.location.reload()">Geri</button>
+                    </div>
+                `;
+                document.body.innerHTML = listContent;
             }
         }
     });

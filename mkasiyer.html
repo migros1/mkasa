@@ -155,6 +155,14 @@
                 min-width: 100%;
             }
         }
+        .currency-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .currency-table {
+            width: 48%;
+        }
     </style>
 </head>
 <body>
@@ -185,18 +193,32 @@
 
     <div>
         <h2>Para Birimleri</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Para Birimi</th>
-                    <th>Adet</th>
-                    <th>Toplam</th>
-                </tr>
-            </thead>
-            <tbody id="currencyTable">
-                <!-- Para birimleri satırları JavaScript ile eklenecek -->
-            </tbody>
-        </table>
+        <div class="currency-section">
+            <table class="currency-table">
+                <thead>
+                    <tr>
+                        <th>Kağıt Para</th>
+                        <th>Adet</th>
+                        <th>Toplam</th>
+                    </tr>
+                </thead>
+                <tbody id="paperCurrencyTable">
+                    <!-- Kağıt para satırları JavaScript ile eklenecek -->
+                </tbody>
+            </table>
+            <table class="currency-table">
+                <thead>
+                    <tr>
+                        <th>Bozuk Para</th>
+                        <th>Adet</th>
+                        <th>Toplam</th>
+                    </tr>
+                </thead>
+                <tbody id="coinCurrencyTable">
+                    <!-- Bozuk para satırları JavaScript ile eklenecek -->
+                </tbody>
+            </table>
+        </div>
         <div class="error-message" id="error-message">Adet sayısı 6 karakteri aşamaz!</div>
     </div>
 
@@ -256,12 +278,13 @@
             { birim: '1 Kuruş', deger: 0.01 }
         ];
 
-        const currencyTable = document.getElementById('currencyTable');
+        const paperCurrencyTable = document.getElementById('paperCurrencyTable');
+        const coinCurrencyTable = document.getElementById('coinCurrencyTable');
         const errorMessage = document.getElementById('error-message');
         let isDataSaved = false;
 
-        // Para birimleri için satırları oluştur
-        paraBirimleri.forEach(item => {
+        // Kağıt para için satırları oluştur
+        paraBirimleri.slice(0, 6).forEach(item => {
             const row = document.createElement('tr');
 
             const cell1 = document.createElement('td');
@@ -290,7 +313,40 @@
             cell3.classList.add('currency-total');
             row.appendChild(cell3);
 
-            currencyTable.appendChild(row);
+            paperCurrencyTable.appendChild(row);
+        });
+
+        // Bozuk para için satırları oluştur
+        paraBirimleri.slice(6).forEach(item => {
+            const row = document.createElement('tr');
+
+            const cell1 = document.createElement('td');
+            cell1.textContent = item.birim;
+            row.appendChild(cell1);
+
+            const cell2 = document.createElement('td');
+            const adetInput = document.createElement('input');
+            adetInput.type = 'number';
+            adetInput.min = '0';
+            adetInput.value = '0';
+            adetInput.oninput = function() {
+                if (adetInput.value.length > 6) {
+                    errorMessage.style.display = 'block';
+                } else {
+                    errorMessage.style.display = 'none';
+                    calculateTotal();
+                }
+            };
+            adetInput.classList.add('currency-input');
+            cell2.appendChild(adetInput);
+            row.appendChild(cell2);
+
+            const cell3 = document.createElement('td');
+            cell3.textContent = '0.00';
+            cell3.classList.add('currency-total');
+            row.appendChild(cell3);
+
+            coinCurrencyTable.appendChild(row);
         });
 
         // Sayıların animasyonlu olarak artış veya azalışını sağla
@@ -310,7 +366,7 @@
         // Toplam tutarı hesapla
         function calculateTotal() {
             let total = 0;
-            const rows = currencyTable.querySelectorAll('tr');
+            const rows = [...paperCurrencyTable.querySelectorAll('tr'), ...coinCurrencyTable.querySelectorAll('tr')];
             rows.forEach((row, index) => {
                 const adet = row.querySelector('input').value;
                 const toplamYeni = paraBirimleri[index].deger * adet;
@@ -361,7 +417,7 @@
             const milliPiyangoTam = document.getElementById('milliPiyangoTam').value;
 
             const paraAdetleri = [];
-            currencyTable.querySelectorAll('tr').forEach((row, index) => {
+            [...paperCurrencyTable.querySelectorAll('tr'), ...coinCurrencyTable.querySelectorAll('tr')].forEach((row) => {
                 const adet = row.querySelector('input').value;
                 paraAdetleri.push(adet);
             });
@@ -399,7 +455,7 @@
                 document.getElementById('milliPiyangoCeyrek').value = '';
                 document.getElementById('milliPiyangoYarim').value = '';
                 document.getElementById('milliPiyangoTam').value = '';
-                currencyTable.querySelectorAll('tr').forEach(row => {
+                [...paperCurrencyTable.querySelectorAll('tr'), ...coinCurrencyTable.querySelectorAll('tr')].forEach(row => {
                     row.querySelector('input').value = '0';
                     row.cells[2].textContent = '0.00';
                 });
@@ -455,8 +511,8 @@
             doc.text('Para Birimi Listesi', 20, y);
             y += lineHeight;
             paraBirimleri.slice(0, 6).forEach((item, index) => {
-                const adet = currencyTable.querySelectorAll('tr')[index].querySelector('input').value;
-                const toplam = parseFloat(currencyTable.querySelectorAll('tr')[index].cells[2].textContent);
+                const adet = paperCurrencyTable.querySelectorAll('tr')[index].querySelector('input').value;
+                const toplam = parseFloat(paperCurrencyTable.querySelectorAll('tr')[index].cells[2].textContent);
                 doc.setFontSize(12);
                 doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y);
                 y += lineHeight;
@@ -469,8 +525,8 @@
             doc.text('Madeni Listesi', 20, y);
             y += lineHeight;
             paraBirimleri.slice(6).forEach((item, index) => {
-                const adet = currencyTable.querySelectorAll('tr')[index + 6].querySelector('input').value;
-                const toplam = parseFloat(currencyTable.querySelectorAll('tr')[index + 6].cells[2].textContent);
+                const adet = coinCurrencyTable.querySelectorAll('tr')[index].querySelector('input').value;
+                const toplam = parseFloat(coinCurrencyTable.querySelectorAll('tr')[index].cells[2].textContent);
                 doc.setFontSize(12);
                 doc.text(`${item.birim}: ${adet} - Tutar: ${toplam.toFixed(2)} TL`, 20, y);
                 y += lineHeight;
@@ -514,7 +570,7 @@
                 document.getElementById('milliPiyangoCeyrek').value = data.milliPiyangoCeyrek;
                 document.getElementById('milliPiyangoYarim').value = data.milliPiyangoYarim;
                 document.getElementById('milliPiyangoTam').value = data.milliPiyangoTam;
-                currencyTable.querySelectorAll('tr').forEach((row, index) => {
+                [...paperCurrencyTable.querySelectorAll('tr'), ...coinCurrencyTable.querySelectorAll('tr')].forEach((row, index) => {
                     row.querySelector('input').value = data.paraAdetleri[index];
                     const toplam = paraBirimleri[index].deger * data.paraAdetleri[index];
                     row.cells[2].textContent = toplam.toFixed(2);

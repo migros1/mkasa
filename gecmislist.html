@@ -90,7 +90,7 @@
                 recordDiv.classList.add('record');
                 const recordDate = new Date(record.tarih);
                 recordDiv.innerHTML = `
-                    <h3>${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR')} - Kasiyer Formunuz için tıklayın</h3>
+                    <h3>${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })} - Kasiyer Formunuz için tıklayın</h3>
                     <button onclick="downloadPDF(${index})">PDF İndir</button>
                 `;
                 recordsContainer.appendChild(recordDiv);
@@ -101,6 +101,7 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 const record = validRecords[index];
+                const recordDate = new Date(record.tarih);
 
                 doc.setFont("helvetica", "normal");
 
@@ -114,7 +115,7 @@
                 y += lineHeight;
                 doc.text(`Kasa No: ${record.kasaNo}`, 20, y);
                 y += lineHeight;
-                doc.text(`Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR')}`, 20, y);
+                doc.text(`Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, 20, y);
                 y += lineHeight * 2;
 
                 doc.setFontSize(14);

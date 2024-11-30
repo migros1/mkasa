@@ -12,12 +12,12 @@
     <meta name="author" content="Migros Teknoloji Birimleri">
     <meta property="og:title" content="Kasiyer Teslimat Formu">
     <meta property="og:description" content="Kasiyer bilgilerini kaydedin ve PDF olarak indirin.">
-    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
-    <meta property="og:url" content="https://migros.com.tr">
+    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnZGjNTxUDpl8sLJSTdK0YuW-s4yo9bCeo9g&usqp=CAU">
+    <meta property="og:url" content="https://migros1.github.io/mkasa/mkasiyer.html">
     <meta property="og:type" content="website">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShIbHkyLtofVVgvXvi9RCFbbtegkcKeXCU8uBDuncOBh0jpu9s41sdYmM&s=10">
+    <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnZGjNTxUDpl8sLJSTdK0YuW-s4yo9bCeo9g&usqp=CAU">
 
     <style>
         /* Stil tanımlamaları */
@@ -140,6 +140,12 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
+        .currency-input {
+            width: 70px; /* Sabit genişlik */
+        }
+        .currency-total {
+            width: 100px; /* Sabit genişlik */
+        }
     </style>
 </head>
 <body>
@@ -255,12 +261,13 @@
             adetInput.min = '0';
             adetInput.value = '0';
             adetInput.oninput = calculateTotal;
-            adetInput.style.width = '70%';
+            adetInput.classList.add('currency-input');
             cell2.appendChild(adetInput);
             row.appendChild(cell2);
 
             const cell3 = document.createElement('td');
             cell3.textContent = '0.00';
+            cell3.classList.add('currency-total');
             row.appendChild(cell3);
 
             currencyTable.appendChild(row);
@@ -385,7 +392,7 @@
             doc.setFont("helvetica", "normal");
 
             // Logo ekle
-            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&s';
+            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&usqp=CAU';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();

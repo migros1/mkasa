@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kasiyer Teslimat Formu</title>
+    <title>Migros Kasiyer Teslimat Formu</title>
     
     <!-- Meta Taglar -->
     <meta name="description" content="Kasiyer Teslimat Formu ile kasiyer bilgilerini kolayca kaydedin ve PDF olarak indirin.">
@@ -102,6 +102,7 @@
             margin-top: 30px;
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
         .buttons button {
             padding: 12px 30px;
@@ -112,6 +113,10 @@
             background-color: #ff6600;
             color: #fff;
             transition: background-color 0.3s;
+            margin-top: 10px;
+            flex: 1;
+            min-width: 150px;
+            margin-right: 10px;
         }
         .buttons button.clear {
             background-color: #e74c3c;
@@ -121,6 +126,19 @@
         }
         .buttons button.clear:hover {
             background-color: #c0392b;
+        }
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
         }
     </style>
 </head>
@@ -173,6 +191,15 @@
 
         <label for="istanbulKart">İstanbul Kart Adet:</label>
         <input type="number" id="istanbulKart" min="0">
+
+        <label for="milliPiyangoCeyrek">Milli Piyango Çeyrek Adet:</label>
+        <input type="number" id="milliPiyangoCeyrek" min="0">
+
+        <label for="milliPiyangoYarim">Milli Piyango Yarım Adet:</label>
+        <input type="number" id="milliPiyangoYarim" min="0">
+
+        <label for="milliPiyangoTam">Milli Piyango Tam Adet:</label>
+        <input type="number" id="milliPiyangoTam" min="0">
     </div>
 
     <div class="total">
@@ -185,6 +212,8 @@
         <button id="pdfButton">PDF'e Dönüştür</button>
     </div>
 </div>
+
+<div id="notification" class="notification"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -283,6 +312,16 @@
             kasaNoInput.value = kasaNoInput.value.replace(/[^0-9]/g, '');
         };
 
+        // Bildirim göster
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
         // Kaydet butonuna tıklama işlevi
         document.getElementById('saveButton').addEventListener('click', () => {
             const kasiyerAdi = document.getElementById('kasiyerAdi').value;
@@ -290,6 +329,9 @@
             const kasaNo = document.getElementById('kasaNo').value;
             const moneyClubKart = document.getElementById('moneyClubKart').value;
             const istanbulKart = document.getElementById('istanbulKart').value;
+            const milliPiyangoCeyrek = document.getElementById('milliPiyangoCeyrek').value;
+            const milliPiyangoYarim = document.getElementById('milliPiyangoYarim').value;
+            const milliPiyangoTam = document.getElementById('milliPiyangoTam').value;
 
             const paraAdetleri = [];
             currencyTable.querySelectorAll('tr').forEach((row, index) => {
@@ -303,11 +345,14 @@
                 kasaNo,
                 moneyClubKart,
                 istanbulKart,
+                milliPiyangoCeyrek,
+                milliPiyangoYarim,
+                milliPiyangoTam,
                 paraAdetleri
             };
 
             localStorage.setItem('kasiyerData', JSON.stringify(data));
-            alert('Veriler kaydedildi!');
+            showNotification('Girdiğiniz değerler başarıyla kaydedildi!');
         });
 
         // Listeyi Temizle butonuna tıklama işlevi
@@ -318,12 +363,16 @@
                 document.getElementById('kasaNo').value = '';
                 document.getElementById('moneyClubKart').value = '';
                 document.getElementById('istanbulKart').value = '';
+                document.getElementById('milliPiyangoCeyrek').value = '';
+                document.getElementById('milliPiyangoYarim').value = '';
+                document.getElementById('milliPiyangoTam').value = '';
                 currencyTable.querySelectorAll('tr').forEach(row => {
                     row.querySelector('input').value = '0';
                     row.cells[2].textContent = '0.00';
                 });
                 document.getElementById('toplamTutar').textContent = '0.00';
                 localStorage.removeItem('kasiyerData');
+                showNotification('Liste başarıyla temizlendi!');
             }
         });
 
@@ -392,6 +441,14 @@
             doc.text(`Money Club Kart Adet: ${document.getElementById('moneyClubKart').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight;
             doc.text(`İstanbul Kart Adet: ${document.getElementById('istanbulKart').value}`, 20, y, {encoding: "UTF-8"});
+            y += lineHeight;
+
+            // Milli Piyango Biletleri
+            doc.text(`Milli Piyango Çeyrek Adet: ${document.getElementById('milliPiyangoCeyrek').value}`, 20, y, {encoding: "UTF-8"});
+            y += lineHeight;
+            doc.text(`Milli Piyango Yarım Adet: ${document.getElementById('milliPiyangoYarim').value}`, 20, y, {encoding: "UTF-8"});
+            y += lineHeight;
+            doc.text(`Milli Piyango Tam Adet: ${document.getElementById('milliPiyangoTam').value}`, 20, y, {encoding: "UTF-8"});
             y += lineHeight * 2;
 
             // Toplam Tutar
@@ -412,6 +469,9 @@
                 document.getElementById('kasaNo').value = data.kasaNo;
                 document.getElementById('moneyClubKart').value = data.moneyClubKart;
                 document.getElementById('istanbulKart').value = data.istanbulKart;
+                document.getElementById('milliPiyangoCeyrek').value = data.milliPiyangoCeyrek;
+                document.getElementById('milliPiyangoYarim').value = data.milliPiyangoYarim;
+                document.getElementById('milliPiyangoTam').value = data.milliPiyangoTam;
                 currencyTable.querySelectorAll('tr').forEach((row, index) => {
                     row.querySelector('input').value = data.paraAdetleri[index];
                     const toplam = paraBirimleri[index].deger * data.paraAdetleri[index];

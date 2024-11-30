@@ -19,27 +19,10 @@
             background-color: #ff6600;
             padding: 15px;
             text-align: center;
-            position: relative;
         }
         header img {
             width: 180px;
             height: auto;
-        }
-        .header-buttons {
-            margin-top: 10px;
-        }
-        .header-buttons button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            background-color: #3498db;
-            color: #fff;
-            transition: background-color 0.3s;
-        }
-        .header-buttons button:hover {
-            background-color: #2980b9;
         }
         .container {
             margin: 20px auto;
@@ -180,9 +163,6 @@
     <a href="https://www.migros.com.tr" target="_blank">
         <img src="https://migros1.github.io/mkasa/mgrs.png" alt="Migros Logo">
     </a>
-    <div class="header-buttons">
-        <button onclick="location.href='gecmislist.html'">Geçmişi Listele</button>
-    </div>
 </header>
 
 <div class="container">
@@ -246,6 +226,7 @@
         <button id="saveButton">Kaydet</button>
         <button id="clearButton" class="clear">Listeyi Temizle</button>
         <button id="pdfButton" disabled>PDF'e Dönüştür</button>
+        <button onclick="location.href='gecmislist.html'">Geçmişi Listele</button>
     </div>
 </div>
 
@@ -443,7 +424,7 @@
             doc.setFont("helvetica", "normal");
 
             // Logo ekle
-            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSn38yw4X3c_0FE53CqcE3TTAFUcK4JpB5Ktg&usqp=CAU';
+            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&s';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();

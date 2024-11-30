@@ -10,38 +10,42 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9fafc;
+            background-color: #f0f3f5;
             color: #333;
             line-height: 1.6;
         }
         .container {
-            margin: 20px auto;
+            margin: 40px auto;
             max-width: 800px;
             padding: 20px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
             color: #444;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .record {
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-radius: 6px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .record:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         .record h3 {
-            margin: 0;
+            margin: 0 0 10px;
             font-size: 18px;
             color: #333;
         }
         .record button {
-            margin-top: 10px;
-            padding: 8px 15px;
+            padding: 10px 20px;
             font-size: 14px;
             border: none;
             border-radius: 6px;
@@ -84,8 +88,9 @@
             validRecords.forEach((record, index) => {
                 const recordDiv = document.createElement('div');
                 recordDiv.classList.add('record');
+                const recordDate = new Date(record.tarih);
                 recordDiv.innerHTML = `
-                    <h3>${new Date(record.tarih).toLocaleDateString('tr-TR')} - Kasiyer Formunuz için tıklayın</h3>
+                    <h3>${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR')} - Kasiyer Formunuz için tıklayın</h3>
                     <button onclick="downloadPDF(${index})">PDF İndir</button>
                 `;
                 recordsContainer.appendChild(recordDiv);
@@ -109,7 +114,7 @@
                 y += lineHeight;
                 doc.text(`Kasa No: ${record.kasaNo}`, 20, y);
                 y += lineHeight;
-                doc.text(`Tarih: ${new Date(record.tarih).toLocaleDateString('tr-TR')}`, 20, y);
+                doc.text(`Tarih: ${recordDate.toLocaleDateString('tr-TR')} ${recordDate.toLocaleTimeString('tr-TR')}`, 20, y);
                 y += lineHeight * 2;
 
                 doc.setFontSize(14);
@@ -138,7 +143,7 @@
                 doc.setFontSize(14);
                 doc.text(`Toplam Tutar: ${record.paraAdetleri.reduce((sum, adet, i) => sum + paraBirimleri[i].deger * adet, 0).toFixed(2)} TL`, 20, y);
 
-                doc.save(`KasiyerFormu_${new Date(record.tarih).toLocaleDateString('tr-TR')}.pdf`);
+                doc.save(`KasiyerFormu_${recordDate.toLocaleDateString('tr-TR')}.pdf`);
             }
         }
     });

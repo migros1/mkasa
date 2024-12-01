@@ -149,7 +149,7 @@
                 settingsIcon.classList.add('settings-icon');
                 settingsIcon.addEventListener('click', function(event) {
                     event.stopPropagation();
-                    toggleMessageMenu.call(messageElement);
+                    toggleMessageMenu(messageElement);
                 });
                 messageElement.appendChild(settingsIcon);
             }
@@ -164,19 +164,20 @@
             });
         }
 
-        function toggleMessageMenu() {
-            const existingMenu = this.querySelector('.message-menu');
+        function toggleMessageMenu(messageElement) {
+            const existingMenu = messageElement.querySelector('.message-menu');
             if (existingMenu) {
                 existingMenu.remove();
             } else {
                 const menu = document.createElement('div');
                 menu.classList.add('message-menu');
+                menu.style.display = 'block'; // Menü görünür hale getiriliyor
                 menu.innerHTML = `
                     <button onclick="copyMessage(this)">Mesajdaki Kodu Kopyala</button>
                     <button onclick="quoteMessage(this)">Bu mesajla Alıntı yap</button>
                     <button onclick="shareMessage(this)">Paylaş</button>
                 `;
-                this.appendChild(menu);
+                messageElement.appendChild(menu);
             }
         }
 

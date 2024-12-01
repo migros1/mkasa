@@ -79,6 +79,12 @@
             overflow-x: auto;
             margin: 5px 0;
         }
+        .settings-icon {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
         .message-menu {
             display: none;
             position: absolute;
@@ -136,7 +142,14 @@
 
             const formattedContent = formatMessageContent(messageContent);
             messageElement.innerHTML = formattedContent;
-            messageElement.addEventListener('click', toggleMessageMenu);
+
+            if (messageClass === 'bot-message') {
+                const settingsIcon = document.createElement('img');
+                settingsIcon.src = "https://cdn-icons-png.freepik.com/512/244/244173.png";
+                settingsIcon.classList.add('settings-icon');
+                settingsIcon.addEventListener('click', toggleMessageMenu);
+                messageElement.appendChild(settingsIcon);
+            }
 
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -149,32 +162,26 @@
         }
 
         function toggleMessageMenu(event) {
-            const existingMenu = this.querySelector('.message-menu');
+            event.stopPropagation();
+            const messageElement = this.parentNode;
+            const existingMenu = messageElement.querySelector('.message-menu');
             if (existingMenu) {
                 existingMenu.remove();
             } else {
                 const menu = document.createElement('div');
                 menu.classList.add('message-menu');
                 menu.innerHTML = `
-                    <button onclick="copyMessage(this)">Mesajı Kopyala</button>
-                    <button onclick="copyCode(this)">Kodu Kopyala</button>
-                    <button onclick="shareMessage(this)">Paylaş</button>
+                    <button onclick="copyMessage(this)">Mesajdaki Kodu Kopyala</button>
                     <button onclick="quoteMessage(this)">Bu mesajla Alıntı yap</button>
+                    <button onclick="shareMessage(this)">Paylaş</button>
                 `;
-                this.appendChild(menu);
+                messageElement.appendChild(menu);
             }
         }
 
         function copyMessage(button) {
             const message = button.closest('.message').innerText;
-            navigator.clipboard.writeText(message).then(() => alert('Mesaj kopyalandı!'));
-        }
-
-        function copyCode(button) {
-            const codeBlock = button.closest('.message').querySelector('.code-block');
-            if (codeBlock) {
-                navigator.clipboard.writeText(codeBlock.innerText).then(() => alert('Kod kopyalandı!'));
-            }
+            navigator.clipboard.writeText(message).then(() => alert('Mesajdaki kod kopyalandı!'));
         }
 
         function shareMessage(button) {

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -404,17 +403,11 @@
             const kasiyerAdi = document.getElementById('kasiyerAdi').value.trim();
             const kasiyerSicili = document.getElementById('kasiyerSicili').value.trim();
             const kasaNo = document.getElementById('kasaNo').value.trim();
-            const moneyClubKart = parseInt(document.getElementById('moneyClubKart').value) || 0;
-            const istanbulKart = parseInt(document.getElementById('istanbulKart').value) || 0;
-            const milliPiyangoCeyrek = parseInt(document.getElementById('milliPiyangoCeyrek').value) || 0;
-            const milliPiyangoYarim = parseInt(document.getElementById('milliPiyangoYarim').value) || 0;
-            const milliPiyangoTam = parseInt(document.getElementById('milliPiyangoTam').value) || 0;
 
+            // Sadece Kasiyer Bilgileri kısmı doluysa butonları etkinleştir
             const hasKasiyerInfo = kasiyerAdi && kasiyerSicili && kasaNo;
-            const hasCurrency = [...paperCurrencyTable.querySelectorAll('input'), ...coinCurrencyTable.querySelectorAll('input')].some(input => parseInt(input.value) > 0);
-            const hasZimmet = moneyClubKart > 0 || istanbulKart > 0 || milliPiyangoCeyrek > 0 || milliPiyangoYarim > 0 || milliPiyangoTam > 0;
 
-            if (hasKasiyerInfo && (hasCurrency || hasZimmet)) {
+            if (hasKasiyerInfo) {
                 saveButton.disabled = false;
                 pdfButton.disabled = false;
             } else {
@@ -490,7 +483,7 @@
             doc.setFont("helvetica", "normal");
 
             // Logo ekle
-            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&s';
+            const imgUrl = 'https://migros1.github.io/mkasa/mgrs.png';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();

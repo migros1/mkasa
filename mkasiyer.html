@@ -106,16 +106,6 @@
         .buttons button.clear {
             background-color: #e74c3c;
         }
-        .buttons button:disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
-        }
-        .buttons button:hover:enabled {
-            opacity: 0.9;
-        }
-        .buttons button.clear:hover:enabled {
-            background-color: #c0392b;
-        }
         .notification {
             display: none;
             position: fixed;
@@ -245,9 +235,9 @@
     </div>
 
     <div class="buttons">
-        <button id="saveButton" disabled>Kaydet</button>
+        <button id="saveButton">Kaydet</button>
         <button id="clearButton" class="clear">Listeyi Temizle</button>
-        <button id="pdfButton" disabled>PDF'e Dönüştür</button>
+        <button id="pdfButton">PDF'e Dönüştür</button>
         <button onclick="location.href='gecmislist.html'">Geçmişi Listele</button>
     </div>
 </div>
@@ -303,7 +293,6 @@
                 } else {
                     errorMessage.style.display = 'none';
                     calculateTotal();
-                    validateForm();
                 }
             };
             adetInput.classList.add('currency-input');
@@ -337,7 +326,6 @@
                 } else {
                     errorMessage.style.display = 'none';
                     calculateTotal();
-                    validateForm();
                 }
             };
             adetInput.classList.add('currency-input');
@@ -352,20 +340,6 @@
             coinCurrencyTable.appendChild(row);
         });
 
-        // Sayıların animasyonlu olarak artış veya azalışını sağla
-        function animateValue(element, start, end, duration) {
-            let startTime = null;
-            const step = (currentTime) => {
-                if (!startTime) startTime = currentTime;
-                const progress = Math.min((currentTime - startTime) / duration, 1);
-                element.textContent = (progress * (end - start) + start).toFixed(2);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
         // Toplam tutarı hesapla
         function calculateTotal() {
             let total = 0;
@@ -374,46 +348,10 @@
                 const adet = row.querySelector('input').value;
                 const toplamYeni = paraBirimleri[index].deger * adet;
                 const toplamCell = row.cells[2];
-
-                // Eski toplamı al ve animasyon başlat
-                const toplamEski = parseFloat(toplamCell.textContent);
-                animateValue(toplamCell, toplamEski, toplamYeni, 500);
-
+                toplamCell.textContent = toplamYeni.toFixed(2);
                 total += toplamYeni;
             });
-            const toplamTutarElement = document.getElementById('toplamTutar');
-            const toplamTutarEski = parseFloat(toplamTutarElement.textContent);
-            animateValue(toplamTutarElement, toplamTutarEski, total, 500);
-        }
-
-        // Kasiyer Sicili alanını doğrula
-        window.validateSicili = function() {
-            const siciliInput = document.getElementById('kasiyerSicili');
-            siciliInput.value = 'M' + siciliInput.value.replace(/[^0-9]/g, '').substring(0, 6);
-        };
-
-        // Kasa No alanını doğrula
-        window.validateKasaNo = function() {
-            const kasaNoInput = document.getElementById('kasaNo');
-            kasaNoInput.value = kasaNoInput.value.replace(/[^0-9]/g, '');
-        };
-
-        // Formun geçerliliğini kontrol et
-        function validateForm() {
-            const kasiyerAdi = document.getElementById('kasiyerAdi').value.trim();
-            const kasiyerSicili = document.getElementById('kasiyerSicili').value.trim();
-            const kasaNo = document.getElementById('kasaNo').value.trim();
-
-            // Sadece Kasiyer Bilgileri kısmı doluysa butonları etkinleştir
-            const hasKasiyerInfo = kasiyerAdi && kasiyerSicili && kasaNo;
-
-            if (hasKasiyerInfo) {
-                saveButton.disabled = false;
-                pdfButton.disabled = false;
-            } else {
-                saveButton.disabled = true;
-                pdfButton.disabled = true;
-            }
+            document.getElementById('toplamTutar').textContent = total.toFixed(2);
         }
 
         // Kaydet butonuna tıklama işlevi
@@ -470,7 +408,6 @@
                 });
                 document.getElementById('toplamTutar').textContent = '0.00';
                 showNotification('Liste başarıyla temizlendi!');
-                validateForm();
             }
         });
 
@@ -479,11 +416,8 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Türkçe karakterleri destekleyen font ekleyin
-            doc.setFont("helvetica", "normal");
-
             // Logo ekle
-            const imgUrl = 'https://migros1.github.io/mkasa/mgrs.png';
+            const imgUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbeRbykOlFfOe-t6ZK8PUHRownEdN3DJRpEg&s';
             const imgData = await fetch(imgUrl).then(res => res.blob()).then(blob => {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -588,7 +522,6 @@
                     row.cells[2].textContent = toplam.toFixed(2);
                 });
                 calculateTotal();
-                validateForm();
             }
         }
 
@@ -598,3 +531,4 @@
 
 </body>
 </html>
+

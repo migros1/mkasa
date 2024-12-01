@@ -59,6 +59,7 @@
             padding: 8px;
             border-radius: 4px;
             max-width: 80%;
+            position: relative;
         }
         .user-message {
             background-color: #007bff;
@@ -68,6 +69,38 @@
         .bot-message {
             background-color: #f1f1f1;
             align-self: flex-start;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin: 5px 0;
+        }
+        .message-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        .message-menu button {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+        .message-menu button:hover {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
@@ -100,9 +133,60 @@
         function addMessageToChat(messageClass, messageContent) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message', messageClass);
-            messageElement.textContent = messageContent;
+
+            const formattedContent = formatMessageContent(messageContent);
+            messageElement.innerHTML = formattedContent;
+            messageElement.addEventListener('click', toggleMessageMenu);
+
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function formatMessageContent(content) {
+            return content.replace(/```(.*?)```/gs, (match, code) => {
+                return `<div class="code-block">${code.trim()}</div>`;
+            });
+        }
+
+        function toggleMessageMenu(event) {
+            const existingMenu = this.querySelector('.message-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+            } else {
+                const menu = document.createElement('div');
+                menu.classList.add('message-menu');
+                menu.innerHTML = `
+                    <button onclick="copyMessage(this)">Mesajı Kopyala</button>
+                    <button onclick="copyCode(this)">Kodu Kopyala</button>
+                    <button onclick="shareMessage(this)">Paylaş</button>
+                    <button onclick="quoteMessage(this)">Bu mesajla Alıntı yap</button>
+                `;
+                this.appendChild(menu);
+            }
+        }
+
+        function copyMessage(button) {
+            const message = button.closest('.message').innerText;
+            navigator.clipboard.writeText(message).then(() => alert('Mesaj kopyalandı!'));
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.message').querySelector('.code-block');
+            if (codeBlock) {
+                navigator.clipboard.writeText(codeBlock.innerText).then(() => alert('Kod kopyalandı!'));
+            }
+        }
+
+        function shareMessage(button) {
+            const message = button.closest('.message').innerText;
+            // Burada paylaşma işlemi yapılabilir, örneğin bir sosyal medya paylaşım API'si kullanılabilir.
+            alert('Mesaj paylaşılacak: ' + message);
+        }
+
+        function quoteMessage(button) {
+            const message = button.closest('.message').innerText;
+            inputMessage.value = `"${message}" `;
+            inputMessage.focus();
         }
 
         async function getBotResponse() {

@@ -77,6 +77,23 @@
             color: #777;
             margin-top: 20px;
         }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .buttons button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background-color: #ff6600;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: #e65c00;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +115,8 @@
                 <th>Kasa No</th>
                 <th>Tarih</th>
                 <th>Toplam Tutar</th>
+                <th>Detaylar</th>
+                <th>PDF İndir</th>
             </tr>
         </thead>
         <tbody id="dataList">
@@ -134,7 +153,9 @@
             row.innerHTML = `<td>${data.kasiyerAdi}</td>
                              <td>${data.kasaNo}</td>
                              <td>${new Date(data.tarih).toLocaleDateString('tr-TR')}</td>
-                             <td>${data.toplamTutar} TL</td>`;
+                             <td>${data.toplamTutar || 0} TL</td>
+                             <td><button onclick="showDetails('${data.kasiyerAdi}')">Detaylar</button></td>
+                             <td><button onclick="downloadPDF('${data.kasiyerAdi}')">İndir</button></td>`;
             dataList.appendChild(row);
         });
 
@@ -162,11 +183,25 @@
             row.innerHTML = `<td>${data.kasiyerAdi}</td>
                              <td>${data.kasaNo}</td>
                              <td>${new Date(data.tarih).toLocaleDateString('tr-TR')}</td>
-                             <td>${data.toplamTutar} TL</td>`;
+                             <td>${data.toplamTutar || 0} TL</td>
+                             <td><button onclick="showDetails('${data.kasiyerAdi}')">Detaylar</button></td>
+                             <td><button onclick="downloadPDF('${data.kasiyerAdi}')">İndir</button></td>`;
             dataList.appendChild(row);
         });
 
         document.getElementById('noDataMessage').style.display = 'none';
+    }
+
+    // Detayları göster
+    function showDetails(kasiyerAdi) {
+        alert(`Detaylar için ${kasiyerAdi}'nın bilgileri burada gösterilecektir.`);
+        // Detayları göstermek için gerekli işlevselliği buraya ekleyin
+    }
+
+    // PDF indir
+    function downloadPDF(kasiyerAdi) {
+        alert(`${kasiyerAdi} için PDF indirilecek.`);
+        // PDF indirme işlevselliğini buraya ekleyin
     }
 </script>
 

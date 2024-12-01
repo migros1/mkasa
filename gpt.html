@@ -33,25 +33,26 @@
         }
         #chat-input {
             display: flex;
+            flex-direction: column;
             padding: 10px;
             border-top: 1px solid #ddd;
         }
-        #chat-input input {
+        #input-message {
             flex: 1;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            margin-bottom: 5px;
         }
-        #chat-input button {
+        #send-button {
             padding: 10px;
             border: none;
             background-color: #007bff;
             color: white;
             border-radius: 4px;
-            margin-left: 5px;
             cursor: pointer;
         }
-        #chat-input button:hover {
+        #send-button:hover {
             background-color: #0056b3;
         }
         .message {
@@ -108,12 +109,20 @@
         .message-menu button:hover {
             background-color: #f0f0f0;
         }
+        .quoted-message {
+            background-color: #e0e0e0;
+            border-left: 3px solid #007bff;
+            padding: 5px;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
     <div id="chat-container">
         <div id="chat-box"></div>
         <div id="chat-input">
+            <div id="quoted-message-container" class="quoted-message" style="display: none;"></div>
             <input type="text" id="input-message" placeholder="Mesajınızı yazın...">
             <button id="send-button">Gönder</button>
         </div>
@@ -123,12 +132,19 @@
         const chatBox = document.getElementById('chat-box');
         const inputMessage = document.getElementById('input-message');
         const sendButton = document.getElementById('send-button');
+        const quotedMessageContainer = document.getElementById('quoted-message-container');
 
         let conversationHistory = [];
+        let quotedMessage = '';
 
         sendButton.addEventListener('click', () => {
             const message = inputMessage.value.trim();
             if (message) {
+                if (quotedMessage) {
+                    message = `> ${quotedMessage}\n\n${message}`;
+                    quotedMessage = '';
+                    quotedMessageContainer.style.display = 'none';
+                }
                 addMessageToChat('user-message', message);
                 conversationHistory.push({ role: 'user', content: message });
                 getBotResponse();
@@ -171,11 +187,10 @@
             } else {
                 const menu = document.createElement('div');
                 menu.classList.add('message-menu');
-                menu.style.display = 'block'; // Menü görünür hale getiriliyor
+                menu.style.display = 'block';
                 menu.innerHTML = `
                     <button onclick="copyMessage(this)">Mesajdaki Kodu Kopyala</button>
                     <button onclick="quoteMessage(this)">Bu mesajla Alıntı yap</button>
-                    <button onclick="shareMessage(this)">Paylaş</button>
                 `;
                 messageElement.appendChild(menu);
             }
@@ -188,14 +203,11 @@
             }
         }
 
-        function shareMessage(button) {
-            const message = button.closest('.message').innerText;
-            alert('Mesaj paylaşılacak: ' + message);
-        }
-
         function quoteMessage(button) {
             const message = button.closest('.message').innerText;
-            inputMessage.value = `"${message}" `;
+            quotedMessage = message;
+            quotedMessageContainer.textContent = `Alıntı: ${quotedMessage}`;
+            quotedMessageContainer.style.display = 'block';
             inputMessage.focus();
         }
 

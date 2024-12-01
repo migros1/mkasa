@@ -88,7 +88,7 @@
         .message-menu {
             display: none;
             position: absolute;
-            top: 100%;
+            top: 40px;
             left: 0;
             background-color: white;
             border: 1px solid #ddd;
@@ -147,7 +147,10 @@
                 const settingsIcon = document.createElement('img');
                 settingsIcon.src = "https://cdn-icons-png.freepik.com/512/244/244173.png";
                 settingsIcon.classList.add('settings-icon');
-                settingsIcon.addEventListener('click', toggleMessageMenu);
+                settingsIcon.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    toggleMessageMenu.call(messageElement);
+                });
                 messageElement.appendChild(settingsIcon);
             }
 
@@ -161,10 +164,8 @@
             });
         }
 
-        function toggleMessageMenu(event) {
-            event.stopPropagation();
-            const messageElement = this.parentNode;
-            const existingMenu = messageElement.querySelector('.message-menu');
+        function toggleMessageMenu() {
+            const existingMenu = this.querySelector('.message-menu');
             if (existingMenu) {
                 existingMenu.remove();
             } else {
@@ -175,18 +176,19 @@
                     <button onclick="quoteMessage(this)">Bu mesajla Alıntı yap</button>
                     <button onclick="shareMessage(this)">Paylaş</button>
                 `;
-                messageElement.appendChild(menu);
+                this.appendChild(menu);
             }
         }
 
         function copyMessage(button) {
-            const message = button.closest('.message').innerText;
-            navigator.clipboard.writeText(message).then(() => alert('Mesajdaki kod kopyalandı!'));
+            const codeBlock = button.closest('.message').querySelector('.code-block');
+            if (codeBlock) {
+                navigator.clipboard.writeText(codeBlock.innerText).then(() => alert('Mesajdaki kod kopyalandı!'));
+            }
         }
 
         function shareMessage(button) {
             const message = button.closest('.message').innerText;
-            // Burada paylaşma işlemi yapılabilir, örneğin bir sosyal medya paylaşım API'si kullanılabilir.
             alert('Mesaj paylaşılacak: ' + message);
         }
 
@@ -209,6 +211,13 @@
                 addMessageToChat('bot-message', 'Üzgünüm, bir hata oluştu.');
             }
         }
+
+        // Sayfa genelinde tıklama olayını dinleyerek menüleri kapat
+        document.addEventListener('click', () => {
+            const allMenus = document.querySelectorAll('.message-menu');
+            allMenus.forEach(menu => menu.remove());
+        });
+
     </script>
 </body>
 </html>

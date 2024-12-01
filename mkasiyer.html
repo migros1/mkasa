@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -410,9 +411,10 @@
             const milliPiyangoTam = parseInt(document.getElementById('milliPiyangoTam').value) || 0;
 
             const hasKasiyerInfo = kasiyerAdi && kasiyerSicili && kasaNo;
+            const hasCurrency = [...paperCurrencyTable.querySelectorAll('input'), ...coinCurrencyTable.querySelectorAll('input')].some(input => parseInt(input.value) > 0);
             const hasZimmet = moneyClubKart > 0 || istanbulKart > 0 || milliPiyangoCeyrek > 0 || milliPiyangoYarim > 0 || milliPiyangoTam > 0;
 
-            if (hasKasiyerInfo && hasZimmet) {
+            if (hasKasiyerInfo && (hasCurrency || hasZimmet)) {
                 saveButton.disabled = false;
                 pdfButton.disabled = false;
             } else {

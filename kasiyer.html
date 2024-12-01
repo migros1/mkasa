@@ -8,23 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
         .container {
-            width: 90%;
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
         h1 {
             color: #e63946;
             text-align: center;
+            font-size: 24px;
+            margin-bottom: 15px;
         }
         label {
             font-weight: bold;
@@ -34,22 +36,25 @@
         input[type="number"],
         input[type="date"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
             border-radius: 5px;
             margin-bottom: 15px;
+            font-size: 16px;
         }
         input[type="number"] {
-            min-width: 80px;
+            width: 70px;
+            text-align: center;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 16px;
         }
         th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
             text-align: center;
         }
         th {
@@ -61,15 +66,19 @@
             font-weight: bold;
         }
         .submit-button {
-            background-color: #f1faee;
-            color: #1d3557;
+            background-color: #e63946;
+            color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px;
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
             font-size: 16px;
             margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .submit-button:hover {
+            background-color: #d62839;
         }
     </style>
 </head>
@@ -89,7 +98,7 @@
         <input type="text" id="kasiyerAdSoyad" required>
         
         <label for="tarih">Tarih:</label>
-        <input type="date" id="tarih" value="" required>
+        <input type="date" id="tarih" required>
     </form>
 
     <h2>Para Birimleri</h2>

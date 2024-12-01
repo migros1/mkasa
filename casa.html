@@ -524,6 +524,46 @@
         // Sesli arama başlat
         function startVoiceRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+    
+    // iOS tarayıcı desteğini kontrol et
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (!SpeechRecognition || isIOS) {
+        alert("Maalesef, iOS tarayıcılar sesli aramayı şu anda desteklemiyor.");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "tr-TR";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = function() {
+        console.log("Sesli arama başlatıldı");
+        voiceIcon.classList.add('active');
+        searchInput.placeholder = "Aramak istediğiniz ürünün adını veya kodunu şimdi söyleyin!";
+    };
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        searchInput.value = transcript;
+        filterList();
+    };
+
+    recognition.onerror = function(event) {
+        console.error("Hata oluştu:", event.error);
+    };
+
+    recognition.onend = function() {
+        console.log("Sesli arama sona erdi");
+        voiceIcon.classList.remove('active');
+        searchInput.placeholder = "Ürün arayın...";
+    };
+
+    recognition.start();
+}
+            
             if (!SpeechRecognition) {
                 alert("Tarayıcınız sesli aramayı desteklemiyor.");
                 return;

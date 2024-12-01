@@ -168,6 +168,18 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        /* Kayıt Mesajı */
+        .kayıt-mesajı {
+            display: none;
+            background-color: #e0ffe0;
+            color: #00923F;
+            padding: 10px;
+            border: 1px solid #00923F;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -186,6 +198,7 @@
     </header>
 
     <main>
+        <div id="kayıtMesajı" class="kayıt-mesajı">Değişiklikleriniz başarıyla kaydedildi.</div>
         <section class="kasiyer-bilgileri">
             <h2>Kasiyer Bilgileri</h2>
             <form id="kasiyer-form">
@@ -333,6 +346,7 @@
         const kasaNoAlani = document.getElementById('kasa-no');
         const kasiyerAdSoyadAlani = document.getElementById('kasiyer-ad-soyad');
         const kaydetButonu = document.getElementById('kaydet-butonu');
+        const kayıtMesajı = document.getElementById('kayıtMesajı');
 
         const paraBirimiInputlari = document.querySelectorAll('.para-birimi input[type="number"]');
         const paraBirimleriToplami = document.querySelectorAll('.para-birimi .toplam');
@@ -403,8 +417,17 @@
 
             kasiyerBilgileri.push(yeniBilgi);
             localStorage.setItem('kasiyerBilgileri', JSON.stringify(kasiyerBilgileri));
+            gösterKayıtMesajı();
+
             console.log('Kasiyer bilgileri kaydedildi.');
         });
+
+        function gösterKayıtMesajı() {
+            kayıtMesajı.style.display = 'block';
+            setTimeout(() => {
+                kayıtMesajı.style.display = 'none';
+            }, 3000);
+        }
 
         document.getElementById('listeyi-temizle-butonu').addEventListener('click', function() {
             paraBirimiInputlari.forEach(input => input.value = 0);
@@ -414,6 +437,26 @@
 
         document.getElementById('gecmis-listelerim-butonu').addEventListener('click', function() {
             window.location.href = 'gecmisliste.html';
+        });
+
+        // Sayfa yüklendiğinde en son kayıtlı listeyi yükle
+        window.addEventListener('load', function() {
+            const kasiyerBilgileri = JSON.parse(localStorage.getItem('kasiyerBilgileri')) || [];
+            if (kasiyerBilgileri.length > 0) {
+                const sonBilgi = kasiyerBilgileri[kasiyerBilgileri.length - 1];
+                kasiyerSicilAlani.value = sonBilgi.kasiyerSicili;
+                kasaNoAlani.value = sonBilgi.kasaNo;
+                kasiyerAdSoyadAlani.value = sonBilgi.kasiyerAdSoyad;
+                tarihAlani.value = sonBilgi.tarih;
+
+                paraBirimiInputlari.forEach((input, index) => {
+                    input.value = sonBilgi.paraBirimleri[index];
+                    const toplam = sonBilgi.paraBirimleri[index] * (parseFloat(input.previousElementSibling.textContent) || 0);
+                    paraBirimleriToplami[index].textContent = `${toplam.toFixed(2)} TL`;
+                });
+
+                console.log('Son kayıt yüklendi.');
+            }
         });
     </script>
 </body>

@@ -132,7 +132,7 @@
         <div id="chat-box"></div>
         <div id="chat-input">
             <div id="quoted-message-container" class="quoted-message" style="display: none;">
-                <span class="close-quote" onclick="closeQuote()">X</span>
+                <span class="close-quote" onclick="closeQuote()">❌</span>
             </div>
             <input type="text" id="input-message" placeholder="Mesajınızı yazın...">
             <button id="send-button">Gönder</button>
@@ -208,16 +208,21 @@
         }
 
         function copyMessage(button) {
-            const codeBlock = button.closest('.message').querySelector('.code-block');
-            if (codeBlock) {
-                navigator.clipboard.writeText(codeBlock.innerText).then(() => alert('Mesajdaki kod kopyalandı!'));
+            const message = button.closest('.message');
+            const codeBlocks = message.querySelectorAll('.code-block');
+            let allCode = '';
+            codeBlocks.forEach(block => {
+                allCode += block.innerText + '\n';
+            });
+            if (allCode) {
+                navigator.clipboard.writeText(allCode).then(() => alert('Tüm kod kopyalandı!'));
             }
         }
 
         function quoteMessage(button) {
             const message = button.closest('.message').innerText;
-            quotedMessage = message;
-            quotedMessageContainer.textContent = `Alıntı: ${quotedMessage}`;
+            quotedMessage = message.split('\n')[0]; // Alıntı için sadece ilk satır
+            quotedMessageContainer.textContent = `Alıntı: ${quotedMessage} `;
             quotedMessageContainer.style.display = 'block';
             inputMessage.focus();
         }

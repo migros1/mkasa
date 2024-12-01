@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geçmiş Listeler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f5;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00923F;
+        }
+
+        .liste-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .liste-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .liste-item:last-child {
+            border-bottom: none;
+        }
+
+        .liste-item h3 {
+            margin: 0;
+            color: #00923F;
+        }
+
+        .liste-item p {
+            margin: 5px 0;
+        }
+
+        .pdf-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #00923F;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .pdf-button:hover {
+            background-color: #006633;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Geçmiş Listeler</h1>
+<div id="liste-container" class="liste-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const listeContainer = document.getElementById('liste-container');
+        const kasiyerBilgileri = JSON.parse(localStorage.getItem('kasiyerBilgileri')) || [];
+
+        if (kasiyerBilgileri.length === 0) {
+            listeContainer.innerHTML = '<p>Henüz herhangi bir kayıt bulunmamaktadır.</p>';
+        } else {
+            kasiyerBilgileri.forEach((bilgi, index) => {
+                const listeItem = document.createElement('div');
+                listeItem.classList.add('liste-item');
+
+                listeItem.innerHTML = `
+                    <h3>Liste ${index + 1}</h3>
+                    <p><strong>Tarih:</strong> ${bilgi.tarih}</p>
+                    <p><strong>Kasiyer Sicili:</strong> ${bilgi.kasiyerSicili}</p>
+                    <p><strong>Kasa No:</strong> ${bilgi.kasaNo}</p>
+                    <p><strong>Kasiyer Ad Soyad:</strong> ${bilgi.kasiyerAdSoyad}</p>
+                    <p><strong>Para Birimleri:</strong> ${bilgi.paraBirimleri.join(', ')}</p>
+                    <a class="pdf-button" onclick="createPDF(${index})">PDF İndir</a>
+                `;
+
+                listeContainer.appendChild(listeItem);
+            });
+        }
+
+        window.createPDF = function(index) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const bilgi = kasiyerBilgileri[index];
+
+            doc.setFontSize(16);
+            doc.text("Geçmiş Liste", 20, 20);
+
+            doc.setFontSize(12);
+            doc.text(`Tarih: ${bilgi.tarih}`, 20, 40);
+            doc.text(`Kasiyer Sicili: ${bilgi.kasiyerSicili}`, 20, 50);
+            doc.text(`Kasa No: ${bilgi.kasaNo}`, 20, 60);
+            doc.text(`Kasiyer Ad Soyad: ${bilgi.kasiyerAdSoyad}`, 20, 70);
+            doc.text(`Para Birimleri: ${bilgi.paraBirimleri.join(', ')}`, 20, 80);
+
+            doc.save(`Geçmiş_Liste_${index + 1}.pdf`);
+        };
+    });
+</script>
+
+</body>
+</html>

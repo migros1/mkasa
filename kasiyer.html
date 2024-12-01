@@ -1,295 +1,420 @@
-Anladım, kasiyer sicili alanını sadece 8 haneli sayı girişini kabul edecek şekilde ayarlayalım. İşte güncellenmiş kod:
 
-```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Kasiyer Bilgileri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasiyer Teslimat Formu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* Genel Stiller */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
+            background-color: #f0f0f5;
+            color: #333;
         }
-        .container {
-            width: 60%;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-        h1, h2 {
-            color: #e0101a;
-        }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 20px; 
-        }
-        table, th, td { 
-            border: 1px solid #ddd; 
-        }
-        th {
-            background-color: #e0101a;
+
+        /* Header Stili */
+        header {
+            background-color: #00923F;
             color: #fff;
-            text-transform: uppercase;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        th, td { 
-            padding: 10px; 
-            text-align: left; 
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .total { 
-            text-align: right; 
+
+        .logo img {
+            height: 50px;
         }
-        input[type="text"], input[type="date"], input[type="number"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin: 5px 0 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
         }
-        input[type="date"]:disabled {
-            background: #f2f2f2;
+
+        nav ul li {
+            margin-right: 30px;
         }
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-        .button {
-            background-color: #e0101a;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
+
+        nav ul li a {
+            color: #fff;
             text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px 0;
-            cursor: pointer;
-            border-radius: 5px;
+            font-weight: bold;
+            transition: color 0.3s ease;
         }
-        .button:hover {
-            background-color: #c00d16;
+
+        nav ul li a:hover {
+            color: #FFCD00;
         }
-        .logo {
+
+        /* Ana İçerik Stili */
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .para-birimleri-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .kağıt-para, .demir-para {
+            width: 48%;
+        }
+
+        h2 {
+            color: #00923F;
+            margin-top: 0;
+            border-bottom: 2px solid #FFCD00;
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
             display: block;
-            margin: 0 auto 20px auto;
-            width: 150px;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
-        .error {
-            color: red;
-            font-size: 12px;
-            display: none;
+
+        .para-birimi {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 60%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #00923F;
+            box-shadow: 0 0 8px rgba(0, 146, 63, 0.3);
+            outline: none;
+        }
+
+        .toplam {
+            width: 30%;
+            text-align: right;
+            font-size: 16px;
+            color: #00923F;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #00923F;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #006633;
+            transform: translateY(-2px);
+        }
+
+        /* Footer Stili */
+        footer {
+            background-color: #00923F;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        /* Animasyonlar */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            document.getElementById('date').valueAsDate = new Date();
-        });
-
-        function validateKasaNo() {
-            const kasaNo = document.getElementById('kasa').value;
-            const errorElement = document.getElementById('kasaError');
-            if (kasaNo < 1 || kasaNo > 99) {
-                errorElement.style.display = 'block';
-                document.getElementById('kasa').setCustomValidity('Lütfen 1 ile 99 arasında bir sayı giriniz.');
-            } else {
-                errorElement.style.display = 'none';
-                document.getElementById('kasa').setCustomValidity('');
-            }
-        }
-
-        function validateSicil() {
-            const sicil = document.getElementById('sicil').value;
-            const errorElement = document.getElementById('sicilError');
-            if (!/^\d{8}$/.test(sicil)) {
-                errorElement.style.display = 'block';
-                document.getElementById('sicil').setCustomValidity('Lütfen 8 haneli sayı giriniz.');
-            } else {
-                errorElement.style.display = 'none';
-                document.getElementById('sicil').setCustomValidity('');
-            }
-        }
-
-        function calculateTotal() {
-            const values = {
-                '200tl': 200,
-                '100tl': 100,
-                '50tl': 50,
-                '20tl': 20,
-                '10tl': 10,
-                '5tl': 5,
-                '1tl': 1,
-                '50kr': 0.5,
-                '25kr': 0.25,
-                '10kr': 0.10,
-                '5kr': 0.05,
-                '1kr': 0.01
-            };
-            let grandTotal = 0;
-            for (let key in values) {
-                const quantity = document.getElementById(key).value;
-                const total = values[key] * quantity;
-                document.getElementById('total' + key).innerText = total;
-                grandTotal += total;
-            }
-            document.getElementById('grandTotal').innerText = grandTotal;
-        }
-    </script>
 </head>
 <body>
-    <div class="container">
-        <img src="https://www.migros.com.tr/dist/images/migros-logo.svg" alt="Migros Logo" class="logo">
-        <h1>Kasiyer Bilgileri</h1>
-        <form id="cashierForm">
-            <label for="sicil">Kasiyer Sicili:</label>
-            <input type="text" id="sicil" name="sicil" required oninput="validateSicil()" pattern="\d{8}"><br>
-            <div id="sicilError" class="error">Lütfen 8 haneli sayı giriniz.</div>
-            <label for="name">Adı Soyadı:</label>
-            <input type="text" id="name" name="name" required><br>
-            <label for="kasa">Kasa NO:</label>
-            <input type="number" id="kasa" name="kasa" required oninput="validateKasaNo()">
-            <div id="kasaError" class="error">1 ila 99 arası seçebilirsiniz.</div><br>
-            <label for="date">Tarih:</label>
-            <input type="date" id="date" name="date" disabled><br>
-            
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="migros-logo.png" alt="Migros Logo">
+            </div>
+            <ul>
+                <li><a href="#">Ana Sayfa</a></li>
+                <li><a href="#">Ürünler</a></li>
+                <li><a href="#">Mağazalar</a></li>
+                <li><a href="#">İletişim</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="kasiyer-bilgileri">
+            <h2>Kasiyer Bilgileri</h2>
+            <form id="kasiyer-form">
+                <div class="form-group">
+                    <label for="kasiyer-sicil">Kasiyer Sicili:</label>
+                    <input type="text" id="kasiyer-sicil" maxlength="8" pattern="\d*" required>
+                </div>
+                <div class="form-group">
+                    <label for="kasa-no">Kasa No:</label>
+                    <input type="number" id="kasa-no" min="1" max="99" required>
+                </div>
+                <div class="form-group">
+                    <label for="kasiyer-ad-soyad">Kasiyer Adı Soyadı:</label>
+                    <input type="text" id="kasiyer-ad-soyad" maxlength="100" pattern="[a-zA-Z\s]*" required>
+                </div>
+                <div class="form-group">
+                    <label for="tarih">Tarih:</label>
+                    <input type="text" id="tarih" value="" disabled>
+                </div>
+            </form>
+        </section>
+
+        <section class="para-birimleri">
             <h2>Para Birimleri</h2>
-            <table>
-                <tr>
-                    <th>Para Birimi</th>
-                    <th>Adet</th>
-                    <th>Toplam</th>
-                </tr>
-                <tr>
-                    <td>200 TL</td>
-                    <td><input type="number" id="200tl" name="200tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total200tl">0</td>
-                </tr>
-                <tr>
-                    <td>100 TL</td>
-                    <td><input type="number" id="100tl" name="100tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total100tl">0</td>
-                </tr>
-                <tr>
-                    <td>50 TL</td>
-                    <td><input type="number" id="50tl" name="50tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total50tl">0</td>
-                </tr>
-                <tr>
-                    <td>20 TL</td>
-                    <td><input type="number" id="20tl" name="20tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total20tl">0</td>
-                </tr>
-                <tr>
-                    <td>10 TL</td>
-                    <td><input type="number" id="10tl" name="10tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total10tl">0</td>
-                </tr>
-                <tr>
-                    <td>5 TL</td>
-                    <td><input type="number" id="5tl" name="5tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total5tl">0</td>
-                </tr>
-                <tr>
-                    <td>1 TL</td>
-                    <td><input type="number" id="1tl" name="1tl" value="0" oninput="calculateTotal()"></td>
-                    <td id="total1tl">0</td>
-                </tr>
-                <tr>
-                    <td>50 kuruş</td>
-                    <td><input type="number" id="50kr" name="50kr" value="0" oninput="calculateTotal()"></td>
-                    <td id="total50kr">0</td>
-                </tr>
-                <tr>
-                    <td>25 kuruş</td>
-                    <td><input type="number" id="25kr" name="25kr" value="0" oninput="calculateTotal()"></td>
-                    <td id="total25kr">0</td>
-                </tr>
-                <tr>
-                    <td>10 kuruş</td>
-                    <td><input type="number" id="10kr" name="10kr" value="0" oninput="calculateTotal()"></td>
-                    <td id="total10kr">0</td>
-                </tr>
-                <tr>
-                    <td>5 kuruş</td>
-                    <td><input type="number" id="5kr" name="5kr" value="0" oninput="calculateTotal()"></td>
-                    <td id="total5kr">0</td>
-                </tr>
-                <tr>
-                    <td>1 kuruş</td>
-                    <td><input type="number" id="1kr" name="1kr" value="0" oninput="calculateTotal()"></td>
-                    <td id="total1kr">0</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="total">Genel Toplam</td>
-                    <td id="grandTotal">0</td>
-                </tr>
-            </table>
-            <button type="button" class="button" onclick="calculateTotal()">Hesapla</button>
-        </form>
-    </div>
+            <div class="para-birimleri-container">
+                <div class="kağıt-para">
+                    <h3>Kağıt Para</h3>
+                    <div class="para-birimi">
+                        <label for="200-tl-adet">200 TL</label>
+                        <input type="number" id="200-tl-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="100-tl-adet">100 TL</label>
+                        <input type="number" id="100-tl-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="50-tl-adet">50 TL</label>
+                        <input type="number" id="50-tl-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="20-tl-adet">20 TL</label>
+                        <input type="number" id="20-tl-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="10-tl-adet">10 TL</label>
+                        <input type="number" id="10-tl-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="5-tl-adet">5 TL</label>
+                        <input type="number" id="5-tl-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                </div>
+                <div class="demir-para">
+                    <h3>Demir Para</h3>
+                    <div class="para-birimi">
+                        <label for="5-tl-demir-adet">5 TL</label>
+                        <input type="number" id="5-tl-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="1-tl-demir-adet">1 TL</label>
+                        <input type="number" id="1-tl-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="50-kurus-demir-adet">50 Kuruş</label>
+                        <input type="number" id="50-kurus-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="25-kurus-demir-adet">25 Kuruş</label>
+                        <input type="number" id="25-kurus-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="10-kurus-demir-adet">10 Kuruş</label>
+                        <input type="number" id="10-kurus-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="5-kurus-demir-adet">5 Kuruş</label>
+                        <input type="number" id="5-kurus-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                    <div class="para-birimi">
+                        <label for="1-kurus-demir-adet">1 Kuruş</label>
+                        <input type="number" id="1-kurus-demir-adet" min="0" max="99999999" value="0">
+                        <span class="toplam">0 TL</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="degerli-zimmetler">
+            <h2>Değerli Zimmetler</h2>
+            <form>
+                <div class="form-group">
+                    <label for="money-club-kart">Money Club Kart (Adet):</label>
+                    <input type="number" id="money-club-kart" min="0" max="999" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="istanbul-kart">İstanbul Kart (Adet):</label>
+                    <input type="number" id="istanbul-kart" min="0" max="999" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="milli-piyango-ceyrek">Milli Piyango Çeyrek (Adet):</label>
+                    <input type="number" id="milli-piyango-ceyrek" min="0" max="999" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="milli-piyango-yarim">Milli Piyango Yarım (Adet):</label>
+                    <input type="number" id="milli-piyango-yarim" min="0" max="999" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="milli-piyango-tam">Milli Piyango Tam (Adet):</label>
+                    <input type="number" id="milli-piyango-tam" min="0" max="999" value="0">
+                </div>
+            </form>
+        </section>
+
+        <section class="kontrol-butonlari">
+            <button id="kaydet-butonu" disabled>Kaydet</button>
+            <button id="listeyi-temizle-butonu">Listeyi Temizle</button>
+            <button id="gecmis-listelerim-butonu" onclick="window.location.href='gecmisliste.html'">Geçmiş Listelerim</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Migros. Tüm hakları saklıdır.</p>
+    </footer>
 
     <script>
-        function validateKasaNo() {
-            const kasaNo = document.getElementById('kasa').value;
-            const errorElement = document.getElementById('kasaError');
-            if (kasaNo < 1 || kasaNo > 99) {
-                errorElement.style.display = 'block';
-                document.getElementById('kasa').setCustomValidity('Lütfen 1 ile 99 arasında bir sayı giriniz.');
+        // Tarih alanını otomatik olarak doldur
+        const tarihAlani = document.getElementById('tarih');
+        tarihAlani.value = new Date().toLocaleString();
+
+        // Kasiyer Bilgileri formunun doğrulamaları
+        const kasiyerForm = document.getElementById('kasiyer-form');
+        const kasiyerSicilAlani = document.getElementById('kasiyer-sicil');
+        const kasaNoAlani = document.getElementById('kasa-no');
+        const kasiyerAdSoyadAlani = document.getElementById('kasiyer-ad-soyad');
+        const kaydetButonu = document.getElementById('kaydet-butonu');
+
+        const paraBirimiInputlari = document.querySelectorAll('.para-birimi input[type="number"]');
+        const paraBirimleriToplami = document.querySelectorAll('.para-birimi .toplam');
+
+        function formDogrulama() {
+            if (kasiyerSicilAlani.value && kasaNoAlani.value && kasiyerAdSoyadAlani.value) {
+                kaydetButonu.disabled = false;
             } else {
-                errorElement.style.display = 'none';
-                document.getElementById('kasa').setCustomValidity('');
+                kaydetButonu.disabled = true;
             }
         }
 
-        function validateSicil() {
-            const sicil = document.getElementById('sicil').value;
-            const errorElement = document.getElementById('sicilError');
-            if (!/^\d{8}$/.test(sicil)) {
-                errorElement.style.display = 'block';
-                document.getElementById('sicil').setCustomValidity('Lütfen 8 haneli sayı giriniz.');
-            } else {
-                errorElement.style.display = 'none';
-                document.getElementById('sicil').setCustomValidity('');
+        kasiyerSicilAlani.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+            formDogrulama();
+        });
+
+        kasaNoAlani.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value > 99) {
+                this.value = 99;
             }
+            formDogrulama();
+        });
+
+        kasiyerAdSoyadAlani.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+            if (this.value.length > 100) {
+                this.value = this.value.slice(0, 100);
+            }
+            formDogrulama();
+        });
+
+        // Para Birimleri bölümünün işlevleri
+        paraBirimiInputlari.forEach((input, index) => {
+            input.addEventListener('input', function() {
+                if (this.value.length > 8) {
+                    this.value = this.value.slice(0, 8);
+                }
+                hesaplaToplamTutar();
+            });
+        });
+
+        function hesaplaToplamTutar() {
+            const birimDegerleri = [200, 100, 50, 20, 10, 5, 5, 1, 0.5, 0.25, 0.1, 0.05, 0.01];
+            let toplamTutar = 0;
+
+            paraBirimiInputlari.forEach((input, i) => {
+                const adet = parseInt(input.value) || 0;
+                const toplam = adet * birimDegerleri[i];
+                paraBirimleriToplami[i].textContent = `${toplam.toFixed(2)} TL`;
+                toplamTutar += toplam;
+            });
+
+            console.log(`Toplam Tutar: ${toplamTutar.toFixed(2)} TL`);
         }
 
-        function calculateTotal() {
-            const values = {
-                '200tl': 200,
-                '100tl': 100,
-                '50tl': 50,
-                '20tl': 20,
-                '10tl': 10,
-                '5tl': 5,
-                '1tl': 1,
-                '50kr': 0.5,
-                '25kr': 0.25,
-                '10kr': 0.10,
-                '5kr': 0.05,
-                '1kr': 0.01
+        // Kontrol Butonları işlevleri
+        kaydetButonu.addEventListener('click', function() {
+            const kasiyerBilgileri = JSON.parse(localStorage.getItem('kasiyerBilgileri')) || [];
+            const yeniBilgi = {
+                kasiyerSicili: kasiyerSicilAlani.value,
+                kasaNo: kasaNoAlani.value,
+                kasiyerAdSoyad: kasiyerAdSoyadAlani.value,
+                tarih: tarihAlani.value,
+                paraBirimleri: Array.from(paraBirimiInputlari).map(input => parseInt(input.value) || 0)
             };
-            let grandTotal = 0;
-            for (let key in values) {
-                const quantity = document.getElementById(key).value;
-                const total = values[key] * quantity;
-                document.getElementById('total' + key).innerText = total;
-                grandTotal += total;
-            }
-            document.getElementById('grandTotal').innerText = grandTotal;
-        }
+
+            kasiyerBilgileri.push(yeniBilgi);
+            localStorage.setItem('kasiyerBilgileri', JSON.stringify(kasiyerBilgileri));
+            console.log('Kasiyer bilgileri kaydedildi.');
+        });
+
+        document.getElementById('listeyi-temizle-butonu').addEventListener('click', function() {
+            paraBirimiInputlari.forEach(input => input.value = 0);
+            paraBirimleriToplami.forEach(span => span.textContent = '0 TL');
+            console.log('Liste temizlendi.');
+        });
+
+        document.getElementById('gecmis-listelerim-butonu').addEventListener('click', function() {
+            window.location.href = 'gecmisliste.html';
+        });
     </script>
 </body>
 </html>
-
-            
-                    

@@ -1,0 +1,295 @@
+Anladım, kasiyer sicili alanını sadece 8 haneli sayı girişini kabul edecek şekilde ayarlayalım. İşte güncellenmiş kod:
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kasiyer Bilgileri</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+        }
+        .container {
+            width: 60%;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        h1, h2 {
+            color: #e0101a;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
+        table, th, td { 
+            border: 1px solid #ddd; 
+        }
+        th {
+            background-color: #e0101a;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        th, td { 
+            padding: 10px; 
+            text-align: left; 
+        }
+        .total { 
+            text-align: right; 
+        }
+        input[type="text"], input[type="date"], input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="date"]:disabled {
+            background: #f2f2f2;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .button {
+            background-color: #e0101a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #c00d16;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+            width: 150px;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('date').valueAsDate = new Date();
+        });
+
+        function validateKasaNo() {
+            const kasaNo = document.getElementById('kasa').value;
+            const errorElement = document.getElementById('kasaError');
+            if (kasaNo < 1 || kasaNo > 99) {
+                errorElement.style.display = 'block';
+                document.getElementById('kasa').setCustomValidity('Lütfen 1 ile 99 arasında bir sayı giriniz.');
+            } else {
+                errorElement.style.display = 'none';
+                document.getElementById('kasa').setCustomValidity('');
+            }
+        }
+
+        function validateSicil() {
+            const sicil = document.getElementById('sicil').value;
+            const errorElement = document.getElementById('sicilError');
+            if (!/^\d{8}$/.test(sicil)) {
+                errorElement.style.display = 'block';
+                document.getElementById('sicil').setCustomValidity('Lütfen 8 haneli sayı giriniz.');
+            } else {
+                errorElement.style.display = 'none';
+                document.getElementById('sicil').setCustomValidity('');
+            }
+        }
+
+        function calculateTotal() {
+            const values = {
+                '200tl': 200,
+                '100tl': 100,
+                '50tl': 50,
+                '20tl': 20,
+                '10tl': 10,
+                '5tl': 5,
+                '1tl': 1,
+                '50kr': 0.5,
+                '25kr': 0.25,
+                '10kr': 0.10,
+                '5kr': 0.05,
+                '1kr': 0.01
+            };
+            let grandTotal = 0;
+            for (let key in values) {
+                const quantity = document.getElementById(key).value;
+                const total = values[key] * quantity;
+                document.getElementById('total' + key).innerText = total;
+                grandTotal += total;
+            }
+            document.getElementById('grandTotal').innerText = grandTotal;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.migros.com.tr/dist/images/migros-logo.svg" alt="Migros Logo" class="logo">
+        <h1>Kasiyer Bilgileri</h1>
+        <form id="cashierForm">
+            <label for="sicil">Kasiyer Sicili:</label>
+            <input type="text" id="sicil" name="sicil" required oninput="validateSicil()" pattern="\d{8}"><br>
+            <div id="sicilError" class="error">Lütfen 8 haneli sayı giriniz.</div>
+            <label for="name">Adı Soyadı:</label>
+            <input type="text" id="name" name="name" required><br>
+            <label for="kasa">Kasa NO:</label>
+            <input type="number" id="kasa" name="kasa" required oninput="validateKasaNo()">
+            <div id="kasaError" class="error">1 ila 99 arası seçebilirsiniz.</div><br>
+            <label for="date">Tarih:</label>
+            <input type="date" id="date" name="date" disabled><br>
+            
+            <h2>Para Birimleri</h2>
+            <table>
+                <tr>
+                    <th>Para Birimi</th>
+                    <th>Adet</th>
+                    <th>Toplam</th>
+                </tr>
+                <tr>
+                    <td>200 TL</td>
+                    <td><input type="number" id="200tl" name="200tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total200tl">0</td>
+                </tr>
+                <tr>
+                    <td>100 TL</td>
+                    <td><input type="number" id="100tl" name="100tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total100tl">0</td>
+                </tr>
+                <tr>
+                    <td>50 TL</td>
+                    <td><input type="number" id="50tl" name="50tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total50tl">0</td>
+                </tr>
+                <tr>
+                    <td>20 TL</td>
+                    <td><input type="number" id="20tl" name="20tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total20tl">0</td>
+                </tr>
+                <tr>
+                    <td>10 TL</td>
+                    <td><input type="number" id="10tl" name="10tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total10tl">0</td>
+                </tr>
+                <tr>
+                    <td>5 TL</td>
+                    <td><input type="number" id="5tl" name="5tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total5tl">0</td>
+                </tr>
+                <tr>
+                    <td>1 TL</td>
+                    <td><input type="number" id="1tl" name="1tl" value="0" oninput="calculateTotal()"></td>
+                    <td id="total1tl">0</td>
+                </tr>
+                <tr>
+                    <td>50 kuruş</td>
+                    <td><input type="number" id="50kr" name="50kr" value="0" oninput="calculateTotal()"></td>
+                    <td id="total50kr">0</td>
+                </tr>
+                <tr>
+                    <td>25 kuruş</td>
+                    <td><input type="number" id="25kr" name="25kr" value="0" oninput="calculateTotal()"></td>
+                    <td id="total25kr">0</td>
+                </tr>
+                <tr>
+                    <td>10 kuruş</td>
+                    <td><input type="number" id="10kr" name="10kr" value="0" oninput="calculateTotal()"></td>
+                    <td id="total10kr">0</td>
+                </tr>
+                <tr>
+                    <td>5 kuruş</td>
+                    <td><input type="number" id="5kr" name="5kr" value="0" oninput="calculateTotal()"></td>
+                    <td id="total5kr">0</td>
+                </tr>
+                <tr>
+                    <td>1 kuruş</td>
+                    <td><input type="number" id="1kr" name="1kr" value="0" oninput="calculateTotal()"></td>
+                    <td id="total1kr">0</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="total">Genel Toplam</td>
+                    <td id="grandTotal">0</td>
+                </tr>
+            </table>
+            <button type="button" class="button" onclick="calculateTotal()">Hesapla</button>
+        </form>
+    </div>
+
+    <script>
+        function validateKasaNo() {
+            const kasaNo = document.getElementById('kasa').value;
+            const errorElement = document.getElementById('kasaError');
+            if (kasaNo < 1 || kasaNo > 99) {
+                errorElement.style.display = 'block';
+                document.getElementById('kasa').setCustomValidity('Lütfen 1 ile 99 arasında bir sayı giriniz.');
+            } else {
+                errorElement.style.display = 'none';
+                document.getElementById('kasa').setCustomValidity('');
+            }
+        }
+
+        function validateSicil() {
+            const sicil = document.getElementById('sicil').value;
+            const errorElement = document.getElementById('sicilError');
+            if (!/^\d{8}$/.test(sicil)) {
+                errorElement.style.display = 'block';
+                document.getElementById('sicil').setCustomValidity('Lütfen 8 haneli sayı giriniz.');
+            } else {
+                errorElement.style.display = 'none';
+                document.getElementById('sicil').setCustomValidity('');
+            }
+        }
+
+        function calculateTotal() {
+            const values = {
+                '200tl': 200,
+                '100tl': 100,
+                '50tl': 50,
+                '20tl': 20,
+                '10tl': 10,
+                '5tl': 5,
+                '1tl': 1,
+                '50kr': 0.5,
+                '25kr': 0.25,
+                '10kr': 0.10,
+                '5kr': 0.05,
+                '1kr': 0.01
+            };
+            let grandTotal = 0;
+            for (let key in values) {
+                const quantity = document.getElementById(key).value;
+                const total = values[key] * quantity;
+                document.getElementById('total' + key).innerText = total;
+                grandTotal += total;
+            }
+            document.getElementById('grandTotal').innerText = grandTotal;
+        }
+    </script>
+</body>
+</html>
+
+            
+                    

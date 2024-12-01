@@ -15,52 +15,56 @@
             line-height: 1.6;
         }
         header {
-            background-color: #ff6600;
-            padding: 15px;
+            background-color: #1c2833;
+            padding: 20px;
             text-align: center;
         }
         header h1 {
             margin: 0;
             color: white;
+            font-size: 28px;
         }
         .container {
-            margin: 20px auto;
+            margin: 40px auto;
             max-width: 900px;
             background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .filter {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .filter input[type="date"] {
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
             width: 70%;
+            font-size: 16px;
         }
         .filter button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 6px;
-            background-color: #ff6600;
+            background-color: #1c2833;
             color: white;
             cursor: pointer;
+            font-size: 16px;
             transition: background-color 0.3s;
         }
         .filter button:hover {
-            background-color: #e65c00;
+            background-color: #34495e;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 16px;
         }
         th, td {
-            padding: 12px;
+            padding: 15px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
@@ -75,24 +79,44 @@
         .no-data {
             text-align: center;
             color: #777;
-            margin-top: 20px;
+            margin-top: 30px;
+            font-size: 18px;
         }
         .buttons {
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
             justify-content: space-between;
         }
         .buttons button {
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
             border-radius: 6px;
-            background-color: #ff6600;
+            background-color: #1c2833;
             color: white;
             cursor: pointer;
+            font-size: 16px;
             transition: background-color 0.3s;
         }
         .buttons button:hover {
-            background-color: #e65c00;
+            background-color: #34495e;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
         }
     </style>
 </head>
@@ -127,6 +151,31 @@
     <div class="no-data" id="noDataMessage" style="display: none;">Hiç veri bulunamadı.</div>
 </div>
 
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Detaylı Listeleme</h2>
+        <table id="detailTable">
+            <thead>
+                <tr>
+                    <th>Kasiyer Adı</th>
+                    <th>Kasa No</th>
+                    <th>Tarih</th>
+                    <th>Kağıt Para</th>
+                    <th>Bozuk Para</th>
+                    <th>Money Club Kart</th>
+                    <th>İstanbul Kart</th>
+                    <th>Milli Piyango</th>
+                    <th>Toplam Tutar</th>
+                </tr>
+            </thead>
+            <tbody id="detailTableBody">
+                <!-- Detay verileri buraya yüklenecek -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         loadData();
@@ -153,9 +202,9 @@
             row.innerHTML = `<td>${data.kasiyerAdi}</td>
                              <td>${data.kasaNo}</td>
                              <td>${new Date(data.tarih).toLocaleDateString('tr-TR')}</td>
-                             <td>${data.toplamTutar || 0} TL</td>
-                             <td><button onclick="showDetails('${data.kasiyerAdi}')">Detaylar</button></td>
-                             <td><button onclick="downloadPDF('${data.kasiyerAdi}')">İndir</button></td>`;
+                             <td>${data.toplamTutar.toFixed(2)} TL</td>
+                             <td><button onclick="showDetails('${data.kasiyerAdi}', '${data.tarih}')">Detaylar</button></td>
+                             <td><button onclick="downloadPDF('${data.kasiyerAdi}', '${data.tarih}')">İndir</button></td>`;
             dataList.appendChild(row);
         });
 
@@ -183,9 +232,9 @@
             row.innerHTML = `<td>${data.kasiyerAdi}</td>
                              <td>${data.kasaNo}</td>
                              <td>${new Date(data.tarih).toLocaleDateString('tr-TR')}</td>
-                             <td>${data.toplamTutar || 0} TL</td>
-                             <td><button onclick="showDetails('${data.kasiyerAdi}')">Detaylar</button></td>
-                             <td><button onclick="downloadPDF('${data.kasiyerAdi}')">İndir</button></td>`;
+                             <td>${data.toplamTutar.toFixed(2)} TL</td>
+                             <td><button onclick="showDetails('${data.kasiyerAdi}', '${data.tarih}')">Detaylar</button></td>
+                             <td><button onclick="downloadPDF('${data.kasiyerAdi}', '${data.tarih}')">İndir</button></td>`;
             dataList.appendChild(row);
         });
 
@@ -193,16 +242,87 @@
     }
 
     // Detayları göster
-    function showDetails(kasiyerAdi) {
-        alert(`Detaylar için ${kasiyerAdi}'nın bilgileri burada gösterilecektir.`);
-        // Detayları göstermek için gerekli işlevselliği buraya ekleyin
+    function showDetails(kasiyerAdi, tarih) {
+        const savedData = JSON.parse(localStorage.getItem('kasiyerDataList')) || [];
+        const detailData = savedData.find(data => data.kasiyerAdi === kasiyerAdi && data.tarih === tarih);
+
+        if (detailData) {
+            const detailTableBody = document.getElementById('detailTableBody');
+            detailTableBody.innerHTML = `<tr>
+                <td>${detailData.kasiyerAdi}</td>
+                <td>${detailData.kasaNo}</td>
+                <td>${new Date(detailData.tarih).toLocaleDateString('tr-TR')}</td>
+                <td>${detailData.paraAdetleri.slice(0, 6).map((adet, index) => `${paraBirimleri[index].birim}: ${adet}`).join('<br>')}</td>
+                <td>${detailData.paraAdetleri.slice(6).map((adet, index) => `${paraBirimleri[index + 6].birim}: ${adet}`).join('<br>')}</td>
+                <td>${detailData.moneyClubKart}</td>
+                <td>${detailData.istanbulKart}</td>
+                <td>Çeyrek: ${detailData.milliPiyangoCeyrek}, Yarım: ${detailData.milliPiyangoYarim}, Tam: ${detailData.milliPiyangoTam}</td>
+                <td>${detailData.toplamTutar.toFixed(2)} TL</td>
+            </tr>`;
+
+            const modal = document.getElementById('detailModal');
+            modal.style.display = 'block';
+
+            const closeButton = document.querySelector('.close-button');
+            closeButton.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
     }
 
     // PDF indir
-    function downloadPDF(kasiyerAdi) {
-        alert(`${kasiyerAdi} için PDF indirilecek.`);
-        // PDF indirme işlevselliğini buraya ekleyin
+    function downloadPDF(kasiyerAdi, tarih) {
+        const savedData = JSON.parse(localStorage.getItem('kasiyerDataList')) || [];
+        const pdfData = savedData.find(data => data.kasiyerAdi === kasiyerAdi && data.tarih === tarih);
+
+        if (pdfData) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(14);
+            doc.text(`Kasiyer Adı: ${pdfData.kasiyerAdi}`, 20, 20);
+            doc.text(`Kasa No: ${pdfData.kasaNo}`, 20, 30);
+            doc.text(`Tarih: ${new Date(pdfData.tarih).toLocaleDateString('tr-TR')}`, 20, 40);
+            doc.setFontSize(12);
+            doc.text('Kağıt Para:', 20, 50);
+            pdfData.paraAdetleri.slice(0, 6).forEach((adet, index) => {
+                doc.text(`${paraBirimleri[index].birim}: ${adet}`, 30, 60 + index * 10);
+            });
+            doc.text('Bozuk Para:', 20, 120);
+            pdfData.paraAdetleri.slice(6).forEach((adet, index) => {
+                doc.text(`${paraBirimleri[index + 6].birim}: ${adet}`, 30, 130 + index * 10);
+            });
+            doc.text(`Money Club Kart: ${pdfData.moneyClubKart}`, 20, 190);
+            doc.text(`İstanbul Kart: ${pdfData.istanbulKart}`, 20, 200);
+            doc.text(`Milli Piyango Çeyrek: ${pdfData.milliPiyangoCeyrek}, Yarım: ${pdfData.milliPiyangoYarim}, Tam: ${pdfData.milliPiyangoTam}`, 20, 210);
+            doc.setFontSize(14);
+            doc.text(`Toplam Tutar: ${pdfData.toplamTutar.toFixed(2)} TL`, 20, 230);
+
+            doc.save(`${pdfData.kasiyerAdi}_${new Date(pdfData.tarih).toLocaleDateString('tr-TR')}.pdf`);
+        }
     }
+
+    const paraBirimleri = [
+        { birim: '200 TL', deger: 200 },
+        { birim: '100 TL', deger: 100 },
+        { birim: '50 TL', deger: 50 },
+        { birim: '20 TL', deger: 20 },
+        { birim: '10 TL', deger: 10 },
+        { birim: '5 TL', deger: 5 },
+        { birim: '5 TL (Demir)', deger: 5 },
+        { birim: '1 TL', deger: 1 },
+        { birim: '50 Kuruş', deger: 0.5 },
+        { birim: '25 Kuruş', deger: 0.25 },
+        { birim: '10 Kuruş', deger: 0.1 },
+        { birim: '5 Kuruş', deger: 0.05 },
+        { birim: '1 Kuruş', deger: 0.01 }
+    ];
 </script>
 
 </body>

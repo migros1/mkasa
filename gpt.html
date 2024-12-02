@@ -224,7 +224,7 @@
             addMessageToChat('user-message', message);
             conversationHistory.push({role: 'user', content: message});
             saveConversationHistory();
-            getBotResponse();
+            getBotResponse(message);
             inputMessage.value = '';
         }
     });
@@ -314,13 +314,21 @@
         quotedMessageContainer.style.display = 'none';
     }
 
-    function getBotResponse() {
-        // Simulated response for demonstration
-        const exampleCode = `function example() {\n  console.log('This is a long code example');\n}\n`.repeat(10); // Repeat to make it long
-        const botMessage = `Here is a code example:\n\n\`\`\`js\n${exampleCode}\n\`\`\``;
-        addMessageToChat('bot-message', botMessage);
-        conversationHistory.push({role: 'bot', content: botMessage});
-        saveConversationHistory();
+    async function getBotResponse(userMessage) {
+        try {
+            const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(userMessage)}&model=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`);
+            const data = await response.json();
+            if (data && data.response) {
+                addMessageToChat('bot-message', data.response);
+                conversationHistory.push({role: 'bot', content: data.response});
+                saveConversationHistory();
+            } else {
+                addMessageToChat('bot-message', 'Bot cevabı alınamadı.');
+            }
+        } catch (error) {
+            console.error('API request failed:', error);
+            addMessageToChat('bot-message', 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+        }
     }
 
     function saveConversationHistory() {

@@ -2,8 +2,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodsGPT</title>
     <style>
         body {
@@ -25,6 +24,14 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+        }
+        #chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            background-color: #f0f4f8;
         }
         #chat-box {
             flex: 1;
@@ -56,6 +63,18 @@
             font-size: 16px;
         }
         #send-button:hover {
+            background-color: #0356b6;
+        }
+        #new-chat-button, #view-history-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0366d6;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #new-chat-button:hover, #view-history-button:hover {
             background-color: #0356b6;
         }
         .message {
@@ -183,6 +202,10 @@
 </head>
 <body>
     <div id="chat-container">
+        <div id="chat-header">
+            <button id="new-chat-button">Yeni Sohbet</button>
+            <button id="view-history-button">Geçmiş Sohbetler</button>
+        </div>
         <div id="chat-box"></div>
         <div id="chat-input">
             <div id="quoted-message-container" class="quoted-message" style="display: none;">
@@ -198,12 +221,39 @@
         const inputMessage = document.getElementById('input-message');
         const sendButton = document.getElementById('send-button');
         const quotedMessageContainer = document.getElementById('quoted-message-container');
+        const newChatButton = document.getElementById('new-chat-button');
+        const viewHistoryButton = document.getElementById('view-history-button');
 
         let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory')) || [];
         let quotedMessage = '';
+        let currentChatTitle = '';
 
         // Sohbet geçmişini yükle
         loadConversationHistory();
+
+        newChatButton.addEventListener('click', () => {
+            if (confirm("Yeni bir sohbet başlatmak istediğinizden emin misiniz? Mevcut sohbet kaydedilecektir.")) {
+                currentChatTitle = prompt("Bu sohbet için bir başlık girin:", "Yeni Sohbet");
+                if (currentChatTitle) {
+                    saveConversationHistory();
+                    conversationHistory = [];
+                    chatBox.innerHTML = '';
+                    inputMessage.value = '';
+                }
+            }
+        });
+
+        viewHistoryButton.addEventListener('click', () => {
+            const history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
+            const titles = history.map((entry, index) => `${index + 1}: ${entry.title || 'Bilinmeyen Başlık'}`);
+            const selected = prompt(`Geçmiş Sohbetler:\n\n${titles.join('\n')}\n\nGörüntülemek istediğiniz sohbet numarasını girin:`);
+            const selectedIndex = parseInt(selected) - 1;
+            if (selectedIndex >= 0 && selectedIndex < history.length) {
+                conversationHistory = history[selectedIndex].messages;
+                chatBox.innerHTML = '';
+                loadConversationHistory();
+            }
+        });
 
         sendButton.addEventListener('click', () => {
             let message = inputMessage.value.trim();
@@ -329,7 +379,11 @@
         }
 
         function saveConversationHistory() {
-            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+            let history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
+            if (currentChatTitle) {
+                history.push({ title: currentChatTitle, messages: conversationHistory });
+                localStorage.setItem('conversationHistory', JSON.stringify(history));
+            }
         }
 
         function loadConversationHistory() {

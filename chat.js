@@ -20,10 +20,14 @@ document.getElementById("saveSettingsButton").addEventListener("click", saveSett
 let messages = [];
 let contextHistory = [];
 
+function toggleSettings() {
+    document.querySelector('.settings').classList.toggle('show');
+}
+
 function saveSettings() {
     const username = document.getElementById("username").value;
     const profilePic = document.getElementById("profilePic").value;
-    
+
     localStorage.setItem("username", username);
     localStorage.setItem("profilePic", profilePic);
 

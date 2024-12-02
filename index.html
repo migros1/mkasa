@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sohbet API Demo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -15,6 +16,11 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
+            animation: fadeInBackground 2s ease-in-out;
+        }
+        @keyframes fadeInBackground {
+            from { background-color: #e0e0e0; }
+            to { background-color: #f9f9f9; }
         }
         .chat-container {
             background: #ffffff;
@@ -44,7 +50,10 @@
             border: 1px solid #ddd;
             border-bottom: none;
             background-color: #f1f1f1;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .tab:hover {
+            transform: scale(1.05);
         }
         .tab.active {
             background-color: #ffffff;
@@ -141,6 +150,24 @@
         }
         .user-settings {
             margin-bottom: 20px;
+        }
+        .chat-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .settings button {
+            align-self: flex-end;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .settings button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>

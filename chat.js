@@ -52,6 +52,7 @@ function sendMessage() {
             appendMessage("API", responseMessage, "api-profile.png", timestamp);
             messages.push({ sender: "API", message: responseMessage, profilePic: "api-profile.png", timestamp });
             contextHistory.push({ role: "assistant", content: data.response });
+            saveContext();
         })
         .catch(error => {
             console.error("Error fetching API:", error);
@@ -86,14 +87,23 @@ function appendMessage(sender, message, profilePic, timestamp) {
 
 function saveMessages() {
     localStorage.setItem("chatMessages", JSON.stringify(messages));
+    localStorage.setItem("contextHistory", JSON.stringify(contextHistory));
 }
 
 function loadMessages() {
     const savedMessages = localStorage.getItem("chatMessages");
+    const savedContext = localStorage.getItem("contextHistory");
     if (savedMessages) {
         messages = JSON.parse(savedMessages);
         messages.forEach(msg => appendMessage(msg.sender, msg.message, msg.profilePic, msg.timestamp));
     }
+    if (savedContext) {
+        contextHistory = JSON.parse(savedContext);
+    }
+}
+
+function saveContext() {
+    localStorage.setItem("contextHistory", JSON.stringify(contextHistory));
 }
 
 window.onload = loadMessages;

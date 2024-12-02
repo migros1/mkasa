@@ -51,7 +51,7 @@
             background: #555;
         }
         .h-full-minus-header {
-            height: calc(100% - 64px); /* Üst menünün yüksekliğine göre ayarlanmıştır */
+            height: calc(100% - 64px);
         }
     </style>
 </head>
@@ -230,9 +230,11 @@
 
             try {
                 const response = await fetch(`${API_URL}?prompt=${encodeURIComponent(prompt)}&model=${model}`);
-                const data = await response.text();
+                const data = await response.json();
                 
-                addMessage(data, 'assistant');
+                // Yalnızca mesajı göster
+                const message = data.response;
+                addMessage(message, 'assistant');
             } catch (error) {
                 addMessage('Bir hata oluştu: ' + error.message, 'assistant');
             }

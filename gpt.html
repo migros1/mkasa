@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodsGPT</title>
     <style>
         body {
@@ -17,7 +18,7 @@
         #chat-container {
             width: 100%;
             max-width: 800px;
-            height: 80vh;
+            height: 90vh;
             background-color: #ffffff;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             border-radius: 10px;
@@ -194,6 +195,7 @@
                     conversationHistory = [];
                     chatBox.innerHTML = '';
                     inputMessage.value = '';
+                    alert('Yeni bir sohbete başlandı.');
                 }
             }
         });
@@ -207,6 +209,7 @@
                 conversationHistory = history[selectedIndex].messages;
                 chatBox.innerHTML = '';
                 loadConversationHistory();
+                alert('Geçmiş sohbete geri dönüldü.');
             }
         });
 
@@ -306,7 +309,6 @@
         }
 
         function getBotResponse() {
-            // This is a placeholder for actual bot response logic
             const botMessage = "Bu bir simüle edilmiş bot cevabıdır.";
             addMessageToChat('bot-message', botMessage);
             conversationHistory.push({ role: 'bot', content: botMessage });

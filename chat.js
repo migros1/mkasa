@@ -18,6 +18,7 @@ document.querySelectorAll(".tab").forEach(tab => {
 document.getElementById("saveSettingsButton").addEventListener("click", saveSettings);
 
 let messages = [];
+let contextHistory = [];
 
 function saveSettings() {
     const username = document.getElementById("username").value;
@@ -39,15 +40,18 @@ function sendMessage() {
     const timestamp = new Date().toLocaleTimeString();
     appendMessage(username, userInput, profilePic, timestamp);
     messages.push({ sender: username, message: userInput, profilePic, timestamp });
+    contextHistory.push(userInput);
 
     document.getElementById("userInput").value = "";
 
-    fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(userInput)}&=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`)
+    const context = contextHistory.join("\n");
+    fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(context)}&=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`)
         .then(response => response.json())
         .then(data => {
             const responseMessage = formatMessage(data.response);
             appendMessage("API", responseMessage, "api-profile.png", timestamp);
             messages.push({ sender: "API", message: responseMessage, profilePic: "api-profile.png", timestamp });
+            contextHistory.push(data.response);
         })
         .catch(error => {
             console.error("Error fetching API:", error);

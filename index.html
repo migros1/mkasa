@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .chat-container {
             background: #ffffff;
@@ -25,6 +26,11 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .tabs {
             display: flex;
@@ -49,6 +55,8 @@
             display: none;
             padding: 10px;
             border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
         }
         .tab-content.active {
             display: block;
@@ -62,6 +70,7 @@
             height: 400px;
             background-color: #fafafa;
             border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .chat-input {
             display: flex;
@@ -71,6 +80,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            transition: all 0.3s ease;
         }
         .chat-input input {
             flex: 1;
@@ -80,10 +90,10 @@
             background-color: #007bff;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
         .chat-input button:hover {
             background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .user-input {
             display: flex;
@@ -94,23 +104,35 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        .user-input input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
         .message {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         .message img {
             border-radius: 50%;
             width: 40px;
             height: 40px;
             margin-right: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         .message pre {
             background: #f4f4f4;
             padding: 10px;
             border-radius: 4px;
             overflow-x: auto;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         .settings {
             display: flex;

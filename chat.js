@@ -40,23 +40,22 @@ function sendMessage() {
     const timestamp = new Date().toLocaleTimeString();
     appendMessage(username, userInput, profilePic, timestamp);
     messages.push({ sender: username, message: userInput, profilePic, timestamp });
-    contextHistory.push(userInput);
+    contextHistory.push({ role: "user", content: userInput });
 
     document.getElementById("userInput").value = "";
 
-    const context = contextHistory.join("\n");
-    fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(context)}&=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`)
+    const context = contextHistory.map(entry => `${entry.role}: ${entry.content}`).join("\n");
+    fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(context)}&=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo&lang=tr`)
         .then(response => response.json())
         .then(data => {
             const responseMessage = formatMessage(data.response);
             appendMessage("API", responseMessage, "api-profile.png", timestamp);
             messages.push({ sender: "API", message: responseMessage, profilePic: "api-profile.png", timestamp });
-            contextHistory.push(data.response);
+            contextHistory.push({ role: "assistant", content: data.response });
         })
         .catch(error => {
             console.error("Error fetching API:", error);
             appendMessage("API", "API çağrısında bir hata oluştu.", "error-profile.png", timestamp);
-            setTimeout(() => sendMessage(userInput), 3000); // Yeniden deneme mekanizması
         });
 }
 

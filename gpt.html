@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sohbet Asistanı</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/build/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.css">
+    <style>
+        :root {
+            --primary-color: #10A37F;
+            --secondary-color: #F4F4F4;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        #sidebar {
+            width: 260px;
+            transition: transform 0.3s ease;
+        }
+        .code-copy-btn {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        pre:hover .code-copy-btn {
+            opacity: 1;
+        }
+        .markdown pre {
+            position: relative;
+        }
+        .hljs {
+            background-color: #f4f4f4 !important;
+            border-radius: 8px;
+            padding: 15px !important;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .h-full-minus-header {
+            height: calc(100% - 64px); /* Üst menünün yüksekliğine göre ayarlanmıştır */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex h-screen overflow-hidden">
+    <!-- Sol Kenar Menü -->
+    <div id="sidebar" class="fixed left-0 top-0 h-full bg-white border-r w-64 transform -translate-x-full lg:translate-x-0 z-50 custom-scrollbar overflow-y-auto">
+        <div class="p-4">
+            <button id="newChatBtn" class="w-full bg-green-500 text-white py-2 rounded mb-4 hover:bg-green-600 flex items-center justify-center">
+                <i class="fas fa-plus mr-2"></i> Yeni Sohbet
+            </button>
+            
+            <div id="chatHistory">
+                <!-- Geçmiş sohbetler buraya eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Ana İçerik -->
+    <div class="flex flex-col w-full lg:ml-64 h-full">
+        <!-- Üst Bar -->
+        <div class="bg-white border-b p-4 flex justify-between items-center">
+            <button id="sidebarToggle" class="lg:hidden">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+            <div class="flex items-center space-x-4">
+                <select id="modelSelect" class="border rounded p-2">
+                    <option value="meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo">Llama 3.1 70B</option>
+                    <!-- Diğer modeller eklenebilir -->
+                </select>
+                <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded">
+                    <i class="fas fa-trash mr-2"></i>Temizle
+                </button>
+            </div>
+        </div>
+
+        <!-- Mesaj Alanı -->
+        <div id="chatContainer" class="flex-grow overflow-y-auto p-6 custom-scrollbar markdown h-full-minus-header">
+            <div id="messageContainer" class="space-y-6 max-w-4xl mx-auto"></div>
+        </div>
+
+        <!-- Mesaj Gönderme Alanı -->
+        <div class="bg-white border-t p-4">
+            <div class="max-w-4xl mx-auto relative">
+                <textarea 
+                    id="promptInput" 
+                    rows="1" 
+                    class="w-full p-3 pr-12 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Bir mesaj yazın..."
+                ></textarea>
+                <button 
+                    id="sendButton" 
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-500 text-white p-2 rounded-full hover:bg-green-600"
+                >
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LocalStorage için sohbet geçmişi
+        class ChatHistory {
+            static addChat(chat) {
+                let history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                history.unshift({
+                    id: Date.now(),
+                    title: chat.slice(0, 30) + '...',
+                    timestamp: new Date().toLocaleString()
+                });
+                localStorage.setItem('chatHistory', JSON.stringify(history.slice(0, 10)));
+                this.renderHistory();
+            }
+
+            static renderHistory() {
+                const historyContainer = document.getElementById('chatHistory');
+                const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                
+                historyContainer.innerHTML = history.map(chat => `
+                    <div class="bg-gray-100 p-3 rounded mb-2 flex justify-between items-center">
+                        <span class="truncate">${chat.title}</span>
+                        <small class="text-gray-500">${chat.timestamp}</small>
+                    </div>
+                `).join('');
+            }
+        }
+
+        const API_URL = 'https://darkness.ashlynn.workers.dev/chat/';
+        const messageContainer = document.getElementById('messageContainer');
+        const promptInput = document.getElementById('promptInput');
+        const sendButton = document.getElementById('sendButton');
+        const modelSelect = document.getElementById('modelSelect');
+        const clearButton = document.getElementById('clearButton');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const newChatBtn = document.getElementById('newChatBtn');
+
+        // Kod kopyalama fonksiyonu
+        function createCodeCopyButton(codeBlock) {
+            const copyButton = document.createElement('button');
+            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+            copyButton.classList.add('code-copy-btn', 'absolute', 'top-2', 'right-2', 'bg-gray-200', 'p-2', 'rounded');
+            copyButton.setAttribute('title', 'Kodu Kopyala');
+            
+            copyButton.addEventListener('click', () => {
+                const code = codeBlock.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    copyButton.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    setTimeout(() => {
+                        copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+
+            return copyButton;
+        }
+
+        // Markdown ve kod vurgulama
+        function renderMarkdown(text) {
+            const renderedHtml = marked.parse(text);
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = renderedHtml;
+
+            // Kod bloklarını vurgulama
+            tempDiv.querySelectorAll('pre code').forEach((codeBlock) => {
+                hljs.highlightElement(codeBlock);
+                
+                // Kod kopyalama butonu ekleme
+                const preElement = codeBlock.parentNode;
+                preElement.style.position = 'relative';
+                preElement.appendChild(createCodeCopyButton(codeBlock));
+            });
+
+            return tempDiv.innerHTML;
+        }
+
+        // Mesaj ekleme
+        function addMessage(content, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', 'space-x-4');
+            
+            const iconClass = type === 'user' 
+                ? 'bg-blue-500 text-white fas fa-user' 
+                : 'bg-green-500 text-white fas fa-robot';
+
+            messageDiv.innerHTML = `
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center ${iconClass}"></div>
+                </div>
+                <div class="flex-grow markdown">
+                    ${renderMarkdown(content)}
+                </div>
+            `;
+            
+            messageContainer.appendChild(messageDiv);
+            
+            // Scroll aşağı
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+
+        // API'ye istek gönderme
+        async function sendMessage() {
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+
+            const model = modelSelect.value;
+            
+            addMessage(prompt, 'user');
+            
+            // İlk sohbeti geçmişe kaydet
+            if (messageContainer.children.length === 1) {
+                ChatHistory.addChat(prompt);
+            }
+
+            promptInput.value = '';
+            promptInput.style.height = 'auto';
+
+            try {
+                const response = await fetch(`${API_URL}?prompt=${encodeURIComponent(prompt)}&model=${model}`);
+                const data = await response.text();
+                
+                addMessage(data, 'assistant');
+            } catch (error) {
+                addMessage('Bir hata oluştu: ' + error.message, 'assistant');
+            }
+        }
+
+        // Gönderme butonları
+        sendButton.addEventListener('click', sendMessage);
+        promptInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Temizleme butonu
+        clearButton.addEventListener('click', () => {
+            messageContainer.innerHTML = '';
+        });
+
+        // Yan menü toggle
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Yeni sohbet
+        newChatBtn.addEventListener('click', () => {
+            messageContainer.innerHTML = '';
+        });
+
+        // Sayfa yüklendiğinde geçmişi render et
+        ChatHistory.renderHistory();
+
+        // Otomatik textarea yükseklik ayarı
+        promptInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+</body>
+</html>

@@ -13,6 +13,7 @@ class ChatApp {
         this.newChatBtn = document.getElementById('newChatBtn');
         this.chatHistoryContainer = document.getElementById('chatHistory');
 
+        // Event listener'ları ekle
         this.sendButton.addEventListener('click', () => this.sendMessage());
         this.messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -23,29 +24,19 @@ class ChatApp {
         this.newChatBtn.addEventListener('click', () => this.startNewChat());
     }
 
-    startNewChat() {
-        this.currentSessionId = Date.now();
-        this.chatSessions.push({
-            id: this.currentSessionId,
-            messages: [],
-            context: {}
-        });
-        this.chatArea.innerHTML = '';
-        this.updateChatHistory();
-    }
-
     sendMessage() {
         const message = this.messageInput.value.trim();
         if (!message) return;
 
-        // Geçerli oturumu bul veya yeni oturum oluştur
-        let currentSession = this.chatSessions.find(s => s.id === this.currentSessionId);
-        if (!currentSession) {
+        // Eğer mevcut bir oturum yoksa yeni bir oturum başlat
+        if (!this.currentSessionId) {
             this.startNewChat();
-            currentSession = this.chatSessions[this.chatSessions.length - 1];
         }
 
-        // Kullanıcı mesajını kaydet
+        // Geçerli oturumu bul
+        const currentSession = this.chatSessions.find(s => s.id === this.currentSessionId);
+
+        // Kullanıcı mesajını ekle
         this.appendMessage('user', message, currentSession);
         this.messageInput.value = '';
 
@@ -53,18 +44,39 @@ class ChatApp {
         this.generateAIResponse(message, currentSession);
     }
 
+    startNewChat() {
+        // Yeni bir oturum kimliği oluştur
+        this.currentSessionId = Date.now();
+        
+        // Yeni oturumu diziye ekle
+        const newSession = {
+            id: this.currentSessionId,
+            messages: [],
+            context: {}
+        };
+        this.chatSessions.push(newSession);
+
+        // Sohbet alanını temizle
+        this.chatArea.innerHTML = '';
+        
+        // Geçmiş sohbetleri güncelle
+        this.updateChatHistory();
+    }
+
     appendMessage(type, content, session) {
+        // Mesaj elementi oluştur
         const messageElement = document.createElement('div');
         messageElement.classList.add(
             'mb-4', 'p-3', 'rounded-lg', 
-            type === 'user' ? 'bg-blue-100 self-end' : 
-            type === 'ai' ? 'bg-green-100 self-start' : 
+            type === 'user' ? 'bg-blue-100 text-right' : 
+            type === 'ai' ? 'bg-green-100' : 
             'bg-gray-200'
         );
 
-        // Kod blokları için özel biçimlendirme
+        // İçeriği biçimlendir (kod blokları için)
         const formattedContent = this.formatCodeBlocks(content);
 
+        // Mesaj içeriğini ayarla
         messageElement.innerHTML = `
             <div class="flex items-start">
                 <div class="mr-2">
@@ -74,16 +86,20 @@ class ChatApp {
             </div>
         `;
 
+        // Mesajı sohbet alanına ekle
         this.chatArea.appendChild(messageElement);
+        
+        // Scroll'u en alta götür
         this.chatArea.scrollTop = this.chatArea.scrollHeight;
 
         // Mesajı oturum geçmişine kaydet
-        session.messages.push({ type, content });
-        this.updateChatHistory();
-        this.saveSessions();
+        if (session) {
+            session.messages.push({ type, content });
+        }
     }
 
     formatCodeBlocks(content) {
+        // Kod bloklarını biçimlendir
         return content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => `
             <pre class="bg-gray-800 text-white p-4 rounded-lg overflow-x-auto">
                 <code class="language-${lang || 'plaintext'}">${this.escapeHTML(code.trim())}</code>
@@ -92,6 +108,7 @@ class ChatApp {
     }
 
     escapeHTML(unsafe) {
+        // HTML özel karakterlerini escape et
         return unsafe
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -100,82 +117,43 @@ class ChatApp {
             .replace(/'/g, "&#039;");
     }
 
-    async generateAIResponse(userMessage, session) {
-        try {
-            // Simüle edilmiş AI yanıt mekanizması
-            const context = session.context || {};
-            const aiResponse = await this.simulateSmartResponse(userMessage, context);
-            
-            this.appendMessage('ai', aiResponse, session);
-            
-            // Bağlamı güncelle
-            session.context = this.updateContext(context, userMessage, aiResponse);
-        } catch (error) {
-            this.appendMessage('system', 'Bir hata oluştu. Lütfen tekrar deneyin.', session);
-        }
-    }
-
-    async simulateSmartResponse(userMessage, context) {
-        // Gelişmiş yanıt üretme simülasyonu
-        const responses = [
+    generateAIResponse(userMessage, session) {
+        // Basit bir AI yanıt simülasyonu
+        const aiResponses = [
             'Anladım, devam edebilirsiniz.',
-            'Önceki bağlamı dikkate alarak cevap veriyorum.',
-            'Bu konuda daha fazla detay verebilir misiniz?'
+            'Bu konuda daha fazla bilgi alabilir miyim?',
+            'İlginç bir yaklaşım.',
+            'Söylediklerinizi değerlendirebilirim.',
+            'Başka ne söylemek istersiniz?'
         ];
-        return responses[Math.floor(Math.random() * responses.length)];
-    }
 
-    updateContext(currentContext, userMessage, aiResponse) {
-        // Basit bir bağlam güncelleme mekanizması
-        return {
-            ...currentContext,
-            lastUserMessage: userMessage,
-            lastAIResponse: aiResponse,
-            messageCount: (currentContext.messageCount || 0) + 1
-        };
+        // Rastgele bir yanıt seç
+        const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+
+        // AI mesajını ekle
+        this.appendMessage('ai', randomResponse, session);
     }
 
     updateChatHistory() {
+        // Sohbet geçmişini güncelle
+        if (this.chatSessions.length === 0) {
+            this.chatHistoryContainer.innerHTML = `
+                <div class="text-gray-500 text-center py-4">
+                    Henüz sohbet geçmişi yok
+                </div>
+            `;
+            return;
+        }
+
+        // Sohbet geçmişi listesini oluştur
         this.chatHistoryContainer.innerHTML = this.chatSessions
             .map(session => `
                 <div class="p-2 hover:bg-gray-100 cursor-pointer" 
                      data-session-id="${session.id}">
-                    Sohbet ${new Date(session.id).toLocaleString()}
+                    Sohbet - ${new Date(session.id).toLocaleString()}
                 </div>
             `)
             .join('');
-
-        // Geçmiş sohbetlere tıklama eventos
-        this.chatHistoryContainer.querySelectorAll('[data-session-id]').forEach(el => {
-            el.addEventListener('click', (e) => {
-                const sessionId = parseInt(e.currentTarget.dataset.sessionId);
-                this.loadChatSession(sessionId);
-            });
-        });
-    }
-
-    loadChatSession(sessionId) {
-        const session = this.chatSessions.find(s => s.id === sessionId);
-        if (session) {
-            this.currentSessionId = sessionId;
-            this.chatArea.innerHTML = '';
-            session.messages.forEach(msg => {
-                this.appendMessage(msg.type, msg.content, session);
-            });
-        }
-    }
-
-    saveSessions() {
-        localStorage.setItem('chatSessions', JSON.stringify(this.chatSessions));
-    }
-
-    loadSavedSessions() {
-        const savedSessions = localStorage.getItem('chatSessions');
-        if (savedSessions) {
-            this.chatSessions = JSON.parse(savedSessions);
-            this.currentSessionId = this.chatSessions[this.chatSessions.length - 1]?.id;
-            this.updateChatHistory();
-        }
     }
 }
 

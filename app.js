@@ -1,64 +1,47 @@
-// Gerekli DOM elemanlarını seç
-const chatArea = document.getElementById('chatArea');
-const messageInput = document.getElementById('messageInput');
-const sendButton = document.getElementById('sendButton');
+document.addEventListener('DOMContentLoaded', function() {
+    const sendButton = document.getElementById('sendButton');
+    const messageInput = document.getElementById('messageInput');
+    const chatArea = document.getElementById('chatArea');
 
-// Mesaj gönderme fonksiyonu
-function sendMessage() {
-    // Mesaj içeriğini al
-    const messageText = messageInput.value.trim();
-    
-    // Boş mesaj kontrolü
-    if (messageText === '') return;
+    console.log('Butonlar yüklendi:', {
+        sendButton: !!sendButton,
+        messageInput: !!messageInput,
+        chatArea: !!chatArea
+    });
 
-    // Kullanıcı mesajını ekle
-    const userMessageElement = document.createElement('div');
-    userMessageElement.classList.add('bg-blue-100', 'p-3', 'rounded-lg', 'mb-2');
-    userMessageElement.innerHTML = `
-        <div class="flex items-start">
-            <div class="mr-2">👤</div>
-            <div>${messageText}</div>
-        </div>
-    `;
-    chatArea.appendChild(userMessageElement);
-
-    // Mesaj input alanını temizle
-    messageInput.value = '';
-
-    // Yapay zeka yanıtı
-    setTimeout(() => {
-        const aiResponses = [
-            'Anladım, devam edebilirsiniz.',
-            'Bu konuda daha fazla bilgi verebilir misiniz?',
-            'İlginç bir yaklaşım.',
-            'Söylediklerinizi değerlendirebilirim.'
-        ];
-
-        const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-
-        const aiMessageElement = document.createElement('div');
-        aiMessageElement.classList.add('bg-green-100', 'p-3', 'rounded-lg', 'mb-2');
-        aiMessageElement.innerHTML = `
-            <div class="flex items-start">
-                <div class="mr-2">🤖</div>
-                <div>${randomResponse}</div>
-            </div>
-        `;
-        chatArea.appendChild(aiMessageElement);
-
-        // Scroll'u en alta götür
-        chatArea.scrollTop = chatArea.scrollHeight;
-    }, 500);
-
-    // Scroll'u en alta götür
-    chatArea.scrollTop = chatArea.scrollHeight;
-}
-
-// Enter tuşu ve gönder butonu için event listener'lar
-sendButton.addEventListener('click', sendMessage);
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+    if (!sendButton || !messageInput || !chatArea) {
+        console.error('DOM elemanları bulunamadı!');
+        return;
     }
+
+    function sendMessage() {
+        console.log('Mesaj gönderme fonksiyonu çağrıldı');
+        const message = messageInput.value.trim();
+        
+        if (message === '') {
+            console.warn('Boş mesaj');
+            return;
+        }
+
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        chatArea.appendChild(messageElement);
+        
+        messageInput.value = '';
+        console.log('Mesaj gönderildi:', message);
+    }
+
+    sendButton.addEventListener('click', function() {
+        console.log('Butona tıklandı');
+        sendMessage();
+    });
+
+    messageInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    console.log('Sohbet uygulaması başlatıldı');
 });

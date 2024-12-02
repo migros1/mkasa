@@ -58,8 +58,18 @@ function sendMessage() {
 
 function formatMessage(message) {
     // Kod bloklarını algıla ve vurgula
-    const codePattern = /(```[\s\S]*?```)/g;
-    return message.replace(codePattern, match => `<pre>${match.replace(/```/g, '')}</pre>`);
+    const codePattern = /```(\w+)?\n([\s\S]*?)```/g;
+    return message.replace(codePattern, (match, lang, code) => {
+        return `<pre><code class="language-${lang}">${escapeHtml(code)}</code></pre>`;
+    });
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
 }
 
 function appendMessage(sender, message, profilePic, timestamp) {

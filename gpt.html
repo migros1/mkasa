@@ -18,7 +18,7 @@
         #chat-container {
             width: 100%;
             max-width: 800px;
-            height: 90vh;
+            height: 80vh;
             background-color: #ffffff;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             border-radius: 10px;
@@ -132,6 +132,53 @@
             font-weight: bold;
             padding: 5px;
         }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-bottom: 10px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #0366d6;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .code-view-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -152,8 +199,11 @@
         const sendButton = document.getElementById('send-button');
         const quotedMessageContainer = document.getElementById('quoted-message-container');
 
-        let conversationHistory = [];
+        let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory')) || [];
         let quotedMessage = '';
+
+        // Sohbet geçmişini yükle
+        loadConversationHistory();
 
         sendButton.addEventListener('click', () => {
             let message = inputMessage.value.trim();
@@ -165,6 +215,7 @@
                 }
                 addMessageToChat('user-message', message);
                 conversationHistory.push({ role: 'user', content: message });
+                saveConversationHistory();
                 getBotResponse();
                 inputMessage.value = '';
             }
@@ -194,7 +245,18 @@
 
         function formatMessageContent(content) {
             return content.replace(/```(html|python|lua|css|js)\s+([\s\S]*?)```/g, (match, lang, code) => {
-                return `<div class="code-block">${code.trim()}</div>`;
+                return `
+                    <div class="code-view-options">
+                        <span>Kod Yazısı</span>
+                        <label class="switch">
+                            <input type="checkbox" onchange="toggleCodeView(this)">
+                            <span class="slider"></span>
+                        </label>
+                        <span>Kod Görünür</span>
+                    </div>
+                    <div class="code-block" style="display: none;">${code.trim()}</div>
+                    <iframe style="width:100%; height:200px; border:none;" srcdoc="${encodeURIComponent(code.trim())}"></iframe>
+                `;
             });
         }
 
@@ -239,6 +301,18 @@
             quotedMessageContainer.style.display = 'none';
         }
 
+        function toggleCodeView(checkbox) {
+            const codeBlock = checkbox.closest('.code-view-options').nextElementSibling;
+            const iframe = codeBlock.nextElementSibling;
+            if (checkbox.checked) {
+                codeBlock.style.display = 'none';
+                iframe.style.display = 'block';
+            } else {
+                codeBlock.style.display = 'block';
+                iframe.style.display = 'none';
+            }
+        }
+
         async function getBotResponse() {
             const prompt = conversationHistory.map(entry => `${entry.role}: ${entry.content}`).join('\n');
             try {
@@ -247,10 +321,21 @@
                 const botMessage = data.response;
                 addMessageToChat('bot-message', botMessage);
                 conversationHistory.push({ role: 'bot', content: botMessage });
+                saveConversationHistory();
             } catch (error) {
                 console.error('Error:', error);
                 addMessageToChat('bot-message', 'Üzgünüm, bir hata oluştu.');
             }
+        }
+
+        function saveConversationHistory() {
+            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+        }
+
+        function loadConversationHistory() {
+            conversationHistory.forEach(entry => {
+                addMessageToChat(entry.role === 'user' ? 'user-message' : 'bot-message', entry.content);
+            });
         }
 
         // Sayfa genelinde tıklama olayını dinleyerek menüleri kapat

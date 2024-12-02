@@ -305,27 +305,23 @@
             quotedMessageContainer.style.display = 'none';
         }
 
-        async function getBotResponse() {
-            const prompt = conversationHistory.map(entry => `${entry.role}: ${entry.content}`).join('\n');
-            try {
-                const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(prompt)}&model=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`);
-                const data = await response.json();
-                const botMessage = data.response;
-                addMessageToChat('bot-message', botMessage);
-                conversationHistory.push({ role: 'bot', content: botMessage });
-                saveConversationHistory();
-            } catch (error) {
-                console.error('Error:', error);
-                addMessageToChat('bot-message', 'Üzgünüm, bir hata oluştu.');
-            }
+        function getBotResponse() {
+            // This is a placeholder for actual bot response logic
+            const botMessage = "Bu bir simüle edilmiş bot cevabıdır.";
+            addMessageToChat('bot-message', botMessage);
+            conversationHistory.push({ role: 'bot', content: botMessage });
+            saveConversationHistory();
         }
 
         function saveConversationHistory() {
             let history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
-            if (currentChatTitle) {
+            let existingIndex = history.findIndex(chat => chat.title === currentChatTitle);
+            if(existingIndex !== -1) {
+                history[existingIndex].messages = conversationHistory;
+            } else {
                 history.push({ title: currentChatTitle, messages: conversationHistory });
-                localStorage.setItem('conversationHistory', JSON.stringify(history));
             }
+            localStorage.setItem('conversationHistory', JSON.stringify(history));
         }
 
         function loadConversationHistory() {
@@ -335,9 +331,11 @@
         }
 
         // Sayfa genelinde tıklama olayını dinleyerek menüleri kapat
-        document.addEventListener('click', () => {
-            const allMenus = document.querySelectorAll('.message-menu');
-            allMenus.forEach(menu => menu.remove());
+        document.addEventListener('click', (event) => {
+            if (!event.target.matches('.settings-icon')) {
+                const allMenus = document.querySelectorAll('.message-menu');
+                allMenus.forEach(menu => menu.remove());
+            }
         });
 
     </script>

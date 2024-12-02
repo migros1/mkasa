@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sohbet Uygulaması</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github-dark.min.css">
+    <style>
+        /* Özel scrollbar stilleri */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sol Kenar Menü -->
+        <div class="w-64 bg-white border-r p-4 flex flex-col">
+            <div class="mb-4">
+                <button id="newChatBtn" class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition flex items-center justify-center">
+                    <i class="fas fa-plus mr-2"></i>Yeni Sohbet
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto" id="chatHistory">
+                <!-- Geçmiş sohbetler buraya eklenecek -->
+                <div class="text-gray-500 text-center py-4">
+                    Henüz sohbet geçmişi yok
+                </div>
+            </div>
+            
+            <div class="mt-4 space-y-2">
+                <button id="settingsBtn" class="w-full text-gray-700 border py-2 rounded hover:bg-gray-100 flex items-center justify-center">
+                    <i class="fas fa-cog mr-2"></i>Ayarlar
+                </button>
+                <button id="clearHistoryBtn" class="w-full text-red-600 border border-red-300 py-2 rounded hover:bg-red-50 flex items-center justify-center">
+                    <i class="fas fa-trash-alt mr-2"></i>Geçmişi Temizle
+                </button>
+            </div>
+        </div>
+
+        <!-- Ana Sohbet Alanı -->
+        <div class="flex-1 flex flex-col">
+            <div id="chatArea" class="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-4">
+                <div class="text-center text-gray-500 py-10">
+                    Yeni bir sohbet başlatın veya geçmiş bir sohbeti seçin
+                </div>
+            </div>
+            
+            <div class="p-4 bg-white border-t">
+                <div class="relative">
+                    <textarea 
+                        id="messageInput" 
+                        rows="3" 
+                        class="w-full p-3 pr-12 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Bir mesaj yazın..."></textarea>
+                    <button 
+                        id="sendButton" 
+                        class="absolute bottom-2 right-2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ayarlar Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-96 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Ayarlar</h2>
+                <button id="closeSettingsModal" class="text-gray-600 hover:text-gray-900">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Model Seçimi</label>
+                    <select id="modelSelector" class="w-full border rounded p-2">
+                        <option value="default">Varsayılan Model</option>
+                        <option value="advanced">Gelişmiş Model</option>
+                        <option value="creative">Yaratıcı Model</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tema</label>
+                    <div class="flex space-x-2">
+                        <button class="theme-btn bg-white border p-2 rounded" data-theme="light">Açık Tema</button>
+                        <button class="theme-btn bg-gray-800 text-white border p-2 rounded" data-theme="dark">Koyu Tema</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Dil Seçimi</label>
+                    <select id="languageSelector" class="w-full border rounded p-2">
+                        <option value="tr">Türkçe</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end space-x-2">
+                <button id="saveSettings" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -45,14 +45,21 @@ function sendMessage() {
     fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(userInput)}&=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo`)
         .then(response => response.json())
         .then(data => {
-            appendMessage("API", data.response, "api-profile.png", timestamp);
-            messages.push({ sender: "API", message: data.response, profilePic: "api-profile.png", timestamp });
+            const responseMessage = formatMessage(data.response);
+            appendMessage("API", responseMessage, "api-profile.png", timestamp);
+            messages.push({ sender: "API", message: responseMessage, profilePic: "api-profile.png", timestamp });
         })
         .catch(error => {
             console.error("Error fetching API:", error);
             appendMessage("API", "API çağrısında bir hata oluştu.", "error-profile.png", timestamp);
             setTimeout(() => sendMessage(userInput), 3000); // Yeniden deneme mekanizması
         });
+}
+
+function formatMessage(message) {
+    // Kod bloklarını algıla ve vurgula
+    const codePattern = /(```[\s\S]*?```)/g;
+    return message.replace(codePattern, match => `<pre>${match.replace(/```/g, '')}</pre>`);
 }
 
 function appendMessage(sender, message, profilePic, timestamp) {
@@ -73,16 +80,7 @@ function loadMessages() {
     if (savedMessages) {
         messages = JSON.parse(savedMessages);
         messages.forEach(msg => appendMessage(msg.sender, msg.message, msg.profilePic, msg.timestamp));
-        messages.forEach(msg => appendHistory(msg.sender, msg.message, msg.timestamp));
     }
-}
-
-function appendHistory(sender, message, timestamp) {
-    const historyBox = document.getElementById("historyBox");
-    const historyElement = document.createElement("div");
-    historyElement.innerHTML = `<strong>${sender}:</strong> ${message} <span style="font-size: 0.8em; color: #888;">(${timestamp})</span>`;
-    historyBox.appendChild(historyElement);
-    historyBox.scrollTop = historyBox.scrollHeight;
 }
 
 window.onload = loadMessages;

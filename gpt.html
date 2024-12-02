@@ -181,7 +181,7 @@
 
         let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory')) || [];
         let quotedMessage = '';
-        let currentChatTitle = '';
+        let currentChatTitle = 'Yeni Sohbet';
 
         // Sohbet geçmişini yükle
         loadConversationHistory();
@@ -235,7 +235,7 @@
 
             if (messageClass === 'bot-message') {
                 const settingsIcon = document.createElement('img');
-                settingsIcon.src = "https://cdn-icons-png.freepik.com/512/244/244173.png";
+                settingsIcon.src = "https://cdn-icons-png.flaticon.com/512/3524/3524659.png";
                 settingsIcon.classList.add('settings-icon');
                 settingsIcon.addEventListener('click', function(event) {
                     event.stopPropagation();
@@ -293,6 +293,11 @@
             quotedMessageContainer.textContent = `Alıntı: ${quotedMessage} `;
             quotedMessageContainer.style.display = 'block';
             inputMessage.focus();
+        }
+
+        function closeQuote() {
+            quotedMessage = '';
+            quotedMessageContainer.style.display = 'none';
         }
 
         function cancelQuote() {

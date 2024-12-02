@@ -12,11 +12,11 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f6f8fa;
+            background-color: #f0f2f5;
             margin: 0;
         }
         #chat-container {
-            width: 100%;
+            width: 90%;
             max-width: 800px;
             height: 90vh;
             background-color: #ffffff;
@@ -30,15 +30,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px;
             border-bottom: 1px solid #e1e4e8;
-            background-color: #f0f4f8;
+            background-color: #0366d6;
+            color: white;
         }
         #chat-box {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background-color: #f0f4f8;
+            background-color: #f7f9fb;
         }
         #chat-input {
             display: flex;
@@ -70,13 +71,13 @@
             padding: 8px 16px;
             border: none;
             border-radius: 5px;
-            background-color: #0366d6;
+            background-color: #0356b6;
             color: white;
             cursor: pointer;
             font-size: 14px;
         }
         #new-chat-button:hover, #view-history-button:hover {
-            background-color: #0356b6;
+            background-color: #034a96;
         }
         .message {
             margin-bottom: 15px;
@@ -157,189 +158,195 @@
     </style>
 </head>
 <body>
-    <div id="chat-container">
-        <div id="chat-header">
-            <button id="new-chat-button">Yeni Sohbet</button>
-            <button id="view-history-button">Geçmiş Sohbetler</button>
-        </div>
-        <div id="chat-box"></div>
-        <div id="chat-input">
-            <div id="quoted-message-container" class="quoted-message" style="display: none;">
-                <span class="close-quote" onclick="closeQuote()">❌</span>
-            </div>
-            <input type="text" id="input-message" placeholder="Mesajınızı yazın...">
-            <button id="send-button">Gönder</button>
-        </div>
+<div id="chat-container">
+    <div id="chat-header">
+        <button id="new-chat-button">Yeni Sohbet</button>
+        <button id="view-history-button">Geçmiş Sohbetler</button>
     </div>
+    <div id="chat-box"></div>
+    <div id="chat-input">
+        <div id="quoted-message-container" class="quoted-message" style="display: none;">
+            <span class="close-quote" onclick="closeQuote()">❌</span>
+        </div>
+        <input type="text" id="input-message" placeholder="Mesajınızı yazın...">
+        <button id="send-button">Gönder</button>
+    </div>
+</div>
 
-    <script>
-        const chatBox = document.getElementById('chat-box');
-        const inputMessage = document.getElementById('input-message');
-        const sendButton = document.getElementById('send-button');
-        const quotedMessageContainer = document.getElementById('quoted-message-container');
-        const newChatButton = document.getElementById('new-chat-button');
-        const viewHistoryButton = document.getElementById('view-history-button');
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const inputMessage = document.getElementById('input-message');
+    const sendButton = document.getElementById('send-button');
+    const quotedMessageContainer = document.getElementById('quoted-message-container');
+    const newChatButton = document.getElementById('new-chat-button');
+    const viewHistoryButton = document.getElementById('view-history-button');
 
-        let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory')) || [];
-        let quotedMessage = '';
-        let currentChatTitle = 'Yeni Sohbet';
+    let conversationHistory = JSON.parse(localStorage.getItem('conversationHistory')) || [];
+    let quotedMessage = '';
+    let currentChatTitle = 'Yeni Sohbet';
 
-        // Sohbet geçmişini yükle
-        loadConversationHistory();
+    loadConversationHistory();
 
-        newChatButton.addEventListener('click', () => {
-            if (confirm("Yeni bir sohbet başlatmak istediğinizden emin misiniz? Mevcut sohbet kaydedilecektir.")) {
-                currentChatTitle = prompt("Bu sohbet için bir başlık girin:", "Yeni Sohbet");
-                if (currentChatTitle) {
-                    saveConversationHistory();
-                    conversationHistory = [];
-                    chatBox.innerHTML = '';
-                    inputMessage.value = '';
-                    alert('Yeni bir sohbete başlandı.');
-                }
-            }
-        });
-
-        viewHistoryButton.addEventListener('click', () => {
-            const history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
-            const titles = history.map((entry, index) => `${index + 1}: ${entry.title || 'Bilinmeyen Başlık'}`);
-            const selected = prompt(`Geçmiş Sohbetler:\n\n${titles.join('\n')}\n\nGörüntülemek istediğiniz sohbet numarasını girin:`);
-            const selectedIndex = parseInt(selected) - 1;
-            if (selectedIndex >= 0 && selectedIndex < history.length) {
-                conversationHistory = history[selectedIndex].messages;
-                chatBox.innerHTML = '';
-                loadConversationHistory();
-                alert('Geçmiş sohbete geri dönüldü.');
-            }
-        });
-
-        sendButton.addEventListener('click', () => {
-            let message = inputMessage.value.trim();
-            if (message) {
-                if (quotedMessage) {
-                    message = `> ${quotedMessage}\n\n${message}`;
-                    quotedMessage = '';
-                    quotedMessageContainer.style.display = 'none';
-                }
-                addMessageToChat('user-message', message);
-                conversationHistory.push({ role: 'user', content: message });
+    newChatButton.addEventListener('click', () => {
+        if (confirm("Yeni bir sohbet başlatmak istediğinizden emin misiniz? Mevcut sohbet kaydedilecektir.")) {
+            currentChatTitle = prompt("Bu sohbet için bir başlık girin:", "Yeni Sohbet");
+            if (currentChatTitle) {
                 saveConversationHistory();
-                getBotResponse();
+                conversationHistory = [];
+                chatBox.innerHTML = '';
                 inputMessage.value = '';
-            }
-        });
-
-        function addMessageToChat(messageClass, messageContent) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', messageClass);
-
-            const formattedContent = formatMessageContent(messageContent);
-            messageElement.innerHTML = formattedContent;
-
-            if (messageClass === 'bot-message') {
-                const settingsIcon = document.createElement('img');
-                settingsIcon.src = "https://cdn-icons-png.flaticon.com/512/3524/3524659.png";
-                settingsIcon.classList.add('settings-icon');
-                settingsIcon.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    toggleMessageMenu(messageElement);
-                });
-                messageElement.appendChild(settingsIcon);
-            }
-
-            chatBox.appendChild(messageElement);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function formatMessageContent(content) {
-            return content.replace(/```(html|python|lua|css|js)\s+([\s\S]*?)```/g, (match, lang, code) => {
-                return `<div class="code-block"><pre><code>${escapeHtml(code.trim())}</code></pre></div>`;
-            });
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-
-        function toggleMessageMenu(messageElement) {
-            const existingMenu = messageElement.querySelector('.message-menu');
-            if (existingMenu) {
-                existingMenu.remove();
-            } else {
-                const menu = document.createElement('div');
-                menu.classList.add('message-menu');
-                menu.style.display = 'block';
-                menu.innerHTML = `
-                    <button onclick="copyMessage(this)">Tüm Mesajı Kopyala</button>
-                    <button onclick="quoteMessage(this)">Alıntı Yap</button>
-                    <button onclick="cancelQuote()">Alıntıyı İptal Et ❌</button>
-                `;
-                messageElement.appendChild(menu);
+                alert('Yeni bir sohbete başlandı.');
             }
         }
+    });
 
-        function copyMessage(button) {
-            const message = button.closest('.message').innerText;
-            navigator.clipboard.writeText(message).then(() => alert('Mesaj kopyalandı!'));
+    viewHistoryButton.addEventListener('click', () => {
+        const history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
+        const titles = history.map((entry, index) => `${index + 1}: ${entry.title || 'Bilinmeyen Başlık'}`);
+        const selected = prompt(`Geçmiş Sohbetler:\n\n${titles.join('\n')}\n\nGörüntülemek istediğiniz sohbet numarasını girin:`);
+        const selectedIndex = parseInt(selected) - 1;
+        if (selectedIndex >= 0 && selectedIndex < history.length) {
+            conversationHistory = history[selectedIndex].messages;
+            chatBox.innerHTML = '';
+            loadConversationHistory();
+            alert('Geçmiş sohbete geri dönüldü.');
         }
+    });
 
-        function quoteMessage(button) {
-            const message = button.closest('.message').innerText;
-            quotedMessage = message.split('\n')[0]; // Alıntı için sadece ilk satır
-            quotedMessageContainer.textContent = `Alıntı: ${quotedMessage} `;
-            quotedMessageContainer.style.display = 'block';
-            inputMessage.focus();
-        }
-
-        function closeQuote() {
-            quotedMessage = '';
-            quotedMessageContainer.style.display = 'none';
-        }
-
-        function cancelQuote() {
-            quotedMessage = '';
-            quotedMessageContainer.style.display = 'none';
-        }
-
-        function getBotResponse() {
-            const botMessage = "Bu bir simüle edilmiş bot cevabıdır.";
-            addMessageToChat('bot-message', botMessage);
-            conversationHistory.push({ role: 'bot', content: botMessage });
+    sendButton.addEventListener('click', () => {
+        let message = inputMessage.value.trim();
+        if (message) {
+            if (quotedMessage) {
+                message = `> ${quotedMessage}\n\n${message}`;
+                quotedMessage = '';
+                quotedMessageContainer.style.display = 'none';
+            }
+            addMessageToChat('user-message', message);
+            conversationHistory.push({role: 'user', content: message});
             saveConversationHistory();
+            getBotResponse();
+            inputMessage.value = '';
         }
+    });
 
-        function saveConversationHistory() {
-            let history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
-            let existingIndex = history.findIndex(chat => chat.title === currentChatTitle);
-            if(existingIndex !== -1) {
-                history[existingIndex].messages = conversationHistory;
-            } else {
-                history.push({ title: currentChatTitle, messages: conversationHistory });
-            }
-            localStorage.setItem('conversationHistory', JSON.stringify(history));
-        }
+    function addMessageToChat(messageClass, messageContent) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', messageClass);
+        messageElement.innerHTML = formatMessageContent(messageContent);
 
-        function loadConversationHistory() {
-            conversationHistory.forEach(entry => {
-                addMessageToChat(entry.role === 'user' ? 'user-message' : 'bot-message', entry.content);
+        if (messageClass === 'bot-message') {
+            const settingsIcon = document.createElement('img');
+            settingsIcon.src = "https://cdn-icons-png.flaticon.com/512/3524/3524659.png";
+            settingsIcon.classList.add('settings-icon');
+            settingsIcon.addEventListener('click', function (event) {
+                event.stopPropagation();
+                toggleMessageMenu(messageElement);
             });
+            messageElement.appendChild(settingsIcon);
         }
 
-        // Sayfa genelinde tıklama olayını dinleyerek menüleri kapat
-        document.addEventListener('click', (event) => {
-            if (!event.target.matches('.settings-icon')) {
-                const allMenus = document.querySelectorAll('.message-menu');
-                allMenus.forEach(menu => menu.remove());
-            }
-        });
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-    </script>
+    function formatMessageContent(content) {
+        return content.replace(/```(html|python|lua|css|js|java|cpp)\s+([\s\S]*?)```/g, (match, lang, code) => {
+            const lines = code.split('\n');
+            if (lines.length > 200) {
+                const blob = new Blob([code], {type: 'text/plain'});
+                const url = URL.createObjectURL(blob);
+                return `<a href="${url}" download="code.${lang}">Kodu indir (${lang})</a>`;
+            }
+            return `<div class="code-block"><pre><code>${escapeHtml(code.trim())}</code></pre></div>`;
+        });
+    }
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function (m) {
+            return map[m];
+        });
+    }
+
+    function toggleMessageMenu(messageElement) {
+        const existingMenu = messageElement.querySelector('.message-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+        } else {
+            const menu = document.createElement('div');
+            menu.classList.add('message-menu');
+            menu.style.display = 'block';
+            menu.innerHTML = `
+                <button onclick="copyMessage(this)">Tüm Mesajı Kopyala</button>
+                <button onclick="quoteMessage(this)">Alıntı Yap</button>
+                <button onclick="cancelQuote()">Alıntıyı İptal Et ❌</button>
+            `;
+            messageElement.appendChild(menu);
+        }
+    }
+
+    function copyMessage(button) {
+        const message = button.closest('.message').innerText;
+        navigator.clipboard.writeText(message).then(() => alert('Mesaj kopyalandı!'));
+    }
+
+    function quoteMessage(button) {
+        const message = button.closest('.message').innerText;
+        quotedMessage = message.split('\n')[0];
+        quotedMessageContainer.textContent = `Alıntı: ${quotedMessage} `;
+        quotedMessageContainer.style.display = 'block';
+        inputMessage.focus();
+    }
+
+    function closeQuote() {
+        quotedMessage = '';
+        quotedMessageContainer.style.display = 'none';
+    }
+
+    function cancelQuote() {
+        quotedMessage = '';
+        quotedMessageContainer.style.display = 'none';
+    }
+
+    function getBotResponse() {
+        // Simulated response for demonstration
+        const exampleCode = `function example() {\n  console.log('This is a long code example');\n}\n`.repeat(10); // Repeat to make it long
+        const botMessage = `Here is a code example:\n\n\`\`\`js\n${exampleCode}\n\`\`\``;
+        addMessageToChat('bot-message', botMessage);
+        conversationHistory.push({role: 'bot', content: botMessage});
+        saveConversationHistory();
+    }
+
+    function saveConversationHistory() {
+        let history = JSON.parse(localStorage.getItem('conversationHistory')) || [];
+        let existingIndex = history.findIndex(chat => chat.title === currentChatTitle);
+        if (existingIndex !== -1) {
+            history[existingIndex].messages = conversationHistory;
+        } else {
+            history.push({title: currentChatTitle, messages: conversationHistory});
+        }
+        localStorage.setItem('conversationHistory', JSON.stringify(history));
+    }
+
+    function loadConversationHistory() {
+        conversationHistory.forEach(entry => {
+            addMessageToChat(entry.role === 'user' ? 'user-message' : 'bot-message', entry.content);
+        });
+    }
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.matches('.settings-icon')) {
+            const allMenus = document.querySelectorAll('.message-menu');
+            allMenus.forEach(menu => menu.remove());
+        }
+    });
+
+</script>
 </body>
 </html>

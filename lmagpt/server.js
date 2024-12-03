@@ -1,29 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 app.post('/gpt3', async (req, res) => {
-    const prompt = req.body.prompt;
+    const userPrompt = req.body.prompt;
 
     try {
-        const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-            prompt: prompt,
-            max_tokens: 150
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        const response = await axios.get('https://darkness.ashlynn.workers.dev/chat/', {
+            params: {
+                prompt: userPrompt,
+                model: 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo'
             }
         });
 
-        res.json(response.data.choices[0].text);
+        res.json(response.data);
     } catch (error) {
-        res.status(500).send('Error communicating with OpenAI API');
+        res.status(500).send('Error communicating with the API');
     }
 });
 

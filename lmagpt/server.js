@@ -8,6 +8,11 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+// Test route to ensure server is working
+app.get('/test', (req, res) => {
+    res.send('Server is up and running!');
+});
+
 app.post('/gpt3', async (req, res) => {
     const userPrompt = req.body.prompt;
 
@@ -21,6 +26,7 @@ app.post('/gpt3', async (req, res) => {
 
         res.json(response.data);
     } catch (error) {
+        console.error(error);
         res.status(500).send('Error communicating with the API');
     }
 });

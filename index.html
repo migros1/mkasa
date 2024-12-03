@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPT Chat</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>Gelişmiş Sohbet Arayüzü</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="chat-container">
+    <div id="app">
         <header>
-            <h1>GPT Chat Assistant</h1>
+            <h1>Sohbet Arayüzü</h1>
+            <div class="settings-icon" onclick="toggleSidebar()">&#9881;</div>
         </header>
-        <div class="chat-box">
-            <div id="chat-messages"></div>
-        </div>
-        <div class="chat-input">
-            <textarea id="user-input" placeholder="Type your message here..."></textarea>
-            <button id="send-button">Send</button>
-        </div>
+        <aside id="sidebar">
+            <div class="profile-section">
+                <img src="avatar.png" alt="Profil Resmi" class="profile-img">
+                <span class="username">Kullanıcı Adı</span>
+            </div>
+            <ul class="menu">
+                <li onclick="changeTheme()">Tema Seçenekleri</li>
+                <li onclick="toggleSound()">Ses Ayarları</li>
+                <li onclick="viewNotifications()">Bildirim Ayarları</li>
+                <li onclick="editProfile()">Profil Ayarları</li>
+                <li onclick="viewHelp()">Yardım ve Destek</li>
+                <li onclick="logout()">Çıkış Yap</li>
+            </ul>
+        </aside>
+        <main id="chat-container">
+            <div id="chatbox"></div>
+            <div id="input-container">
+                <input type="text" id="message" placeholder="Mesajınızı yazın..." onkeypress="if(event.keyCode==13) sendMessage()">
+                <button id="sendButton" onclick="sendMessage()">Gönder</button>
+                <input type="file" id="fileInput" style="display:none" onchange="handleFileUpload(event)">
+                <button id="attachButton" onclick="document.getElementById('fileInput').click()">📎</button>
+            </div>
+        </main>
     </div>
-    <script src="scripts/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

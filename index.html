@@ -1,44 +1,395 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş Sohbet Arayüzü</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Migros Yazar Kasa Kodları</title>
+    <link href="https://fonts.googleapis.com/css2?family=Soopafresh&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --text-color: #333;
+            --container-bg: #fff;
+            --card-bg: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --icon-color: #aaa;
+            --icon-hover: #ff6600;
+            --switch-bg: #ddd;
+            --main-font: 'Roboto', sans-serif;
+            --highlight-font: 'Soopafresh', cursive;
+        }
+
+        .dark-mode {
+            --bg-color: #181818;
+            --text-color: #e8e8e8;
+            --container-bg: #242424;
+            --card-bg: #333333;
+            --card-shadow: rgba(0, 0, 0, 0.5);
+            --icon-color: #777;
+            --icon-hover: #ff6600;
+            --switch-bg: #444;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--main-font);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--icon-hover);
+            padding-bottom: 10px;
+        }
+
+        header img {
+            max-height: 60px;
+        }
+
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 10px;
+        }
+
+        .dark-mode-toggle img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--switch-bg);
+            border-radius: 25px;
+            transition: 0.4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--icon-hover);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--card-shadow);
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        .search-box {
+            width: 100%;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 800px;
+            padding: 15px 20px 15px 50px;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            outline: none;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, width 0.3s ease;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .search-icon, .voice-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--icon-color);
+            cursor: pointer;
+        }
+
+        .search-icon {
+            left: 15px;
+        }
+
+        .voice-icon {
+            right: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .voice-icon.active {
+            color: var(--icon-hover);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .list, .favorites-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-radius: 10px;
+            background: var(--card-bg);
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .list li, .favorites-list li {
+            padding: 20px;
+            margin: 10px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-color);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .list li:hover, .favorites-list li:hover {
+            box-shadow: 0 6px 12px var(--card-shadow);
+        }
+
+        .item-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #f0f0f0;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .item-image:hover {
+            transform: scale(2);
+            z-index: 10;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .item-code {
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--icon-color);
+            margin-top: 5px;
+        }
+
+        .icons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .icons .icon {
+            color: var(--icon-color);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .icons .icon:hover {
+            color: var(--icon-hover);
+            transform: scale(1.1);
+        }
+
+        .stock-check-button, .barcode-button {
+            padding: 5px 10px;
+            background-color: var(--icon-hover);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .stock-check-button:hover, .barcode-button:hover {
+            background-color: #e65c00;
+        }
+
+        footer {
+            margin-top: 20px;
+            color: var(--text-color);
+            text-align: center;
+            border-top: 2px solid var(--icon-hover);
+            padding-top: 10px;
+        }
+
+        footer a {
+            color: var(--icon-hover);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .cookie-banner {
+            position: fixed;
+            bottom: 10px;
+            background: var(--container-bg);
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: calc(100% - 40px);
+            max-width: 600px;
+            margin: 0 20px;
+        }
+
+        .cookie-banner button {
+            background: var(--icon-hover);
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .cookie-banner button:hover {
+            background: #e65c00;
+        }
+
+        .no-result {
+            font-family: var(--highlight-font);
+            font-size: 1.5em;
+            color: var(--icon-hover);
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <h1>Sohbet Arayüzü</h1>
-            <div class="settings-icon" onclick="toggleSidebar()">&#9881;</div>
-        </header>
-        <aside id="sidebar">
-            <div class="profile-section">
-                <img src="avatar.png" alt="Profil Resmi" class="profile-img">
-                <span class="username">Kullanıcı Adı</span>
-            </div>
-            <ul class="menu">
-                <li onclick="changeTheme()">Tema Seçenekleri</li>
-                <li onclick="toggleSound()">Ses Ayarları</li>
-                <li onclick="viewNotifications()">Bildirim Ayarları</li>
-                <li onclick="editProfile()">Profil Ayarları</li>
-                <li onclick="viewHelp()">Yardım ve Destek</li>
-                <li onclick="logout()">Çıkış Yap</li>
-            </ul>
-        </aside>
-        <main id="chat-container">
-            <div id="chatbox"></div>
-            <div id="input-container">
-                <input type="text" id="message" placeholder="Mesajınızı yazın..." onkeypress="if(event.keyCode==13) sendMessage()">
-                <button id="sendButton" onclick="sendMessage()">Gönder</button>
-                <input type="file" id="fileInput" style="display:none" onchange="handleFileUpload(event)">
-                <button id="attachButton" onclick="document.getElementById('fileInput').click()">📎</button>
-            </div>
-        </main>
+    <header>
+        <a href="https://migros1.github.io/mkasa/casa.html">
+            <img src="https://seeklogo.com/images/M/Migros-logo-8E7D2406C3-seeklogo.com.png" alt="Site Logosu">
+        </a>
+        <div class="dark-mode-toggle">
+            <img src="https://osxinfo.net/eklentiler/512-png.11233/" alt="Koyu Mod İkonu">
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </header>
+    <div class="container">
+        <div class="search-box">
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Ürün arayın..."
+                   onkeyup="filterList()" />
+            <span class="search-icon">🔍</span>
+            <span class="voice-icon" id="voiceIcon">🎤</span>
+        </div>
+        <ul class="list" id="fruitList">
+            <!-- Ürünler buraya yüklenecek -->
+        </ul>
+        <div id="noResultMessage" class="no-result" style="display: none;">
+            İsteğiniz ürün adını yanlış girmiş veya listeye eklenmemiş olabilirsin ürün eklemesi yapmak için istebutolga@gmail.com maili üzerinden iletişime geçiniz
+        </div>
     </div>
-    <script src="script.js"></script>
+    <div class="container">
+        <h2>Favorilere Eklenenler</h2>
+        <ul class="favorites-list" id="favoritesList">
+            <!-- Favoriler buraya yüklenecek -->
+        </ul>
+    </div>
+    <footer>
+        Copyright By Tolga Öztürk
+        (<a href="https://instagram.com/tolgaozturkofficial" target="_blank">Instagram Profili</a>)
+    </footer>
+
+    <div class="cookie-banner" id="cookieBanner">
+        <span>Bu site çerezleri kullanmaktadır. Devam ederek çerez kullanımını kabul etmiş olursunuz.</span>
+        <button onclick="acceptCookies()">Kabul Et</button>
+    </div>
+
+    <script src="mscript.js"></script>
 </body>
 </html>
